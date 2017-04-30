@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b5c1aae3-71a7-4907-8fc0-a521b4e6075a" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/lex/REParser.java" afterPath="$PROJECT_DIR$/src/lex/ReParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/lex/ReParser.java" afterPath="$PROJECT_DIR$/src/lex/ReParser.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -63,8 +62,8 @@
       <file leaf-file-name="ReParser.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/lex/ReParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="400">
-              <caret line="22" column="23" lean-forward="true" selection-start-line="22" selection-start-column="23" selection-end-line="22" selection-end-column="23" />
+            <state relative-caret-position="380">
+              <caret line="72" column="45" lean-forward="true" selection-start-line="72" selection-start-column="45" selection-end-line="72" selection-end-column="45" />
               <folding />
             </state>
           </provider>
@@ -123,6 +122,7 @@
         <option value="$PROJECT_DIR$/src/lex/ReToNfa.java" />
         <option value="$PROJECT_DIR$/src/lex/LexSourceParser.java" />
         <option value="$PROJECT_DIR$/src/lex/Nfa.java" />
+        <option value="$PROJECT_DIR$/src/lex/ReParser.java" />
       </list>
     </option>
   </component>
@@ -561,12 +561,12 @@
       <workItem from="1493430967363" duration="1833000" />
       <workItem from="1493432974345" duration="36284000" />
       <workItem from="1493527201869" duration="14065000" />
-      <workItem from="1493542971206" duration="154000" />
+      <workItem from="1493542971206" duration="233000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="52336000" />
+    <option name="totallyTimeSpent" value="52415000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -765,8 +765,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/lex/ReParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="22" column="23" lean-forward="true" selection-start-line="22" selection-start-column="23" selection-end-line="22" selection-end-column="23" />
+        <state relative-caret-position="380">
+          <caret line="72" column="45" lean-forward="true" selection-start-line="72" selection-start-column="45" selection-end-line="72" selection-end-column="45" />
           <folding />
         </state>
       </provider>
