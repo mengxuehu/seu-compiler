@@ -106,13 +106,19 @@ public class ReParser {
                 regularRe.append(mediumRe.charAt(i));
                 regularRe.append(mediumRe.charAt(++i));
             } else if (mediumRe.charAt(i) == '?' && mediumRe.charAt(i - 1) == ')') {
-                int j = i - 1;
-                int length = regularRe.length() - 1;
-                while (mediumRe.charAt(j) != '(') {
-                    tempRe.append(mediumRe.charAt(j));
+                int length = regularRe.length() - 1, times = 0;
+                while (regularRe.charAt(length) != '(') {
+                	if (regularRe.charAt(length) == ')')
+						times++;
+                    tempRe.append(regularRe.charAt(length));
                     regularRe.deleteCharAt(length);
-                    j--;
                     length--;
+                    if (regularRe.charAt(length) == '(' && times > 1) {
+                    	tempRe.append(regularRe.charAt(length));
+                        regularRe.deleteCharAt(length);
+                        length--;
+                        times--;
+                    }
                 }
                 regularRe.deleteCharAt(length);
                 tempRe.append('(');
@@ -130,13 +136,19 @@ public class ReParser {
                 regularRe.append(mediumRe.charAt(i - 1));
                 regularRe.append(')');
             } else if (mediumRe.charAt(i) == '+' && mediumRe.charAt(i - 1) == ')') {
-                int j = i - 1;
-                int length = regularRe.length() - 1;
-                while (mediumRe.charAt(j) != '(') {
-                    tempRe.append(mediumRe.charAt(j));
+            	int length = regularRe.length() - 1, times = 0;
+                while (regularRe.charAt(length) != '(') {
+                	if (regularRe.charAt(length) == ')')
+						times++;
+                    tempRe.append(regularRe.charAt(length));
                     regularRe.deleteCharAt(length);
-                    j--;
                     length--;
+                    if (regularRe.charAt(length) == '(' && times > 1) {
+                    	tempRe.append(regularRe.charAt(length));
+                        regularRe.deleteCharAt(length);
+                        length--;
+                        times--;
+                    }
                 }
                 regularRe.deleteCharAt(length);
                 tempRe.append('(');
@@ -294,6 +306,6 @@ public class ReParser {
 
     public static void main(String[] args) {
         ReParser ReParser = new ReParser();
-        ReParser.processRe("([a-c[d-e]f_])?*[\\+]?");
+        ReParser.processRe("((u|U)|(u|U)?(l|L|ll|LL)|(l|L|ll|LL)(u|U))?");
     }
 }
