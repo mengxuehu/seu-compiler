@@ -1,8 +1,6 @@
 package lex;
 
 
-import javafx.util.Pair;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -12,7 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class LexSourceParser {
+class LexSourceParser {
     private static final int DEFINITIONS = 1, RULES = 2, USER_ROUTINES = 3;
     private static final String escapeChars = "\\.()[]+-*|@?!";  // ^$
 
