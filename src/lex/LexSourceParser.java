@@ -202,16 +202,33 @@ class LexSourceParser {
                 line = br.readLine();
                 ++lineNumber;
             }
-
-            for (String s : definitions.keySet()) {
-                System.out.println(s + "->" + definitions.get(s));
-            }
-
+            ReParser reParser = new ReParser();
+//            for (String s : rules.keySet()) {
+//                System.out.println();
+//                System.out.println("\t" + s);
+//                reParser.processRe(s);
+//            }
+            int i = 0;
             for (String s : rules.keySet()) {
-                System.out.println(s + "->" + rules.get(s));
+                assert i < rules.size();
+                if (i == 0) {
+                    System.out.println();
+                    System.out.println("\t" + s);
+                    reParser.processRe(s);
+                    break;
+                }
+                i--;
             }
 
-            System.out.println(target.toString());
+//            for (String s : definitions.keySet()) {
+//                System.out.println(s + "->" + definitions.get(s));
+//            }
+//
+//            for (String s : rules.keySet()) {
+//                System.out.println(s + "->" + rules.get(s));
+//            }
+//
+//            System.out.println(target.toString());
         } catch (FileNotFoundException e) {
             handleError("can't open file \"" + sourcePath + "\" to read");
         } catch (IOException e) {
