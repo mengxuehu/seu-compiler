@@ -15,20 +15,18 @@ class LexSourceParser {
     private static final String escapeChars = "\\.()[]+-*|@?!";  // ^$
 
     private int lineNumber = 0;
-    private int section;
 
     // definitions in section DEFINITIONS
     private Map<String, String> definitions = new HashMap<>();
 
-    LexSourceParser() {
-    }
+    LexSourceParser(String sourcePath) {
 
-    void parse(String sourcePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(sourcePath))) {
-            section = DEFINITIONS;
+
             StringBuilder target = new StringBuilder();
             Map<String, String> rules = new LinkedHashMap<>();
 
+            int section = DEFINITIONS;
             boolean inComment = false, inRule = false;
 
             // used in SECTION RULES
@@ -78,7 +76,8 @@ class LexSourceParser {
                         continue;
                     } else {
                         if (ruleAction.toString().isEmpty()) {
-                            handleError("null rule action", lineNumber - 1);
+                            int tmp = lineNumber - 1;
+                            handleError("null rule action in line " + tmp);
                         }
                         rules.put(ruleDef, ruleAction.toString());
                         inRule = false;
@@ -91,40 +90,124 @@ class LexSourceParser {
                 }
 
                 // section definitions
-                String[] pair = splitByTab(line);
                 if (section == DEFINITIONS) {
-                    if (pair == null) {
-                        handleError("invalid definition", lineNumber);
-                    } else {
-                        String right = toRe(pair[1]);
-                        definitions.put(pair[0], right);
+                    boolean inSpace = false;
+                    int defKeyEnd = 0, defValBegin = 0;
+                    for (int i = 0; i < line.length(); i++) {
+                        if (!inSpace && isBlank(line.charAt(i))) {
+                            inSpace = true;
+                            defKeyEnd = i;
+                        } else if (inSpace && !isBlank(line.charAt(i))) {
+                            defValBegin = i;
+                            break;
+                        }
                     }
+                    if (!inSpace || defKeyEnd == 0 || defValBegin == 0) {
+                        handleError("invalid definition in line " + lineNumber);
+                    }
+                    // replace old key if it exists
+                    definitions.put(line.substring(0, defKeyEnd), replaceDefHeadWithBody(line.substring(defValBegin)));
                 }
 
+                // section RULES
                 if (section == RULES) {
-                    if (pair == null) {
-                        handleError("invalid rules", lineNumber);
+                    inRule = true;
+                    ruleAction.setLength(0);
+
+                    // end of rule definition
+                    int ruleDefEnd = 0;
+
+                    // position of left quote in line
+                    int quoteBegin = -1;
+
+                    // number of brackets mismatched
+                    int numBracket = 0;
+
+                    // whether last character is \
+                    boolean lastIsBackslash = false;
+
+                    // whether in quotes
+                    boolean inQuotes = false;
+
+                    for (int i = 0; i < line.length(); i++) {
+                        if (inQuotes) {
+                            if (line.charAt(i) == '"') {
+                                inQuotes = false;
+                                String re = replaceQuotesWithRE(line.substring(quoteBegin + 1, i));
+                                line = line.substring(0, quoteBegin) + re + line.substring(i + 1);
+                                i = quoteBegin + re.length() - 1;
+                                quoteBegin = -1;
+                            }
+                        } else {
+                            if (!lastIsBackslash) {
+                                switch (line.charAt(i)) {
+                                    case '[':
+                                        numBracket += 1;
+                                        break;
+                                    case ']':
+                                        if (numBracket > 0) {
+                                            numBracket -= 1;
+                                        } else {
+                                            handleError("mismatched brackets in line " + lineNumber);
+                                        }
+                                        break;
+                                    case '"':
+                                        inQuotes = true;
+                                        quoteBegin = i;
+                                        break;
+                                    case '{':
+                                        for (int j = i + 1; j < line.length(); j++) {
+                                            if (line.charAt(j) == '}') {
+                                                String body = definitions.get(line.substring(i + 1, j));
+                                                if (body.isEmpty()) {
+                                                    handleError("invalid definition in line " + lineNumber);
+                                                } else {
+                                                    line = line.substring(0, i) + body + line.substring(j + 1);
+                                                    i = i + body.length() - 1;
+                                                }
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            if ((line.charAt(i) == '\t' || (line.charAt(i) == ' ')) && numBracket == 0) {
+                                ruleDefEnd = i;
+                                break;
+                            }
+                            lastIsBackslash = (line.charAt(i) == '\\');
+                        }
+                    }
+
+                    if (ruleDefEnd == 0) {
+                        handleError("invalid rule in line " + lineNumber);
                     } else {
-                        inRule = true;
-                        ruleDef = toRe(pair[0]);
-                        ruleAction = new StringBuilder(pair[1]);
+                        ruleDef = line.substring(0, ruleDefEnd);
+                    }
+
+                    for (int i = ruleDefEnd; i < line.length(); i++) {
+                        if (!isBlank(line.charAt(i))) {
+                            ruleAction.append(line.substring(i));
+                            break;
+                        }
                     }
                 }
-
             }
+
             /* section user routines, copy all lines left to target file. */
             while (line != null) {
                 target.append(line).append('\n');
                 line = br.readLine();
                 ++lineNumber;
             }
-//            ReParser reParser = new ReParser();
-//            for (String s : rules.keySet()) {
-//                System.out.println();
-//                System.out.println("\t" + s);
-//                reParser.processRe(s);
-//            }
-
+            ReParser reParser = new ReParser();
+            for (String s : rules.keySet()) {
+                System.out.println();
+                System.out.println("\t" + s);
+                reParser.processRe(s);
+            }
 //            int i = 0;
 //            for (String s : rules.keySet()) {
 //                assert i < rules.size();
@@ -136,34 +219,54 @@ class LexSourceParser {
 //                }
 //                i--;
 //            }
-            for (String s : definitions.keySet()) {
-                System.out.println(s + "->" + definitions.get(s));
-            }
 
-            for (String s : rules.keySet()) {
-                System.out.println(s + "->" + rules.get(s));
-            }
-
-            System.out.println(target.toString());
+//            for (String s : definitions.keySet()) {
+//                System.out.println(s + "->" + definitions.get(s));
+//            }
+//
+//            for (String s : rules.keySet()) {
+//                System.out.println(s + "->" + rules.get(s));
+//            }
+//
+//            System.out.println(target.toString());
         } catch (FileNotFoundException e) {
-            handleError("can't open file \"" + sourcePath + "\" to read", 0);
+            handleError("can't open file \"" + sourcePath + "\" to read");
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private boolean isBlank(char c) {
         return c == '\t' || c == ' ';
     }
 
-    private String replaceQuotesWithRe(String s) {
+    private String replaceDefHeadWithBody(String s) {
+        // whether last character is \
+        boolean lastIsBackslash = false;
         for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == '\\') {
-                if (i + 1 < s.length() && s.charAt(i + 1) == '"') {
-                    s = s.substring(0, i) + s.substring(i + 1);
-                    continue;
+            if (!lastIsBackslash && s.charAt(i) == '{') {
+                for (int j = i + 1; j < s.length(); j++) {
+                    if (s.charAt(j) == '}') {
+                        String body = definitions.get(s.substring(i + 1, j));
+                        if (body.isEmpty()) {
+                            handleError("invalid definition in line " + lineNumber);
+                        } else {
+                            // size of s is changed
+                            s = s.substring(0, i) + body + s.substring(j + 1);
+                            i = i + body.length() - 1;
+                        }
+                        break;
+                    }
                 }
             }
+            lastIsBackslash = (s.charAt(i) == '\\');
+        }
+        return s;
+    }
+
+    private String replaceQuotesWithRE(String s) {
+        for (int i = 0; i < s.length(); i++) {
             if (escapeChars.contains(String.valueOf(s.charAt(i)))) {
                 s = s.substring(0, i) + "\\" + s.substring(i++);
             }
@@ -172,81 +275,16 @@ class LexSourceParser {
     }
 
 
-    private void handleError(String errMsg, int lineNo) {
-        System.err.println("ERROR(" + lineNo + "): " + errMsg);
+    private void handleError(String errMsg) {
+        System.err.println("ERROR: " + errMsg);
         // exit is necessary, otherwise bugs will be introduced
         System.exit(1);
-    }
-
-    private String[] splitByTab(String line) {
-        int i = line.indexOf('\t');
-        if (i != -1) {
-            String right = line.substring(i).replaceFirst("\t*", "");
-            if (!right.isEmpty()) {
-                return new String[]{line.substring(0, i), right};
-            }
-        }
-        return null;
-    }
-
-    private String toRe(String s) {
-        // whether last character is \
-        boolean lastIsBackslash = false;
-
-        for (int i = 0; i < s.length(); i++) {
-            if (!lastIsBackslash) {
-                int posRightMatch = i;
-                switch (s.charAt(i)) {
-                    case '[':
-                        do {
-                            posRightMatch = s.indexOf(']', posRightMatch + 1);
-                        } while (s.charAt(posRightMatch - 1) == '\\');
-                        if (posRightMatch != -1) {
-                            i = posRightMatch;
-                        } else {
-                            handleError("mismatched brackets", lineNumber);
-                        }
-                        break;
-                    case '"':
-                        do {
-                            posRightMatch = s.indexOf('"', posRightMatch + 1);
-                        } while (s.charAt(posRightMatch - 1) == '\\');
-                        if (posRightMatch != -1) {
-                            String re = replaceQuotesWithRe(s.substring(i + 1, posRightMatch));
-                            s = s.substring(0, i) + re + s.substring(posRightMatch + 1);
-                            i = i + re.length() - 1;
-                        } else {
-                            handleError("mismatched quotes", lineNumber);
-                        }
-                        break;
-                    case '{':
-                        posRightMatch = s.indexOf('}', posRightMatch + 1);
-                        if (posRightMatch != -1) {
-                            String body = definitions.get(s.substring(i + 1, posRightMatch));
-                            if (!body.isEmpty()) {
-                                s = s.substring(0, i) + body + s.substring(posRightMatch + 1);
-                                i = i + body.length() - 1;
-                            } else {
-                                handleError("invalid " + (section == DEFINITIONS ? "definition" : "rule"),
-                                        lineNumber);
-                            }
-                        } else {
-                            handleError("mismatched quotes", lineNumber);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-            lastIsBackslash = (s.charAt(i) == '\\');
-        }
-        return s;
     }
 
 
     public static void main(String[] args) {
         String sourcePath = Paths.get(System.getProperty("user.dir"), "c99.l").toString();
-        LexSourceParser lsp = new LexSourceParser();
-        lsp.parse(sourcePath);
+        new LexSourceParser(sourcePath);
+        System.out.println("123");
     }
 }
