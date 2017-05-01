@@ -35,6 +35,10 @@ class NfaNode {
         transitions.add(new Pair<>(edge, target));
     }
 
+    Set<Pair<String, Integer>> getTransitions() {
+        return transitions;
+    }
+
     void addAllTransitions(NfaNode node) {
         this.transitions.addAll(node.transitions);
     }
