@@ -7,6 +7,7 @@ import java.util.*;
 
 class NfaNode {
     private int index;
+    private boolean terminal = false;
     private HashSet<Pair<String, Integer>> transitions = new HashSet<>();
 
     NfaNode(int index) {
@@ -20,6 +21,14 @@ class NfaNode {
 
     int getIndex() {
         return index;
+    }
+
+    boolean isTerminal() {
+        return terminal;
+    }
+
+    void setTerminal(boolean terminal) {
+        this.terminal = terminal;
     }
 
     void addTransition(String edge, int target) {
@@ -36,7 +45,11 @@ class Nfa {
     private LinkedList<NfaNode> nodes = new LinkedList<>();
     private static int indexes = 0;
 
-    Nfa(String[] postfixRe) {
+    Nfa() {
+
+    }
+
+    Nfa reToNfa(String[] postfixRe) {
         Deque<Nfa> stack = new LinkedList<>();
         int i = 0;
         while (i != postfixRe.length) {
@@ -62,6 +75,10 @@ class Nfa {
             }
             ++i;
         }
+        Nfa nfa = stack.pop();
+        assert stack.isEmpty();
+        nfa.nodes.getLast().setTerminal(true);
+        return nfa;
     }
 
     private Nfa(String operand) {
@@ -70,9 +87,16 @@ class Nfa {
         nodes.add(new NfaNode(end));
     }
 
-    List<NfaNode> get() {
-        ArrayList<NfaNode> nfa = new ArrayList<>(nodes.size());
-        for (NfaNode node : nodes) {
+    List<NfaNode> merge(Collection<Nfa> nfas) {
+        NfaNode start = new NfaNode(getNextIndex());
+        LinkedList<NfaNode> allNodes = new LinkedList<>();
+        allNodes.add(start);
+        for (Nfa nfa : nfas) {
+            start.addTransition("", nfa.nodes.getFirst().getIndex());
+            allNodes.addAll(nfa.nodes);
+        }
+        ArrayList<NfaNode> nfa = new ArrayList<>(allNodes.size());
+        for (NfaNode node : allNodes) {
             nfa.set(node.getIndex(), node);
         }
         return nfa;

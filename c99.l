@@ -2,20 +2,24 @@ D			[0-9]
 L			[a-zA-Z_]
 H			[a-fA-F0-9]
 E			([Ee][+-]?{D}+)
-P                       ([Pp][+-]?{D}+)
+P			([Pp][+-]?{D}+)
 FS			(f|F|l|L)
-IS                      ((u|U)|(u|U)?(l|L|ll|LL)|(l|L|ll|LL)(u|U))
+IS			((u|U)|(u|U)?(l|L|ll|LL)|(l|L|ll|LL)(u|U))
 
 %{
 #include <stdio.h>
 #include "y.tab.h"
 
 void count(void);
+int check_type(void);
+void comment(void);
+extern char input(void);
+extern void yyerror(const char *);
 %}
 
 %%
 "/*"			{ comment(); }
-"//"[^\n]*              { /* consume //-comment */ }
+"//"[^\n]*	{ /* consume //-comment */ }
 
 
 "auto"			{ count(); return(AUTO); }
@@ -67,8 +71,8 @@ L?'(\\.|[^\\'\n])+'	{ count(); return(CONSTANT); }
 {D}*"."{D}+{E}?{FS}?	{ count(); return(CONSTANT); }
 {D}+"."{D}*{E}?{FS}?	{ count(); return(CONSTANT); }
 0[xX]{H}+{P}{FS}?	{ count(); return(CONSTANT); }
-0[xX]{H}*"."{H}+{P}?{FS}?     { count(); return(CONSTANT); }
-0[xX]{H}+"."{H}*{P}?{FS}?     { count(); return(CONSTANT); }
+0[xX]{H}*"."{H}+{P}?{FS}?	{ count(); return(CONSTANT); }
+0[xX]{H}+"."{H}*{P}?{FS}?	{ count(); return(CONSTANT); }
 
 
 L?\"(\\.|[^\\"\n])*\"	{ count(); return(STRING_LITERAL); }
@@ -141,7 +145,7 @@ void comment(void)
 			return;
 		prev = c;
 	}
-	error("unterminated comment");
+	yyerror("unterminated comment");
 }
 
 
