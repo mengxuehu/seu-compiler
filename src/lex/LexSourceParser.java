@@ -18,17 +18,28 @@ class LexSourceParser {
     private int section;
 
     // definitions in section DEFINITIONS
-    private Map<String, String> definitions = new HashMap<>();
+    private Map<String, String> definitions;
+    private Map<String, String> rules;
+    private StringBuilder userRoutines;
 
     LexSourceParser() {
     }
 
+    Map<String, String> getRules() {
+        return rules;
+    }
+
+    String getUserRoutines() {
+        return userRoutines == null ? null : userRoutines.toString();
+    }
+
     void parse(String sourcePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(sourcePath))) {
-            section = DEFINITIONS;
-            StringBuilder target = new StringBuilder();
-            Map<String, String> rules = new LinkedHashMap<>();
+            definitions = new HashMap<>();
+            rules = new LinkedHashMap<>();
+            userRoutines = new StringBuilder();
 
+            section = DEFINITIONS;
             boolean inComment = false, inRule = false;
 
             // used in SECTION RULES
@@ -50,13 +61,13 @@ class LexSourceParser {
                 }
 
                 if (inComment) {
-                    // copy comment to target file
+                    // copy comment to userRoutines file
                     if (line.startsWith("%}")) {
                         inComment = false;
                     }
                     // multi-line comment ends
                     else {
-                        target.append(line).append('\n');
+                        userRoutines.append(line).append('\n');
                     }
                     continue;
                 }
@@ -86,7 +97,7 @@ class LexSourceParser {
                 }
                 // single line comment
                 else if (line.startsWith(" ") || line.startsWith("\t")) {
-                    target.append(line.trim()).append('\n');
+                    userRoutines.append(line.trim()).append('\n');
                     continue;
                 }
 
@@ -101,6 +112,7 @@ class LexSourceParser {
                     }
                 }
 
+
                 if (section == RULES) {
                     if (pair == null) {
                         handleError("invalid rules", lineNumber);
@@ -112,9 +124,9 @@ class LexSourceParser {
                 }
 
             }
-            /* section user routines, copy all lines left to target file. */
+            /* section user routines, copy all lines left to userRoutines file. */
             while (line != null) {
-                target.append(line).append('\n');
+                userRoutines.append(line).append('\n');
                 line = br.readLine();
                 ++lineNumber;
             }
@@ -144,13 +156,14 @@ class LexSourceParser {
                 System.out.println(s + "->" + rules.get(s));
             }
 
-            System.out.println(target.toString());
+            System.out.println(userRoutines.toString());
         } catch (FileNotFoundException e) {
             handleError("can't open file \"" + sourcePath + "\" to read", 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     private boolean isBlank(char c) {
         return c == '\t' || c == ' ';
