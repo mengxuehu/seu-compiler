@@ -44,16 +44,16 @@ class NfaNode {
 class Nfa {
     private LinkedList<NfaNode> nodes = new LinkedList<>();
     private static int indexes = 0;
+    private static Map<String, String> escapeChars = null;
 
     Nfa() {
-
+        initializeEscapeChars();
     }
 
     Nfa reToNfa(String[] postfixRe) {
         Deque<Nfa> stack = new LinkedList<>();
-        int i = 0;
-        while (i != postfixRe.length) {
-            switch (postfixRe[i].charAt(0)) {
+        for (String s : postfixRe) {
+            switch (s.charAt(0)) {
                 case '*':
                     Nfa nfa = stack.pop();
                     nfa.closure();
@@ -70,11 +70,11 @@ class Nfa {
                     stack.push(nfa);
                     break;
                 default:
-                    stack.push(new Nfa(postfixRe[i]));
+                    stack.push(new Nfa(processOperand(s)));
                     break;
             }
-            ++i;
         }
+
         Nfa nfa = stack.pop();
         assert stack.isEmpty();
         nfa.nodes.getLast().setTerminal(true);
@@ -108,12 +108,13 @@ class Nfa {
 
     private void closure() {
         int oldBegin = nodes.getFirst().getIndex();
-
-        nodes.addFirst(new NfaNode(getNextIndex()));
-        nodes.addLast(new NfaNode(getNextIndex()));
+        int newEnd = getNextIndex();
 
         nodes.getLast().addTransition("", oldBegin);
-        nodes.getLast().addTransition("", nodes.getLast().getIndex());
+        nodes.getLast().addTransition("", newEnd);
+
+        nodes.addFirst(new NfaNode(getNextIndex()));
+        nodes.addLast(new NfaNode(newEnd));
 
         nodes.getFirst().addTransition("", oldBegin);
         nodes.getFirst().addTransition("", nodes.getLast().getIndex());
@@ -136,6 +137,34 @@ class Nfa {
         NfaNode node = nfa.nodes.removeFirst();
         this.nodes.getLast().addAllTransitions(node);
         this.nodes.addAll(nfa.nodes);
+    }
+
+    private void initializeEscapeChars() {
+        if (escapeChars == null) {
+            escapeChars = new HashMap<>();
+            String[] source = {"\\a", "\\b", "\\f", "\\n", "\\r", "\\t", "\\v", "\\\\", "\\'", "\\\"", "\\?"};
+            int[] target = {0x07, 0x08, 0x0C, 0x0A, 0x0D, 0x09, 0x0B, 0x5C, 0x27, 0x22, 0x3F};
+            assert source.length == target.length;
+            for (int i = 0; i < source.length; i++) {
+                escapeChars.put(source[i], String.valueOf((char)target[i]));
+            }
+            escapeChars.put(ReParser.epsilon, "");
+        }
+    }
+
+    private String processOperand(String operand) {
+        if (escapeChars.containsKey(operand)) {
+            operand = escapeChars.get(operand);
+        }
+        return operand;
+    }
+
+    public static void main(String[] args) {
+        Nfa nfa = new Nfa();
+        nfa.initializeEscapeChars();
+        for (String s : escapeChars.keySet()) {
+            System.out.println(s + " " + escapeChars.get(s));
+        }
     }
 
 }
