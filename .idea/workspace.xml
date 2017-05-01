@@ -32,6 +32,8 @@
         <entry file="file://$PROJECT_DIR$/src/lex/LexSourceParser.java">
           <provider selected="true" editor-type-id="text-editor">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
             <state relative-caret-position="161">
               <caret line="14" column="38" lean-forward="false" selection-start-line="14" selection-start-column="38" selection-end-line="14" selection-end-column="38" />
               <folding>
@@ -67,11 +69,27 @@
                 <element signature="e#1106#1107#0" expanded="true" />
                 <element signature="e#2810#2811#0" expanded="true" />
                 <element signature="e#2842#2843#0" expanded="true" />
+=======
+=======
+>>>>>>> Stashed changes
+            <state relative-caret-position="180">
+              <caret line="16" column="31" lean-forward="true" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
+              <folding>
+                <element signature="e#711#712#0" expanded="true" />
+                <element signature="e#739#740#0" expanded="true" />
+                <element signature="e#771#772#0" expanded="true" />
+                <element signature="e#847#848#0" expanded="true" />
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
               </folding>
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <file leaf-file-name="ReParser.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lex/ReParser.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -117,6 +135,20 @@
             <state relative-caret-position="-1097">
               <caret line="114" column="37" lean-forward="false" selection-start-line="114" selection-start-column="37" selection-end-line="114" selection-end-column="37" />
 =======
+            <state relative-caret-position="340">
+              <caret line="23" column="5" lean-forward="true" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
+>>>>>>> Stashed changes
+=======
+      <file leaf-file-name="Nfa.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lex/Nfa.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="340">
+              <caret line="23" column="5" lean-forward="true" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
+>>>>>>> Stashed changes
+=======
+      <file leaf-file-name="Nfa.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lex/Nfa.java">
+          <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="340">
               <caret line="23" column="5" lean-forward="true" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
 >>>>>>> Stashed changes
@@ -207,6 +239,14 @@
     <panes>
       <pane id="PackagesPane" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+      <pane id="Scratches" />
+>>>>>>> Stashed changes
+=======
+      <pane id="Scratches" />
+>>>>>>> Stashed changes
 =======
       <pane id="Scratches" />
 >>>>>>> Stashed changes
@@ -266,7 +306,13 @@
         </subPane>
       </pane>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <pane id="Scratches" />
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     </panes>
@@ -293,7 +339,15 @@
     </option>
   </component>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
   <component name="RunManager" selected="Application.ReParser">
+=======
+  <component name="RunManager" selected="Application.Nfa">
+>>>>>>> Stashed changes
+=======
+  <component name="RunManager" selected="Application.Nfa">
+>>>>>>> Stashed changes
 =======
   <component name="RunManager" selected="Application.Nfa">
 >>>>>>> Stashed changes
@@ -338,7 +392,15 @@
       <method />
     </configuration>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     <configuration default="false" name="ReParser" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+=======
+    <configuration default="false" name="Nfa" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+>>>>>>> Stashed changes
+=======
+    <configuration default="false" name="Nfa" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+>>>>>>> Stashed changes
 =======
     <configuration default="false" name="Nfa" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
 >>>>>>> Stashed changes
@@ -349,8 +411,14 @@
         </pattern>
       </extension>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <option name="MAIN_CLASS_NAME" value="lex.ReParser" />
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
       <option name="MAIN_CLASS_NAME" value="lex.Nfa" />
       <option name="VM_PARAMETERS" />
       <option name="PROGRAM_PARAMETERS" />
@@ -632,6 +700,12 @@
     <recent_temporary>
       <list size="3">
         <item index="0" class="java.lang.String" itemvalue="Application.Nfa" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         <item index="1" class="java.lang.String" itemvalue="Application.LexSourceParser" />
         <item index="2" class="java.lang.String" itemvalue="Application.REParser" />
@@ -687,6 +761,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19967267" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21440262" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -710,13 +785,23 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27554178" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+<<<<<<< Updated upstream
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38493294" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32817337" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
 =======
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27554178" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5356037" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+>>>>>>> Stashed changes
+=======
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27554178" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5356037" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+>>>>>>> Stashed changes
+=======
       <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5356037" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
 >>>>>>> Stashed changes
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -729,13 +814,25 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4138287" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     </layout>
   </component>
@@ -747,6 +844,8 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
@@ -764,6 +863,10 @@
       </breakpoints>
       <option name="time" value="8" />
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
       <option name="time" value="7" />
 >>>>>>> Stashed changes
     </breakpoint-manager>
@@ -776,6 +879,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/lex/Nfa.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         <state relative-caret-position="1472">
           <caret line="66" column="5" lean-forward="true" selection-start-line="66" selection-start-column="5" selection-end-line="66" selection-end-column="5" />
@@ -813,6 +918,10 @@
             <element signature="e#14036#14037#0" expanded="true" />
             <element signature="e#14068#14069#0" expanded="true" />
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
         <state relative-caret-position="2220">
           <caret line="111" column="0" lean-forward="true" selection-start-line="111" selection-start-column="0" selection-end-line="111" selection-end-column="0" />
           <folding />
@@ -828,26 +937,46 @@
             <element signature="e#739#740#0" expanded="true" />
             <element signature="e#771#772#0" expanded="true" />
             <element signature="e#847#848#0" expanded="true" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           </folding>
         </state>
       </provider>
     </entry>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/c99.l">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1189">
           <caret line="110" column="37" lean-forward="true" selection-start-line="110" selection-start-column="37" selection-end-line="110" selection-end-column="37" />
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     <entry file="file://$PROJECT_DIR$/src/lex/Nfa.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="320">
           <caret line="16" column="25" lean-forward="false" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           <folding />
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/src/lex/LexSourceParser.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -858,6 +987,10 @@
             <element signature="e#5266#5267#0" expanded="true" />
           </folding>
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     <entry file="file://$PROJECT_DIR$/c99.l">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1960">
@@ -870,6 +1003,12 @@
         <state relative-caret-position="520">
           <caret line="26" column="29" lean-forward="true" selection-start-line="26" selection-start-column="29" selection-end-line="26" selection-end-column="29" />
           <folding />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         </state>
       </provider>
@@ -880,13 +1019,25 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
             <element signature="e#5222#5223#0" expanded="true" />
             <element signature="e#5266#5267#0" expanded="true" />
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
             <element signature="e#711#712#0" expanded="true" />
             <element signature="e#739#740#0" expanded="true" />
             <element signature="e#771#772#0" expanded="true" />
             <element signature="e#847#848#0" expanded="true" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           </folding>
         </state>
@@ -896,6 +1047,8 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="320">
           <caret line="16" column="25" lean-forward="false" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
           <folding>
             <element signature="imports" expanded="true" />
@@ -921,6 +1074,12 @@
 =======
           <folding />
 >>>>>>> Stashed changes
+=======
+          <folding />
+>>>>>>> Stashed changes
+=======
+          <folding />
+>>>>>>> Stashed changes
         </state>
       </provider>
     </entry>
@@ -929,12 +1088,20 @@
         <state relative-caret-position="180">
           <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
           <folding>
             <element signature="e#8900#8908#0" expanded="true" />
             <element signature="e#8961#8969#0" expanded="true" />
             <element signature="e#14036#14037#0" expanded="true" />
             <element signature="e#14068#14069#0" expanded="true" />
           </folding>
+=======
+          <folding />
+>>>>>>> Stashed changes
+=======
+          <folding />
+>>>>>>> Stashed changes
 =======
           <folding />
 >>>>>>> Stashed changes
@@ -946,7 +1113,13 @@
         <state relative-caret-position="1960">
           <caret line="98" column="29" lean-forward="true" selection-start-line="98" selection-start-column="29" selection-end-line="98" selection-end-column="29" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
           <folding />
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         </state>
@@ -958,13 +1131,25 @@
           <caret line="9" column="31" lean-forward="false" selection-start-line="9" selection-start-column="31" selection-end-line="9" selection-end-column="31" />
           <folding>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
             <element signature="e#5222#5223#0" expanded="true" />
             <element signature="e#5266#5267#0" expanded="true" />
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
             <element signature="e#711#712#0" expanded="true" />
             <element signature="e#739#740#0" expanded="true" />
             <element signature="e#771#772#0" expanded="true" />
             <element signature="e#847#848#0" expanded="true" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           </folding>
         </state>
@@ -975,7 +1160,13 @@
         <state relative-caret-position="2120">
           <caret line="106" column="2" lean-forward="true" selection-start-line="106" selection-start-column="2" selection-end-line="106" selection-end-column="2" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
           <folding />
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         </state>
@@ -986,12 +1177,20 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
           <folding>
             <element signature="e#8900#8908#0" expanded="true" />
             <element signature="e#8961#8969#0" expanded="true" />
             <element signature="e#14036#14037#0" expanded="true" />
             <element signature="e#14068#14069#0" expanded="true" />
           </folding>
+=======
+          <folding />
+>>>>>>> Stashed changes
+=======
+          <folding />
+>>>>>>> Stashed changes
 =======
           <folding />
 >>>>>>> Stashed changes
@@ -1013,6 +1212,8 @@
       </provider>
     </entry>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1020,6 +1221,10 @@
         </state>
       </provider>
     </entry>
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     <entry file="file://$PROJECT_DIR$/.idea/modules.xml">
@@ -1037,6 +1242,8 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/lex/test.l" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/src/lex/Nfa.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -1077,6 +1284,10 @@
             <element signature="e#14068#14069#0" expanded="true" />
           </folding>
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     <entry file="file://$PROJECT_DIR$/src/lex/ReParser.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
@@ -1090,6 +1301,12 @@
         <state relative-caret-position="287">
           <caret line="23" column="5" lean-forward="true" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
           <folding />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         </state>
       </provider>
@@ -1097,10 +1314,16 @@
     <entry file="file://$PROJECT_DIR$/c99.l">
       <provider selected="true" editor-type-id="text-editor">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
         <state relative-caret-position="-1024">
           <caret line="98" column="29" lean-forward="false" selection-start-line="98" selection-start-column="29" selection-end-line="98" selection-end-column="29" />
           <folding />
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
         <state relative-caret-position="112">
           <caret line="65" column="24" lean-forward="false" selection-start-line="65" selection-start-column="24" selection-end-line="65" selection-end-column="24" />
         </state>
@@ -1110,6 +1333,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="260">
           <caret line="181" column="79" lean-forward="true" selection-start-line="181" selection-start-column="79" selection-end-line="181" selection-end-column="79" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         </state>
       </provider>
@@ -1117,12 +1346,18 @@
     <entry file="file://$PROJECT_DIR$/src/lex/LexSourceParser.java">
       <provider selected="true" editor-type-id="text-editor">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
         <state relative-caret-position="123">
           <caret line="212" column="40" lean-forward="true" selection-start-line="212" selection-start-column="40" selection-end-line="212" selection-end-column="40" />
           <folding>
             <element signature="e#5222#5223#0" expanded="true" />
             <element signature="e#5266#5267#0" expanded="true" />
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
         <state relative-caret-position="440">
           <caret line="29" column="38" lean-forward="true" selection-start-line="29" selection-start-column="38" selection-end-line="29" selection-end-column="38" />
           <folding>
@@ -1130,6 +1365,12 @@
             <element signature="e#739#740#0" expanded="true" />
             <element signature="e#771#772#0" expanded="true" />
             <element signature="e#847#848#0" expanded="true" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           </folding>
         </state>
@@ -1141,13 +1382,25 @@
           <caret line="124" column="0" lean-forward="false" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
           <folding>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
             <element signature="e#5222#5223#0" expanded="true" />
             <element signature="e#5266#5267#0" expanded="true" />
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
             <element signature="e#711#712#0" expanded="true" />
             <element signature="e#739#740#0" expanded="true" />
             <element signature="e#771#772#0" expanded="true" />
             <element signature="e#847#848#0" expanded="true" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           </folding>
         </state>
@@ -1158,12 +1411,18 @@
         <state relative-caret-position="620">
           <caret line="31" column="49" lean-forward="false" selection-start-line="31" selection-start-column="49" selection-end-line="31" selection-end-column="49" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
           <folding>
             <element signature="e#8900#8908#0" expanded="true" />
             <element signature="e#8961#8969#0" expanded="true" />
             <element signature="e#14036#14037#0" expanded="true" />
             <element signature="e#14068#14069#0" expanded="true" />
           </folding>
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         </state>
@@ -1210,13 +1469,25 @@
           <caret line="124" column="0" lean-forward="true" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
           <folding>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
             <element signature="e#5222#5223#0" expanded="true" />
             <element signature="e#5266#5267#0" expanded="true" />
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
             <element signature="e#711#712#0" expanded="true" />
             <element signature="e#739#740#0" expanded="true" />
             <element signature="e#771#772#0" expanded="true" />
             <element signature="e#847#848#0" expanded="true" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           </folding>
         </state>
@@ -1227,12 +1498,18 @@
         <state relative-caret-position="620">
           <caret line="31" column="49" lean-forward="true" selection-start-line="31" selection-start-column="49" selection-end-line="31" selection-end-column="49" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
           <folding>
             <element signature="e#8900#8908#0" expanded="true" />
             <element signature="e#8961#8969#0" expanded="true" />
             <element signature="e#14036#14037#0" expanded="true" />
             <element signature="e#14068#14069#0" expanded="true" />
           </folding>
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         </state>
@@ -1279,13 +1556,25 @@
           <caret line="12" column="5" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="5" />
           <folding>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
             <element signature="e#5222#5223#0" expanded="true" />
             <element signature="e#5266#5267#0" expanded="true" />
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
             <element signature="e#711#712#0" expanded="true" />
             <element signature="e#739#740#0" expanded="true" />
             <element signature="e#771#772#0" expanded="true" />
             <element signature="e#847#848#0" expanded="true" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           </folding>
         </state>
@@ -1331,12 +1620,18 @@
         <state relative-caret-position="520">
           <caret line="26" column="29" lean-forward="true" selection-start-line="26" selection-start-column="29" selection-end-line="26" selection-end-column="29" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
           <folding>
             <element signature="e#8900#8908#0" expanded="true" />
             <element signature="e#8961#8969#0" expanded="true" />
             <element signature="e#14036#14037#0" expanded="true" />
             <element signature="e#14068#14069#0" expanded="true" />
           </folding>
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         </state>
@@ -1348,13 +1643,25 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
             <element signature="e#5222#5223#0" expanded="true" />
             <element signature="e#5266#5267#0" expanded="true" />
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
             <element signature="e#711#712#0" expanded="true" />
             <element signature="e#739#740#0" expanded="true" />
             <element signature="e#771#772#0" expanded="true" />
             <element signature="e#847#848#0" expanded="true" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           </folding>
         </state>
@@ -1393,12 +1700,18 @@
         <state relative-caret-position="180">
           <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
           <folding>
             <element signature="e#8900#8908#0" expanded="true" />
             <element signature="e#8961#8969#0" expanded="true" />
             <element signature="e#14036#14037#0" expanded="true" />
             <element signature="e#14068#14069#0" expanded="true" />
           </folding>
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         </state>
@@ -1417,13 +1730,25 @@
           <caret line="9" column="31" lean-forward="false" selection-start-line="9" selection-start-column="31" selection-end-line="9" selection-end-column="31" />
           <folding>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
             <element signature="e#5222#5223#0" expanded="true" />
             <element signature="e#5266#5267#0" expanded="true" />
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
             <element signature="e#711#712#0" expanded="true" />
             <element signature="e#739#740#0" expanded="true" />
             <element signature="e#771#772#0" expanded="true" />
             <element signature="e#847#848#0" expanded="true" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           </folding>
         </state>
@@ -1441,12 +1766,18 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
           <folding>
             <element signature="e#8900#8908#0" expanded="true" />
             <element signature="e#8961#8969#0" expanded="true" />
             <element signature="e#14036#14037#0" expanded="true" />
             <element signature="e#14068#14069#0" expanded="true" />
           </folding>
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         </state>
@@ -1497,12 +1828,20 @@
 =======
         <state relative-caret-position="112">
           <caret line="65" column="24" lean-forward="false" selection-start-line="65" selection-start-column="24" selection-end-line="65" selection-end-column="24" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         <state relative-caret-position="416">
           <caret line="357" column="0" lean-forward="false" selection-start-line="357" selection-start-column="0" selection-end-line="357" selection-end-column="0" />
@@ -1527,11 +1866,21 @@
         <state relative-caret-position="280">
           <caret line="14" column="33" lean-forward="true" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
 >>>>>>> Stashed changes
+=======
+        <state relative-caret-position="280">
+          <caret line="14" column="33" lean-forward="true" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
+>>>>>>> Stashed changes
+=======
+        <state relative-caret-position="280">
+          <caret line="14" column="33" lean-forward="true" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
+>>>>>>> Stashed changes
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/lex/Nfa.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         <state relative-caret-position="874">
           <caret line="47" column="6" lean-forward="false" selection-start-line="47" selection-start-column="6" selection-end-line="47" selection-end-column="6" />
@@ -1557,6 +1906,10 @@
             <element signature="e#2842#2843#0" expanded="true" />
           </folding>
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
         <state relative-caret-position="340">
           <caret line="23" column="5" lean-forward="true" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
           <folding />
@@ -1567,6 +1920,8 @@
     <entry file="file://$PROJECT_DIR$/src/lex/NfaToDfa.java">
       <provider selected="true" editor-type-id="text-editor">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
         <state relative-caret-position="232">
           <caret line="69" column="0" lean-forward="true" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
           <folding>
@@ -1574,6 +1929,10 @@
             <element signature="e#2776#2777#0" expanded="true" />
             <element signature="e#2818#2819#0" expanded="true" />
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
         <state relative-caret-position="180">
           <caret line="16" column="31" lean-forward="true" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
           <folding>
@@ -1581,6 +1940,12 @@
             <element signature="e#739#740#0" expanded="true" />
             <element signature="e#771#772#0" expanded="true" />
             <element signature="e#847#848#0" expanded="true" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           </folding>
         </state>
