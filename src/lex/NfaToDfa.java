@@ -63,7 +63,7 @@ public class NfaToDfa {
         nodeSets.add(epsilonClosure(set));
         for(int i=0;i < nodeSets.size();i++) {
             dfa.add(new NfaNode(i));
-            for(int j=0;j < nodeSets.get(j).nodes.size();j++) {
+            for(int j=0;j < nodeSets.get(i).nodes.size();j++) {
                 if(nodeSets.get(i).nodes.get(j).isTerminal())
                 {dfa.get(i).setTerminal(true);break;}
             }
