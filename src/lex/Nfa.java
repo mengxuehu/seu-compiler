@@ -98,7 +98,7 @@ class Nfa {
 
         Nfa nfa = stack.pop();
         assert stack.isEmpty();
-        nfa.nodes.getLast().setTerminal(action);
+        nfa.nodes.getLast().setAccepting(action);
         return nfa;
     }
 

@@ -1,7 +1,5 @@
 package lex;
 
-import javafx.util.Pair;
-
 import java.util.*;
 
 public class Dfa {
@@ -93,8 +91,8 @@ public class Dfa {
         for(int i=0;i < nodeSets.size();i++) {
             nodes.add(new DfaNode(i));
             for (int j = 0; j < nodeSets.get(i).nodes.size(); j++) {
-                if (nodeSets.get(i).nodes.get(j).isTerminal()) {
-                    //nodes.get(i).setTerminal(true);
+                if (nodeSets.get(i).nodes.get(j).isAccepting()) {
+                    //nodes.get(i).setAccepting(true);
                     break;
                 }
             }
