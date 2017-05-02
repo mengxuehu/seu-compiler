@@ -1,52 +1,44 @@
 package lex;
 
-import javafx.util.Pair;
-
 import java.util.*;
 
 
-class NfaNode {
-    private int index;
-    private boolean terminal = false;
-    private HashSet<Pair<String, Integer>> transitions = new HashSet<>();
-
-    NfaNode(int index) {
-        this.index = index;
-    }
-
-    NfaNode(int index, String edge, int target) {
-        this.index = index;
-        this.addTransition(edge, target);
-    }
-
-    int getIndex() {
-        return index;
-    }
-
-    boolean isTerminal() {
-        return terminal;
-    }
-
-    void setTerminal(boolean terminal) {
-        this.terminal = terminal;
-    }
-
-    void addTransition(String edge, int target) {
-        transitions.add(new Pair<>(edge, target));
-    }
-
-    Set<Pair<String, Integer>> getTransitions() {
-        return transitions;
-    }
-
-    void addAllTransitions(NfaNode node) {
-        this.transitions.addAll(node.transitions);
-    }
-}
-
-
 class Nfa {
-    private LinkedList<NfaNode> nodes = new LinkedList<>();
+
+    private class NfaNode extends FaNode<Set<Integer>> {
+        NfaNode(int index) {
+            super(index);
+        }
+
+        NfaNode(int index, String edge, int target) {
+            super(index);
+            this.addTransition(edge, target);
+        }
+
+        @Override
+        void addTransition(String edge, int target) {
+            if (this.transitions.containsKey(edge)) {
+                this.transitions.get(edge).add(target);
+            } else {
+                Set<Integer> tmp = new HashSet<>();
+                tmp.add(target);
+                this.transitions.put(edge, tmp);
+            }
+        }
+
+        @Override
+        void addAllTransitions(Map<String, Set<Integer>> transitions) {
+            for (Map.Entry<String, Set<Integer>> entry : transitions.entrySet()) {
+                if (this.transitions.containsKey(entry.getKey())) {
+                    this.transitions.get(entry.getKey()).addAll(entry.getValue());
+                } else {
+                    this.transitions.put(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+    }
+
+    private LinkedList<NfaNode> nodes;
     private static int indexes = 0;
     private static Map<String, String> escapeChars = null;
 
@@ -54,7 +46,32 @@ class Nfa {
         initializeEscapeChars();
     }
 
-    Nfa reToNfa(String[] postfixRe) {
+    ArrayList<FaNode<Set<Integer>>> construct(Map<Integer, String[]> postfixRes) {
+        nodes = new LinkedList<>();
+        indexes = 0;
+        nodes.add(new NfaNode(getNextIndex()));
+
+        for (Map.Entry<Integer, String[]> entry : postfixRes.entrySet()) {
+            Nfa nfa = reToNfa(entry.getValue(), entry.getKey());
+            nodes.getFirst().addTransition("", nfa.nodes.getFirst().getIndex());
+            nodes.addAll(nfa.nodes);
+        }
+
+        ArrayList<FaNode<Set<Integer>>> nfa = new ArrayList<>(nodes.size());
+        for (NfaNode node : nodes) {
+            nfa.set(node.getIndex(), node);
+        }
+        return nfa;
+    }
+
+    private Nfa(String operand) {
+        nodes = new LinkedList<>();
+        int begin = getNextIndex(), end = getNextIndex();
+        nodes.add(new NfaNode(begin, operand, end));
+        nodes.add(new NfaNode(end));
+    }
+
+    private Nfa reToNfa(String[] postfixRe, int action) {
         Deque<Nfa> stack = new LinkedList<>();
         for (String s : postfixRe) {
             switch (s.charAt(0)) {
@@ -81,28 +98,7 @@ class Nfa {
 
         Nfa nfa = stack.pop();
         assert stack.isEmpty();
-        nfa.nodes.getLast().setTerminal(true);
-        return nfa;
-    }
-
-    private Nfa(String operand) {
-        int begin = getNextIndex(), end = getNextIndex();
-        nodes.add(new NfaNode(begin, operand, end));
-        nodes.add(new NfaNode(end));
-    }
-
-    List<NfaNode> merge(Collection<Nfa> nfas) {
-        NfaNode start = new NfaNode(getNextIndex());
-        LinkedList<NfaNode> allNodes = new LinkedList<>();
-        allNodes.add(start);
-        for (Nfa nfa : nfas) {
-            start.addTransition("", nfa.nodes.getFirst().getIndex());
-            allNodes.addAll(nfa.nodes);
-        }
-        ArrayList<NfaNode> nfa = new ArrayList<>(allNodes.size());
-        for (NfaNode node : allNodes) {
-            nfa.set(node.getIndex(), node);
-        }
+        nfa.nodes.getLast().setTerminal(action);
         return nfa;
     }
 
@@ -139,7 +135,7 @@ class Nfa {
 
     private void concatenation(Nfa nfa) {
         NfaNode node = nfa.nodes.removeFirst();
-        this.nodes.getLast().addAllTransitions(node);
+        this.nodes.getLast().addAllTransitions(node.transitions);
         this.nodes.addAll(nfa.nodes);
     }
 
@@ -150,7 +146,7 @@ class Nfa {
             int[] target = {0x07, 0x08, 0x0C, 0x0A, 0x0D, 0x09, 0x0B, 0x5C, 0x27, 0x22, 0x3F};
             assert source.length == target.length;
             for (int i = 0; i < source.length; i++) {
-                escapeChars.put(source[i], String.valueOf((char)target[i]));
+                escapeChars.put(source[i], String.valueOf((char) target[i]));
             }
             escapeChars.put(ReParser.epsilon, "");
         }
