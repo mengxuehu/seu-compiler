@@ -134,7 +134,7 @@ class LexSourceParser {
 //            for (String s : rules.keySet()) {
 //                System.out.println();
 //                System.out.println("\t" + s);
-//                reParser.processRe(s);
+//                reParser.parse(s);
 //            }
 
 //            int i = 0;
@@ -143,7 +143,7 @@ class LexSourceParser {
 //                if (i == 0) {
 //                    System.out.println();
 //                    System.out.println("\t" + s);
-//                    reParser.processRe(s);
+//                    reParser.parse(s);
 //                    break;
 //                }
 //                i--;
