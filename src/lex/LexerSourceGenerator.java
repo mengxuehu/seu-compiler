@@ -1,7 +1,13 @@
 package lex;
 
-/**
- * Created by hu on 5/2/17.
- */
+
+import java.util.ArrayList;
+
 public class LexerSourceGenerator {
+    LexerSourceGenerator() {
+    }
+
+    void generate(ArrayList<FaNode<Integer>> dfa, ArrayList<String> ruleAction, String userRoutines) {
+    }
+
 }
