@@ -5,7 +5,7 @@ import java.util.Map;
 
 abstract class FaNode<V> {
     private int index;
-    private boolean terminal = false;
+    private boolean accepting = false;
     private Integer action;
 
     Map<String, V> transitions;
@@ -23,17 +23,17 @@ abstract class FaNode<V> {
         return index;
     }
 
-    boolean isTerminal() {
-        return terminal;
+    boolean isAccepting() {
+        return accepting;
     }
 
-    void setTerminal(int action) {
-        this.terminal = true;
+    void setAccepting(int action) {
+        this.accepting = true;
         this.action = action;
     }
 
-    void clearTerminal() {
-        this.terminal = false;
+    void clearAccepting() {
+        this.accepting = false;
         this.action = null;
     }
 
