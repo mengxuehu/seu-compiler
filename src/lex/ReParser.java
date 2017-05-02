@@ -325,7 +325,7 @@ public class ReParser {
         }
     }
 
-    public String[] processRe(String re) {
+    String[] parse(String re) {
         postfixRe.clear();
         String mediumRe = processBrackets(re);
         System.out.println(mediumRe);
@@ -345,13 +345,13 @@ public class ReParser {
     }
 
 
-    public ArrayList<String> getpostfixRe() {
+    ArrayList<String> getpostfixRe() {
         return postfixRe;
     }
 
     public static void main(String[] args) {
         ReParser ReParser = new ReParser();
         System.out.println("L?'(\\\\.|[^\\\\'\\n])+'");
-        ReParser.processRe("L?'(\\\\.|[^\\\\'\\n])+'");
+        ReParser.parse("L?'(\\\\.|[^\\\\'\\n])+'");
     }
 }
