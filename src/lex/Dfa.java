@@ -82,25 +82,30 @@ public class Dfa {
 
     ArrayList<FaNode<Integer>> nfaToDfa() {
         List<NodeSet> nodeSets = new LinkedList<>();
+        HashSet<String> edges = new HashSet<String>();
+        Map<String, Set<Integer>> trans;
+        int action;
+
         LinkedList<FaNode<Set<Integer>>> temp = new LinkedList<>();
-        Set<String> edges = new HashSet<String>();
         temp.add(nfa.get(0));
         NodeSet set = new NodeSet(temp);
         nodeSets.add(epsilonClosure(set));
 
         for(int i=0;i < nodeSets.size();i++) {
             nodes.add(new DfaNode(i));
-            for (int j = 0; j < nodeSets.get(i).nodes.size(); j++) {
-                if (nodeSets.get(i).nodes.get(j).isAccepting()) {
-                    //nodes.get(i).setAccepting(true);
-                    break;
-                }
-            }
+            edges.clear();
+            action = 9999;
 
             for (FaNode<Set<Integer>> node : nodeSets.get(i).nodes) {
-                Map<String, Set<Integer>> trans = node.getAllTransitions();
+                trans = node.getAllTransitions();
                 for (String edge : trans.keySet()) {
                     edges.add(edge);
+                }
+                if (node.isAccepting()) {
+                    if(node.getAction() < action) {
+                        action = node.getAction();
+                        nodes.get(i).setAccepting(action);
+                    }
                 }
             }
 
