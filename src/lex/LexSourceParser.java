@@ -61,7 +61,6 @@ class LexSourceParser {
                 }
 
                 if (inComment) {
-                    // copy comment to userRoutines file
                     if (line.startsWith("%}")) {
                         inComment = false;
                     }
@@ -124,7 +123,7 @@ class LexSourceParser {
                 }
 
             }
-            /* section user routines, copy all lines left to userRoutines file. */
+            /* section user routines, copy all lines left to target file. */
             while (line != null) {
                 userRoutines.append(line).append('\n');
                 line = br.readLine();
@@ -258,7 +257,7 @@ class LexSourceParser {
 
 
     public static void main(String[] args) {
-        String sourcePath = Paths.get(System.getProperty("user.dir"), "c99.l").toString();
+        String sourcePath = Paths.get(System.getProperty("user.dir"), "lex.l").toString();
         LexSourceParser lsp = new LexSourceParser();
         lsp.parse(sourcePath);
     }
