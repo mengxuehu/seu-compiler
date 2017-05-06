@@ -6,11 +6,14 @@ import java.util.List;
 class Production {
     private int head;
     private List<Integer> body;
-    private int index;
+    private Integer index = null;
 
-    Production(int head, List<Integer> body, int index) {
+    Production(int head, List<Integer> body) {
         this.head = head;
         this.body = body;
+    }
+
+    void setIndex(int index) {
         this.index = index;
     }
 

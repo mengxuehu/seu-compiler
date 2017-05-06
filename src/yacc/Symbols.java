@@ -8,6 +8,7 @@ class Symbols {
     private HashSet<Integer> terminalIndexes, nonTerminalIndexes;//, symbolIndexes;
     private HashMap<String, Integer> symbols;
     private int indexes;
+    private int startAug;
 
 
     Symbols() {
@@ -17,6 +18,7 @@ class Symbols {
 //        symbolIndexes = new HashSet<>();
         symbols = new HashMap<>();
         indexes = 1000;
+        startAug = indexes++;
     }
 
     int addTerminal(String terminal) {
@@ -28,7 +30,7 @@ class Symbols {
     }
 
     int addChar(char ch) {
-        return addSymbol(terminalIndexes, String.valueOf(ch), (int)ch);
+        return addSymbol(terminalIndexes, String.valueOf(ch), (int) ch);
     }
 
     boolean isTerminal(int terminalIndex) {
@@ -43,6 +45,10 @@ class Symbols {
     boolean contains(String symbol) {
 //        return symbolsArray.contains(symbol);
         return symbols.containsKey(symbol);
+    }
+
+    public int getStartAug() {
+        return startAug;
     }
 
     int getSymbolIndex(String symbol) {

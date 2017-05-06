@@ -5,7 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class YaccSourceParser {
     private static final int DECLARATIONS = 0, RULES = 1, PROGRAMS = 2;
@@ -14,8 +16,10 @@ public class YaccSourceParser {
     private Symbols symbols;
     private Integer start;
 
-    private List<Production> productions;
-    private List<String> productionActions;
+//    private List<Production> productions;
+//    private List<String> productionActions;
+
+    private Productions productions;
 
     String getPrograms() {
         return programs.toString();
@@ -29,13 +33,13 @@ public class YaccSourceParser {
         return start;
     }
 
-    List<Production> getProductions() {
+    Productions getProductions() {
         return productions;
     }
 
-    List<String> getProductionActions() {
-        return productionActions;
-    }
+//    List<String> getProductionActions() {
+//        return productionActions;
+//    }
 
     void parse(String sourcePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(sourcePath))) {
@@ -45,8 +49,9 @@ public class YaccSourceParser {
 
             programs = new StringBuilder();
             symbols = new Symbols();
-            productions = new LinkedList<>();
-            productionActions = new ArrayList<>();
+            productions = new Productions();
+//            productions = new LinkedList<>();
+//            productionActions = new ArrayList<>();
 
             boolean inComment = false, inRule = false;
             StringBuilder tempRule = new StringBuilder();
@@ -135,11 +140,11 @@ public class YaccSourceParser {
                                             symbols.getSymbolIndex(i) : symbols.addNonTerminal(i));
                                 }
                             }
-                            productions.add(new Production(headIdx, symbolList, productionActions.size()));
+                            Production production = new Production(headIdx, symbolList);
                             if (ruleBody.length == 2 && ruleBody[1].matches("\\s*\\S.*")) {
-                                productionActions.add(ruleBody[1]);
+                                productions.addProductionAndSetIndex(production, ruleBody[1]);
                             } else {
-                                productionActions.add("");
+                                productions.addProductionAndSetIndex(production, "");
                             }
                         }
 
@@ -160,6 +165,11 @@ public class YaccSourceParser {
                         if ((start = symbols.addNonTerminal(line.substring(7).trim())) == -1) {
                             start = null;
                             handleError("repeated declaration", lineNumber);
+                        } else {
+                            List<Integer> symbolList = new LinkedList<>();
+                            symbolList.add(start);
+                            productions.addAugmentedStartAndSetIndex(
+                                    new Production(symbols.getStartAug(), symbolList), "");
                         }
                     }
                 } else if (section == RULES) {
@@ -182,7 +192,7 @@ public class YaccSourceParser {
 
             System.out.println("------------------------------------------");
 
-            for (String s : productionActions) {
+            for (String s : productions.getActions()) {
                 System.out.println(s);
             }
 
@@ -194,7 +204,7 @@ public class YaccSourceParser {
 
             System.out.println("------------------------------------------");
 
-            for (Production production : productions) {
+            for (Production production : productions.getProductions()) {
                 System.out.println(production.getIndex());
                 System.out.println(production.getHead());
                 System.out.println(production.getBody());
