@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Productions {
-    List<Production> productions;
-    List<String> actions;
-    Integer start = null;
+    private List<Production> productions;
+    private List<String> actions;
+    private Integer start = null;
 
     Productions() {
         this.productions = new ArrayList<>();
