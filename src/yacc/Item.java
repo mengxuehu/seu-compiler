@@ -25,8 +25,12 @@ class Item implements Comparable<Item> {
         return position;
     }
 
-    void addAllLookaheadSymbols(Collection<Integer> lookaheadSymbols) {
-        this.lookaheadSymbols.addAll(lookaheadSymbols);
+    boolean addAllLookaheadSymbols(Collection<Integer> lookaheadSymbols) {
+        return this.lookaheadSymbols.addAll(lookaheadSymbols);
+    }
+
+    boolean addLookaheadSymbol(int lookaheadSymbol) {
+        return this.lookaheadSymbols.add(lookaheadSymbol);
     }
 
     Set<Integer> getLookaheadSymbols() {
