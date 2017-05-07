@@ -9,13 +9,26 @@ import java.util.Set;
  */
 public class LALR1 {
 
-    private ArrayList<UnionItemSet> itemSetOfLALR1 = new ArrayList<>();
+    private Set<LR1.ItemSet> itemSetOfLR1;
+    private Set<UnionItemSet> itemSetOfLALR1 = new HashSet<>();
+
+    LALR1(Set<LR1.ItemSet> itemSets) {
+        this.itemSetOfLR1 = itemSets;
+    }
 
     class UnionItemSet {
-        private ArrayList<Integer> unionItemSet = new ArrayList<>();
+        private ArrayList<LR1.ItemSet> unionItemSet = new ArrayList<>();
         private Set<String> lookaheadSymbols = new HashSet<>();
 
-        public void addItemSet(Integer state) {
+        public LR1.ItemSet getFirstItem() {
+            return unionItemSet.get(0);
+        }
+
+        public Set<String> getLookaheadSymbols() {
+            return lookaheadSymbols;
+        }
+
+        public void addItemSet(LR1.ItemSet state) {
             unionItemSet.add(state);
         }
 
@@ -23,9 +36,9 @@ public class LALR1 {
             lookaheadSymbols.add(symbol);
         }
 
-        public boolean findItemSet(Integer state) {
-            for (Integer stateOfItemSet : unionItemSet) {
-                if (state == stateOfItemSet) {
+        public boolean findItemSet(LR1.ItemSet state) {
+            for (LR1.ItemSet stateOfItemSet : unionItemSet) {
+                if (state.getState() == stateOfItemSet.getState()) {
                     return true;
                 }
             }
@@ -33,7 +46,28 @@ public class LALR1 {
         }
     }
 
-    public void generateLALR1(){
+    public void generateLALR1() {
 
+        //合并项集
+        boolean ifAdd = false;
+        for (LR1.ItemSet itemSet : itemSetOfLR1) {
+            ifAdd = false;
+            for (UnionItemSet unionItemSet : itemSetOfLALR1) {
+                if (itemSet.equalItemSet(unionItemSet.getFirstItem())) {
+                    unionItemSet.addItemSet(itemSet);
+                    ifAdd = true;
+                }
+            }
+            if (!ifAdd) {
+                UnionItemSet unionSet = new UnionItemSet();
+                unionSet.addItemSet(itemSet);
+                itemSetOfLALR1.add(unionSet);
+            }
+        }
+
+        //添加向前看符号
+        for (UnionItemSet unionItemSet : itemSetOfLALR1) {
+
+        }
     }
 }
