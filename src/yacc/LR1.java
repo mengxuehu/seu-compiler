@@ -23,12 +23,15 @@ class LR1 {
         this.productions = productions;
         this.symbols = symbols;
 
+        firsts = new HashMap<>();
+        tableGoto = new HashMap<>();
+        tableAction = new HashMap<>();
+
         constructFirsts();
         constructCollection();
     }
 
     private void constructFirsts() {
-        firsts = new HashMap<>();
         for (Integer terminal : symbols.getTerminalIndexes()) {
             firsts.put(terminal, new HashSet<>(terminal));
         }
