@@ -9,6 +9,7 @@ class Symbols {
     private HashMap<String, Integer> symbols;
     private int indexes;
     private int startAug;
+    private int end;
 
 
     Symbols() {
@@ -18,7 +19,9 @@ class Symbols {
 //        symbolIndexes = new HashSet<>();
         symbols = new HashMap<>();
         indexes = 1000;
+
         startAug = indexes++;
+        end = indexes++;
     }
 
     int addTerminal(String terminal) {
@@ -47,8 +50,12 @@ class Symbols {
         return symbols.containsKey(symbol);
     }
 
-    public int getStartAug() {
+    int getStartAug() {
         return startAug;
+    }
+
+    int getEnd() {
+        return end;
     }
 
     int getSymbolIndex(String symbol) {
