@@ -9,40 +9,60 @@ import java.util.Set;
  */
 public class LALR1 {
 
-    private Set<LR1.ItemSet> itemSetOfLR1;
+    private Set<ItemSet> itemSetOfLR1;
     private Set<UnionItemSet> itemSetOfLALR1 = new HashSet<>();
 
-    LALR1(Set<LR1.ItemSet> itemSets) {
+    LALR1(Set<ItemSet> itemSets) {
         this.itemSetOfLR1 = itemSets;
     }
 
     class UnionItemSet {
-        private ArrayList<LR1.ItemSet> unionItemSet = new ArrayList<>();
-        private Set<String> lookaheadSymbols = new HashSet<>();
+        private int state;
+        private ArrayList<ItemSet> unionItemSet = new ArrayList<>();
+        private ArrayList<Set<Integer>> lookaheadSymbols = new ArrayList<>();
 
-        public LR1.ItemSet getFirstItem() {
+        public ItemSet getFirstItem() {
             return unionItemSet.get(0);
         }
 
-        public Set<String> getLookaheadSymbols() {
+        public ArrayList<Set<Integer>> getLookaheadSymbols() {
             return lookaheadSymbols;
         }
 
-        public void addItemSet(LR1.ItemSet state) {
+        public void addItemSet(ItemSet state) {
             unionItemSet.add(state);
+            if (lookaheadSymbols.isEmpty()){
+                for (Item item : state.getItems()) {
+                    lookaheadSymbols.add(item.getLookaheadSymbols());
+                }
+            } else {
+                int i = 0;
+                for (Item item : state.getItems()) {
+                    for (Integer integerSymbols : item.getLookaheadSymbols()) {
+                        if (!lookaheadSymbols.get(i).contains(integerSymbols)){
+                            lookaheadSymbols.get(i).add(integerSymbols);
+                        }
+                    }
+
+                }
+            }
         }
 
-        public void addLookaheadSymbols(String symbol) {
-            lookaheadSymbols.add(symbol);
-        }
-
-        public boolean findItemSet(LR1.ItemSet state) {
-            for (LR1.ItemSet stateOfItemSet : unionItemSet) {
+        public boolean findItemSet(ItemSet state) {
+            for (ItemSet stateOfItemSet : unionItemSet) {
                 if (state.getState() == stateOfItemSet.getState()) {
                     return true;
                 }
             }
             return false;
+        }
+
+        public int getState() {
+            return state;
+        }
+
+        public void setState(int state) {
+            this.state = state;
         }
     }
 
@@ -50,7 +70,8 @@ public class LALR1 {
 
         //合并项集
         boolean ifAdd = false;
-        for (LR1.ItemSet itemSet : itemSetOfLR1) {
+        int state = 0;
+        for (ItemSet itemSet : itemSetOfLR1) {
             ifAdd = false;
             for (UnionItemSet unionItemSet : itemSetOfLALR1) {
                 if (itemSet.equalItemSet(unionItemSet.getFirstItem())) {
