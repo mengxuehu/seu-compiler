@@ -247,5 +247,16 @@ class LR1 {
             result = 31 * result + (items != null ? items.hashCode() : 0);
             return result;
         }
+
+        public boolean equalItemSet(ItemSet itemSet) {
+
+            Iterator<Item> il = items.iterator(), ir = itemSet.items.iterator();
+            while (il.hasNext()) {
+                if (il.next().compareTo(ir.next()) != 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
