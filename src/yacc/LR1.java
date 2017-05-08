@@ -29,6 +29,7 @@ class LR1 {
 
         constructFirsts();
         constructCollection();
+        constructAction();
     }
 
     private void constructFirsts() {
@@ -80,7 +81,7 @@ class LR1 {
         for (int i = 0; i < tmpCollection.size(); i++) {
             for (Integer j : symbols.getSymbolIndexes()) {
                 if (symbols.getEnd() != j) {
-                    ItemSet itemSet = tmpCollection.get(i).goto_(j, productions);
+                    ItemSet itemSet = tmpCollection.get(i).goto_(j, productions, symbols, firsts);
                     if (itemSet == null) {
                         continue;
                     }
@@ -110,15 +111,57 @@ class LR1 {
         }
     }
 
-    public Set<ItemSet> getCollection() {
+    private void constructAction() {
+        for (ItemSet itemSet : collection) {
+            for (Item item : itemSet.getItems()) {
+                Production production = productions.getProduction(item.getProductionIndex());
+
+                // reduce or accept
+                if (item.getPosition() == production.getBody().size()) {
+                    if (production.getHead() == symbols.getStartAug()
+                            && item.getLookaheadSymbols().contains(symbols.getEnd())) {
+                        Pair<Integer, Integer> key = new Pair<>(itemSet.getState(), symbols.getEnd());
+                        Action acceptAction = new AcceptAction();
+                        if (exists(key)) {
+                            tableAction.put(key, acceptAction);
+                        }
+                    } else {
+                        Action reduceAction = new ReduceAction(item.getProductionIndex());
+                        for (Integer lookahead : item.getLookaheadSymbols()) {
+                            Pair<Integer, Integer> key = new Pair<>(itemSet.getState(), lookahead);
+                            if (exists(key)) {
+                                tableAction.put(key, reduceAction);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean exists(Pair<Integer, Integer> key) {
+        Action oldAction = tableAction.get(key);
+        if (oldAction != null) {
+            if (oldAction.getType() == ActionType.SHIFT) {
+                System.err.println("WARNING: shift/reduce conflict, shift will be taken");
+            } else {
+                System.err.println("WARNING: reduce/reduce conflict, the former reduce will be taken");
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    Set<ItemSet> getCollection() {
         return collection;
     }
 
-    public Map<Pair<Integer, Integer>, Integer> getTableGoto() {
+    Map<Pair<Integer, Integer>, Integer> getTableGoto() {
         return tableGoto;
     }
 
-    public Map<Pair<Integer, Integer>, Action> getTableAction() {
+    Map<Pair<Integer, Integer>, Action> getTableAction() {
         return tableAction;
     }
 
