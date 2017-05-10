@@ -33,10 +33,33 @@ public class Dfa {
 
     private ArrayList<FaNode<Set<Integer>>> nfa;
     private LinkedList<DfaNode> nodes;
+    private LinkedList<DfaNode> tempNodes;
 
     Dfa(ArrayList<FaNode<Set<Integer>>> nfa) {
         this.nfa = nfa;
         this.nodes = new LinkedList<>();
+        this.tempNodes = new LinkedList<>();
+    }
+
+    private void changeIndex(DfaNode node,int index) {
+        int index0 = node.getIndex();
+        Map<String,Integer> trans;
+        for (Dfa.DfaNode n : nodes) {
+            trans = n.getAllTransitions();
+            for (String edge : trans.keySet()) {
+                if(trans.get(edge) == index0) {
+                    n.getAllTransitions().replace(edge,index);
+                }
+            }
+        }
+        for (Dfa.DfaNode n : tempNodes) {
+            trans = n.getAllTransitions();
+            for (String edge : trans.keySet()) {
+                if(trans.get(edge) == index0) {
+                    n.getAllTransitions().replace(edge,index);
+                }
+            }
+        }
     }
 
     private NodeSet epsilonClosure(NodeSet set) {
@@ -119,6 +142,23 @@ public class Dfa {
                 } else {
                     nodes.get(i).addTransition(edge, nodeSets.indexOf(set));
                 }
+            }
+        }
+
+        //adjust sequence
+        int i = -1;
+        for (Dfa.DfaNode node : nodes) {
+            if(node.isAccepting()) {
+                nodes.remove(node);
+                changeIndex(node,i);
+                i--;
+                tempNodes.add(node);
+            }
+        }
+        nodes.addAll(tempNodes);
+        for (int j = 0;j < nodes.size();j++) {
+            if(nodes.get(j).getIndex() != j) {
+                changeIndex(nodes.get(j),j);
             }
         }
 
