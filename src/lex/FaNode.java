@@ -37,7 +37,7 @@ abstract class FaNode<V> {
         this.action = null;
     }
 
-    public Integer getAction() {
+    Integer getAction() {
         return action;
     }
 

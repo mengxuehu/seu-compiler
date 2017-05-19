@@ -57,9 +57,16 @@ class Nfa {
             nodes.addAll(nfa.nodes);
         }
 
-        ArrayList<FaNode<Set<Integer>>> nfa = new ArrayList<>(nodes.size());
+        ArrayList<FaNode<Set<Integer>>> nfa = new ArrayList<>(getIndexUpperBound());
+        for (int i = 0; i < getIndexUpperBound(); i++) {
+            nfa.add(null);
+        }
         for (NfaNode node : nodes) {
-            nfa.set(node.getIndex(), node);
+            if (nfa.get(node.getIndex()) == null) {
+                nfa.set(node.getIndex(), node);
+            } else {
+                System.err.println("error");
+            }
         }
         return nfa;
     }
@@ -104,6 +111,10 @@ class Nfa {
 
     private int getNextIndex() {
         return indexes++;
+    }
+
+    private int getIndexUpperBound() {
+        return indexes;
     }
 
     private void closure() {
