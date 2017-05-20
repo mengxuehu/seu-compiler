@@ -14,7 +14,6 @@ public class YaccSourceParser {
 
     private StringBuilder programs;
     private Symbols symbols;
-    private Integer start;
 
 //    private List<Production> productions;
 //    private List<String> productionActions;
@@ -29,10 +28,6 @@ public class YaccSourceParser {
         return symbols;
     }
 
-    Integer getStart() {
-        return start;
-    }
-
     Productions getProductions() {
         return productions;
     }
@@ -45,7 +40,6 @@ public class YaccSourceParser {
         try (BufferedReader br = new BufferedReader(new FileReader(sourcePath))) {
             int lineNumber = 0;
             int section = DECLARATIONS;
-            start = null;
 
             programs = new StringBuilder();
             symbols = new Symbols();
@@ -61,6 +55,7 @@ public class YaccSourceParser {
                 ++lineNumber;
                 // section user programs
                 if (section == PROGRAMS) {
+                    parseRule(line, tempRule, lineNumber);
                     break;
                 }
 
@@ -96,58 +91,7 @@ public class YaccSourceParser {
                         tempRule.append(line).append("\n");
                         continue;
                     } else {
-                        String[] ruleLines = tempRule.toString().split("[\t\n ]+:[\t\n ]+", 2);
-                        if (ruleLines.length != 2) {
-                            handleError("invalid rule", lineNumber - 1);
-                        }
-
-                        String[] ruleHead = ruleLines[0].split("[\t\n ]+", 2);
-                        if (ruleHead.length != 1) {
-                            handleError("invalid rule", lineNumber - 1);
-                        }
-                        int headIdx;
-                        if ((headIdx = symbols.addNonTerminal(ruleHead[0].trim())) == -1) {
-                            headIdx = symbols.getSymbolIndex(ruleHead[0].trim());
-                        }
-
-                        int posSemicolon = ruleLines[1].lastIndexOf(";");
-                        if (posSemicolon == -1) {
-                            handleError("invalid rule", lineNumber - 1);
-                        }
-                        String ruleBodys[] = ruleLines[1].substring(0, posSemicolon).split("\\s+\\|\\s+");
-                        for (String s : ruleBodys) {
-                            String[] ruleBody = s.replaceFirst("^\\s+", "")
-                                    .replaceFirst("\\s+$", "").split("\t+", 2);
-                            if (ruleBody.length > 2) {
-                                handleError("invalid rule", lineNumber - 1);
-                            }
-
-                            String[] ruleBodyLeft = ruleBody[0].split(" +");
-                            List<Integer> symbolList = new LinkedList<>();
-                            for (String i : ruleBodyLeft) {
-                                if (i.isEmpty()) {
-                                    continue;
-                                }
-                                if (i.charAt(0) == '\'') {
-                                    if (i.length() != 3 || i.charAt(2) != '\'') {
-                                        handleError("invalid rule", lineNumber - 1);
-                                    }
-                                    String temp = String.valueOf(i.charAt(1));
-                                    symbolList.add(symbols.contains(temp) ?
-                                            symbols.getSymbolIndex(temp) : symbols.addChar(i.charAt(1)));
-                                } else {
-                                    symbolList.add(symbols.contains(i) ?
-                                            symbols.getSymbolIndex(i) : symbols.addNonTerminal(i));
-                                }
-                            }
-                            Production production = new Production(headIdx, symbolList);
-                            if (ruleBody.length == 2 && ruleBody[1].matches("\\s*\\S.*")) {
-                                productions.addProductionAndSetIndex(production, ruleBody[1]);
-                            } else {
-                                productions.addProductionAndSetIndex(production, "");
-                            }
-                        }
-
+                        parseRule(line, tempRule, lineNumber);
                         inRule = false;
                     }
                 }
@@ -162,8 +106,8 @@ public class YaccSourceParser {
                             symbols.addTerminal(dec);
                         }
                     } else if (line.startsWith("%start ")) {
-                        if ((start = symbols.addNonTerminal(line.substring(7).trim())) == -1) {
-                            start = null;
+                        int start = symbols.addNonTerminal(line.substring(7).trim());
+                        if (start == -1) {
                             handleError("repeated declaration", lineNumber);
                         } else {
                             List<Integer> symbolList = new LinkedList<>();
@@ -188,33 +132,87 @@ public class YaccSourceParser {
                 ++lineNumber;
             }
 
-            System.out.println(programs.toString());
-
-            System.out.println("------------------------------------------");
-
-            for (String s : productions.getActions()) {
-                System.out.println(s);
-            }
-
-            System.out.println("------------------------------------------");
+//            System.out.println(programs.toString());
 //
-            for (Map.Entry<String, Integer> entry : symbols.getSymbols().entrySet()) {
-                System.out.println(entry.getKey() + "----->" + entry.getValue());
-            }
-
-            System.out.println("------------------------------------------");
-
-            for (Production production : productions.getProductions()) {
-                System.out.println(production.getIndex());
-                System.out.println(production.getHead());
-                System.out.println(production.getBody());
-                System.out.println();
-            }
+//            System.out.println("------------------------------------------");
+//
+//            for (String s : productions.getActions()) {
+//                System.out.println(s);
+//            }
+//
+//            System.out.println("------------------------------------------");
+////
+//            for (Map.Entry<String, Integer> entry : symbols.getSymbols().entrySet()) {
+//                System.out.println(entry.getKey() + "----->" + entry.getValue());
+//            }
+//
+//            System.out.println("------------------------------------------");
+//
+//            for (Production production : productions.getProductions()) {
+//                System.out.println(production.getIndex());
+//                System.out.println(production.getHead());
+//                System.out.println(production.getBody());
+//                System.out.println();
+//            }
 
         } catch (FileNotFoundException e) {
             handleError("can't open file \"" + sourcePath + "\" to read", 0);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void parseRule(String line, StringBuilder tempRule, int lineNumber) {
+        String[] ruleLines = tempRule.toString().split("[\t\n ]+:[\t\n ]+", 2);
+        if (ruleLines.length != 2) {
+            handleError("invalid rule", lineNumber - 1);
+        }
+
+        String[] ruleHead = ruleLines[0].split("[\t\n ]+", 2);
+        if (ruleHead.length != 1) {
+            handleError("invalid rule", lineNumber - 1);
+        }
+        int headIdx;
+        if ((headIdx = symbols.addNonTerminal(ruleHead[0].trim())) == -1) {
+            headIdx = symbols.getSymbolIndex(ruleHead[0].trim());
+        }
+
+        int posSemicolon = ruleLines[1].lastIndexOf(";");
+        if (posSemicolon == -1) {
+            handleError("invalid rule", lineNumber - 1);
+        }
+        String ruleBodys[] = ruleLines[1].substring(0, posSemicolon).split("\\s+\\|\\s+");
+        for (String s : ruleBodys) {
+            String[] ruleBody = s.replaceFirst("^\\s+", "")
+                    .replaceFirst("\\s+$", "").split("\t+", 2);
+            if (ruleBody.length > 2) {
+                handleError("invalid rule", lineNumber - 1);
+            }
+
+            String[] ruleBodyLeft = ruleBody[0].split(" +");
+            List<Integer> symbolList = new LinkedList<>();
+            for (String i : ruleBodyLeft) {
+                if (i.isEmpty()) {
+                    continue;
+                }
+                if (i.charAt(0) == '\'') {
+                    if (i.length() != 3 || i.charAt(2) != '\'') {
+                        handleError("invalid rule", lineNumber - 1);
+                    }
+                    String temp = String.valueOf(i.charAt(1));
+                    symbolList.add(symbols.contains(temp) ?
+                            symbols.getSymbolIndex(temp) : symbols.addChar(i.charAt(1)));
+                } else {
+                    symbolList.add(symbols.contains(i) ?
+                            symbols.getSymbolIndex(i) : symbols.addNonTerminal(i));
+                }
+            }
+            Production production = new Production(headIdx, symbolList);
+            if (ruleBody.length == 2 && ruleBody[1].matches("\\s*\\S.*")) {
+                productions.addProductionAndSetIndex(production, ruleBody[1]);
+            } else {
+                productions.addProductionAndSetIndex(production, "");
+            }
         }
     }
 
