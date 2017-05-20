@@ -34,7 +34,10 @@ class LR1 {
 
     private void constructFirsts() {
         for (Integer terminal : symbols.getTerminalIndexes()) {
-            firsts.put(terminal, new HashSet<>(terminal));
+            multiMapPut(firsts, terminal, terminal);
+//            HashSet<Integer> tmp = new HashSet<>(1);
+//            tmp.add(terminal);
+//            HashSet<Integer> put = firsts.put(terminal, tmp);
         }
 
         // prodsBeginWith, productions whose body begins with a non-terminal
@@ -56,20 +59,25 @@ class LR1 {
         HashMap<Integer, HashSet<Integer>> tmpChanged = new HashMap<>();
         while (!changed.isEmpty()) {
             for (Map.Entry<Integer, HashSet<Integer>> entry : changed.entrySet()) {
-                for (Integer head : prodsBeginWith.get(entry.getKey())) {
-                    for (Integer first : entry.getValue()) {
-                        multiMapPut(firsts, head, first);
-                        multiMapPut(tmpChanged, head, first);
+                if (prodsBeginWith.containsKey(entry.getKey())) {
+                    for (Integer head : prodsBeginWith.get(entry.getKey())) {
+                        for (Integer first : entry.getValue()) {
+                            Set tmp = firsts.get(head);
+                            if (tmp == null || !tmp.contains(first)) {
+                                multiMapPut(firsts, head, first);
+                                multiMapPut(tmpChanged, head, first);
+                            }
+                        }
                     }
                 }
             }
             changed = tmpChanged;
-            tmpChanged.clear();
+            tmpChanged = new HashMap<>();
         }
     }
 
     private void constructCollection() {
-        collection = new TreeSet<>();
+        collection = new HashSet<>();
         ItemSet initItemSet = new ItemSet(ItemSetStateIndexes++);
         Item item = new Item(productions.getStart().getIndex(), 0);
         item.addLookaheadSymbol(symbols.getEnd());
@@ -79,6 +87,7 @@ class LR1 {
 
         ArrayList<ItemSet> tmpCollection = new ArrayList<>(collection);
         for (int i = 0; i < tmpCollection.size(); i++) {
+            System.out.println(tmpCollection.size());
             for (Integer j : symbols.getSymbolIndexes()) {
                 if (symbols.getEnd() != j) {
                     ItemSet itemSet = tmpCollection.get(i).goto_(j, productions, symbols, firsts);

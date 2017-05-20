@@ -2,7 +2,7 @@ package yacc;
 
 import java.util.*;
 
-class ItemSet implements Comparable<ItemSet>{
+class ItemSet implements Comparable<ItemSet> {
     private Integer state;
     private Set<Item> items;
 
@@ -57,18 +57,28 @@ class ItemSet implements Comparable<ItemSet>{
                     continue;
                 }
                 HashSet<Integer> tmpLookaheadSymbols = new HashSet<>();
+//                if (item.getPosition() == body.size() - 1) {
+//                    item.getLookaheadSymbols();
+//                } else {
+//                    System.out.println(body.get(item.getPosition() + 1));
+//                    for (Map.Entry<String, Integer> entry : symbols.getSymbols().entrySet()) {
+//                        if (entry.getValue().equals(body.get(item.getPosition() + 1))) {
+//                            System.out.println(entry.getKey());
+//                        }
+//                    }
+//                    System.out.println(firsts.get(body.get(item.getPosition() + 1)));
+//                }
                 tmpLookaheadSymbols.addAll((item.getPosition() == body.size() - 1)
                         ? item.getLookaheadSymbols()
                         : firsts.get(body.get(item.getPosition() + 1)));
                 for (Production production : productions.getProductions()) {
-                    if (production.getHead() != nonTerminal) {
-                        continue;
-                    }
-                    Item item1 = new Item(production.getIndex(), 0);
-                    item1.addAllLookaheadSymbols(tmpLookaheadSymbols);
-                    if (addItem(item1)) {
-                        tmpItemSet.add(item1);
-                        flag = true;
+                    if (production.getHead() == nonTerminal) {
+                        Item item1 = new Item(production.getIndex(), 0);
+                        item1.addAllLookaheadSymbols(tmpLookaheadSymbols);
+                        if (addItem(item1)) {
+                            tmpItemSet.add(item1);
+                            flag = true;
+                        }
                     }
                 }
             }
@@ -77,7 +87,7 @@ class ItemSet implements Comparable<ItemSet>{
 
     ItemSet goto_(int symbol, Productions productions, Symbols symbols, Map<Integer, HashSet<Integer>> firsts) {
         ItemSet itemSet = new ItemSet();
-        for (Item item : itemSet.items) {
+        for (Item item : this.items) {
             List<Integer> body = productions.getProductions().get(item.getProductionIndex()).getBody();
             if (item.getPosition() == body.size() || body.get(item.getPosition()) != symbol) {
                 continue;
@@ -118,9 +128,7 @@ class ItemSet implements Comparable<ItemSet>{
 
     @Override
     public int hashCode() {
-        int result = state;
-        result = 31 * result + (items != null ? items.hashCode() : 0);
-        return result;
+        return items != null ? items.hashCode() : 0;
     }
 
     boolean equalItemSet(ItemSet itemSet) {

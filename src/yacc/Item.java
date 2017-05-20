@@ -58,7 +58,7 @@ class Item implements Comparable<Item> {
         } else if (lookaheadSymbols.size() > o.lookaheadSymbols.size()) {
             return 1;
         } else {
-            Iterator<Integer> il = lookaheadSymbols.iterator(), ir = lookaheadSymbols.iterator();
+            Iterator<Integer> il = lookaheadSymbols.iterator(), ir = o.lookaheadSymbols.iterator();
             while (il.hasNext()) {
                 Integer l = il.next(), r = ir.next();
                 if (l < r) {

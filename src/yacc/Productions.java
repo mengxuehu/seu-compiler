@@ -14,6 +14,7 @@ class Productions {
     }
 
     void addProductionAndSetIndex(Production production, String action) {
+        production.setIndex(productions.size());
         productions.add(production);
         actions.add(action);
     }
