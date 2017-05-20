@@ -87,7 +87,6 @@ class LR1 {
 
         ArrayList<ItemSet> tmpCollection = new ArrayList<>(collection);
         for (int i = 0; i < tmpCollection.size(); i++) {
-            System.out.println(tmpCollection.size());
             for (Integer j : symbols.getSymbolIndexes()) {
                 if (symbols.getEnd() != j) {
                     ItemSet itemSet = tmpCollection.get(i).goto_(j, productions, symbols, firsts);
