@@ -52,6 +52,7 @@ class LexSourceParser {
                 ++lineNumber;
                 // section user routines
                 if (section == USER_ROUTINES) {
+                    parseRule(ruleAction, ruleDef);
                     break;
                 }
 
@@ -87,10 +88,7 @@ class LexSourceParser {
                         ruleAction.append(line).append('\n');
                         continue;
                     } else {
-                        if (ruleAction.toString().isEmpty()) {
-                            handleError("null rule action", lineNumber - 1);
-                        }
-                        rules.put(ruleDef, ruleAction.toString());
+                        parseRule(ruleAction, ruleDef);
                         inRule = false;
                     }
                 }
@@ -147,15 +145,15 @@ class LexSourceParser {
 //                }
 //                i--;
 //            }
-            for (String s : definitions.keySet()) {
-                System.out.println(s + "->" + definitions.get(s));
-            }
-
-            for (String s : rules.keySet()) {
-                System.out.println(s + "->" + rules.get(s));
-            }
-
-            System.out.println(userRoutines.toString());
+//            for (String s : definitions.keySet()) {
+//                System.out.println(s + "->" + definitions.get(s));
+//            }
+//
+//            for (String s : rules.keySet()) {
+//                System.out.println(s + "->" + rules.get(s));
+//            }
+//
+//            System.out.println(userRoutines.toString());
         } catch (FileNotFoundException e) {
             handleError("can't open file \"" + sourcePath + "\" to read", 0);
         } catch (IOException e) {
@@ -166,6 +164,13 @@ class LexSourceParser {
 
     private boolean isBlank(char c) {
         return c == '\t' || c == ' ';
+    }
+
+    private void parseRule(StringBuilder ruleAction, String ruleDef) {
+        if (ruleAction.toString().isEmpty()) {
+            handleError("null rule action", lineNumber - 1);
+        }
+        rules.put(ruleDef, ruleAction.toString());
     }
 
     private String replaceQuotesWithRe(String s) {
@@ -257,7 +262,7 @@ class LexSourceParser {
 
 
     public static void main(String[] args) {
-        String sourcePath = Paths.get(System.getProperty("user.dir"), "lex.l").toString();
+        String sourcePath = Paths.get(System.getProperty("user.dir"), "c99.l").toString();
         LexSourceParser lsp = new LexSourceParser();
         lsp.parse(sourcePath);
     }
