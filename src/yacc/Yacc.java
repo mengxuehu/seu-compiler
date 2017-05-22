@@ -25,6 +25,9 @@ public class Yacc {
         lalr1.generateLALR1(lr1.getCollection());
         Map<Pair<Integer, Integer>, Integer> tableGotoLALR1 = lalr1.getTableGoto();
         Map<Pair<Integer, Integer>, Action> tableActionLALR1 = lalr1.getTableAction();
+
+        ParserSourceGenerator parserSourceGenerator = new ParserSourceGenerator();
+        parserSourceGenerator.generate(tableGotoLALR1, tableActionLALR1, productions, symbols, programs);
     }
 
     public static void main(String[] args) {
