@@ -38,7 +38,9 @@ public class LALR1 {
     	
     }
     
-    public boolean generateLALR1(Set<ItemSet> itemSetOfLR1) {
+    public boolean generateLALR1(Set<ItemSet> itemSetOfLR1, Map<Pair<Integer, Integer>, Integer> tableGoto, Map<Pair<Integer, Integer>, Action> tableAction) {
+        this.tableAction = tableAction;
+        this.tableGoto = tableGoto;
 		unionItemSet(itemSetOfLR1);
 //        System.out.println(itemSetOfLALR1.size());
         return generateTable(itemSetOfLR1);
@@ -62,7 +64,7 @@ public class LALR1 {
 				newTableGoto.put(new Pair<Integer, Integer>(gotoPairKey, gotoPairVal), tableGoto.get(gotoPair));
 			}
 		}
-    	
+    	tableGoto = newTableGoto;
     	for (Pair<Integer, Integer> actionPair : tableAction.keySet()) {
     		Integer actionPairKey = 0;
 			Integer actionPairVal = 0;
@@ -91,6 +93,7 @@ public class LALR1 {
 				
 			}
 		}
+		tableAction = newTableAction;
     	
 		return false;
 	}
