@@ -4,7 +4,7 @@ package yacc;
 import java.util.List;
 
 class Production {
-    private int head;
+    private Integer head;
     private List<Integer> body;
     private Integer index = null;
 
@@ -17,11 +17,11 @@ class Production {
         this.index = index;
     }
 
-    int getHead() {
+    Integer getHead() {
         return head;
     }
 
-    int getIndex() {
+    Integer getIndex() {
         return index;
     }
 

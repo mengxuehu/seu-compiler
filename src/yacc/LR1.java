@@ -166,6 +166,12 @@ class LR1 {
     }
 
     Map<Pair<Integer, Integer>, Integer> getTableGoto() {
+//        for (Map.Entry<Pair<Integer, Integer>, Integer> entry : tableGoto.entrySet()) {
+//            if (entry.getValue() == null) {
+//                System.out.println("error");
+//                System.exit(10);
+//            }
+//        }
         return tableGoto;
     }
 
