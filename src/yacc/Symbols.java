@@ -33,12 +33,14 @@ class Symbols {
         return addSymbol(terminalIndexes, String.valueOf(ch), (int) ch);
     }
 
+    // TODO? end
     boolean isTerminal(int symbolIndex) {
-        return symbolIndex == end || terminalIndexes.contains(symbolIndex);
+        return terminalIndexes.contains(symbolIndex);
     }
 
+    // TODO? startAug
     boolean isNonTerminal(int symbolIndex) {
-        return !isTerminal(symbolIndex);
+        return nonTerminalIndexes.contains(symbolIndex);
     }
 
 
