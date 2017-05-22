@@ -20,10 +20,6 @@ class MiniDfa {
             members.add(mem);
         }
 
-        public void addAllMembers(HashSet<Integer> mem) {
-            this.members = mem;
-        }
-
         public void addDestination(Integer des) {
             destination.add(des);
         }
@@ -65,9 +61,18 @@ class MiniDfa {
             return true;
         }
 
+        public HashSet<Integer> getAccept() {
+            HashSet<Integer> accept = new HashSet<>();
+            for (Integer integer : destination) {
+                if (integer >= acceptingStartState)
+                    accept.add(integer);
+            }
+            return accept;
+        }
+
     }
 
-    private void miniDfa() {
+    private LinkedList<NonTerminalSet> divideDfa() {
         LinkedList<NonTerminalSet> oldSet = new LinkedList<>();
         LinkedList<NonTerminalSet> newSet = new LinkedList<>();
         NonTerminalSet initSet = new NonTerminalSet();
@@ -94,7 +99,7 @@ class MiniDfa {
                     if (newSet.isEmpty()) {
                         /*
                          * 遍历dfa的state，记录到达的目的地，加入到addDes()中
-						 * 
+						 *
 						 */
                         newNonTerminalSet.setState(i);
                         for (Integer des : trans.values()) {
@@ -116,7 +121,7 @@ class MiniDfa {
                          * 使用HashSet<>记录目的地
 						 * 查找是否有目的地相同的state，如果有直接addMembers()
 						 * 遍历dfa的state，记录到达的目的地，加入到addDes()中
-						 * 
+						 *
 						 */
                         for (Integer des : trans.values()) {
                             if (des >= acceptingStartState) {
@@ -153,13 +158,22 @@ class MiniDfa {
                 newSet.clear();
             }
         }
+        return newSet;
+    }
+
+    public void miniDfa() {
+        //get divide set
+        LinkedList<NonTerminalSet> newSet = divideDfa();
 
 		/*创建最小化DFA*/
-        i = 0;
+        int i = 0, j, state;
+        int numNonAccept = newSet.size();
         ArrayList<FaNode<Integer>> miniDfa = new ArrayList<>();
+        //join non-accept state
         for (NonTerminalSet set1 : newSet) {
             j = 0;
             state = set1.getMembers().iterator().next();
+            Map<String, Integer> allDes = dfa.get(state).getAllTransitions();
             FaNode<Integer> newDfaNode = new FaNode<Integer>(i) {
 
                 @Override
@@ -174,6 +188,16 @@ class MiniDfa {
 
                 }
             };
+
+            //solve accept
+            for (Integer integer : set1.getAccept()) {
+                for (Map.Entry<String, Integer> entry : allDes.entrySet()) {
+                    if (entry.getValue() == integer) {
+                        newDfaNode.addTransition(entry.getKey(), integer - numNonAccept);
+                    }
+                }
+            }
+            //solve nonaccept
             for (NonTerminalSet set2 : newSet) {
                 /*
                  * 查找set1中有没有相应目的地，如果有就遍历set2的members
@@ -181,7 +205,6 @@ class MiniDfa {
 				 */
                 if (set1.findDestination(set2.getState())) {
                     for (Integer member : set2.getMembers()) {
-                        Map<String, Integer> allDes = dfa.get(state).getAllTransitions();
                         for (Map.Entry<String, Integer> entry : allDes.entrySet()) {
                             if (entry.getValue() == member) {
                                 newDfaNode.addTransition(entry.getKey(), j);
@@ -194,10 +217,10 @@ class MiniDfa {
             miniDfa.add(newDfaNode);
             i++;
         }
-
-        for (i = acceptingStartState; i < acceptingStartState + numOfAccepting; i++) {
-            Map<String, Integer> allDes = dfa.get(i).getAllTransitions();
-            FaNode<Integer> newDfaNode = new FaNode<Integer>(j) {
+        //join accept state
+        for (j = acceptingStartState; j < acceptingStartState + numOfAccepting; j++) {
+            Map<String, Integer> allDes = dfa.get(j).getAllTransitions();
+            FaNode<Integer> newDfaNode = new FaNode<Integer>(i) {
 
                 @Override
                 void addTransition(String edge, int target) {
@@ -211,15 +234,16 @@ class MiniDfa {
 
                 }
             };
+            newDfaNode.setAccepting(dfa.get(j).getAction());
             for (Map.Entry<String, Integer> entry : allDes.entrySet()) {
                 for (NonTerminalSet set : newSet) {
-                    if (set.findMembers(i)) {
+                    if (set.findMembers(j)) {
                         newDfaNode.addTransition(entry.getKey(), i);
                     }
                 }
             }
             miniDfa.add(newDfaNode);
-            j++;
+            i++;
         }
 
         dfa = miniDfa;

@@ -34,16 +34,14 @@ public class LALR1 {
 		this.tableAction = tableAction;
 	}
 
-	
-    
     LALR1() {
     	
     }
     
     public boolean generateLALR1(Set<ItemSet> itemSetOfLR1) {
 		unionItemSet(itemSetOfLR1);
-		generateTable(itemSetOfLR1);
-		return false;
+//        System.out.println(itemSetOfLALR1.size());
+        return generateTable(itemSetOfLR1);
 	}
     
     private boolean generateTable(Set<ItemSet> itemSetOfLR1) {
@@ -80,14 +78,15 @@ public class LALR1 {
 				Pair<Integer, Integer> action = new Pair<Integer, Integer>(actionPairKey, actionPairVal);
 				for (Pair<Integer, Integer> exist : newTableAction.keySet()) {
 					if (exist.equals(action)) {
-						//冲突处理代码
+						//TODO 冲突处理代码
+
 						conflict = true;
 					}
 				}
 				if (!conflict) {
 					newTableGoto.put(action, tableGoto.get(actionPair));
 				} else {
-					//冲突解决添加或修改
+					//TODO 冲突解决添加或修改
 				}
 				
 			}
@@ -99,7 +98,7 @@ public class LALR1 {
     private void unionItemSet(Set<ItemSet> itemSetOfLR1) {
 
         //合并项集
-        boolean ifAdd = false;
+        boolean ifAdd = true;
         int state = 0;
         for (ItemSet itemSet : itemSetOfLR1) {
             ifAdd = false;
