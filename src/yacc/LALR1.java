@@ -65,15 +65,23 @@ public class LALR1 {
                 if (isFind)
                     break;
             }
+            isFind = false;
     		for (UnionItemSet unionItemSet : itemSetOfLALR1) {
 				for (ItemSet itemSet : unionItemSet.getAllItemSet()) {
 					if (itemSet.getState() == gotoPair.getKey()) {
 						gotoPairKey = unionItemSet.getState();
+						isFind = true;
 						break;
 					}
 				}
-				newTableGoto.put(new Pair<>(gotoPairKey, gotoPairVal), tableGotoValue);
+				if (isFind)
+				    break;
 			}
+			if (newTableGoto.containsKey(new Pair<>(gotoPairKey, gotoPairVal)) &&
+                    newTableGoto.get(new Pair<>(gotoPairKey, gotoPairVal)) != tableGotoValue) {
+                System.err.println("error LALR1");
+            }
+            newTableGoto.put(new Pair<>(gotoPairKey, gotoPairVal), tableGotoValue);
 		}
     	tableGoto = newTableGoto;
     	for (Pair<Integer, Integer> actionPair : tableAction.keySet()) {
