@@ -49,10 +49,22 @@ public class LALR1 {
     private boolean generateTable(Set<ItemSet> itemSetOfLR1) {
     	Map<Pair<Integer, Integer>, Integer> newTableGoto = new HashMap<>();
         Map<Pair<Integer, Integer>, Action> newTableAction = new HashMap<>();
-        
     	for (Pair<Integer, Integer> gotoPair : tableGoto.keySet()) {
     		Integer gotoPairKey = 0;
-			Integer gotoPairVal = 0;
+			Integer gotoPairVal = gotoPair.getValue();
+			Integer tableGotoValue = 0;
+			boolean isFind = false;
+            for (UnionItemSet unionItemSet : itemSetOfLALR1) {
+                for (ItemSet itemSet : unionItemSet.getAllItemSet()) {
+                    if (itemSet.getState() == tableGoto.get(gotoPair)) {
+                        tableGotoValue = unionItemSet.getState();
+                        isFind = true;
+                        break;
+                    }
+                }
+                if (isFind)
+                    break;
+            }
     		for (UnionItemSet unionItemSet : itemSetOfLALR1) {
 				for (ItemSet itemSet : unionItemSet.getAllItemSet()) {
 					if (itemSet.getState() == gotoPair.getKey()) {
@@ -60,8 +72,7 @@ public class LALR1 {
 						break;
 					}
 				}
-				gotoPairVal = gotoPair.getValue();
-				newTableGoto.put(new Pair<Integer, Integer>(gotoPairKey, gotoPairVal), tableGoto.get(gotoPair));
+				newTableGoto.put(new Pair<>(gotoPairKey, gotoPairVal), tableGotoValue);
 			}
 		}
     	tableGoto = newTableGoto;
@@ -114,6 +125,7 @@ public class LALR1 {
             if (!ifAdd) {
                 UnionItemSet unionSet = new UnionItemSet();
                 unionSet.addItemSet(itemSet);
+                unionSet.setState(state++);
                 itemSetOfLALR1.add(unionSet);
             }
         }
@@ -122,7 +134,7 @@ public class LALR1 {
     class UnionItemSet {
         private int state;
         private ArrayList<ItemSet> unionItemSet = new ArrayList<>();
-        private ArrayList<Set<Integer>> lookaheadSymbols = new ArrayList<>();
+        private Set<Integer> lookaheadSymbols = new HashSet<>();
 
         public ItemSet getFirstItem() {
             return unionItemSet.get(0);
@@ -132,7 +144,7 @@ public class LALR1 {
 			return unionItemSet;
 		}
 
-        public ArrayList<Set<Integer>> getLookaheadSymbols() {
+        public Set<Integer> getLookaheadSymbols() {
             return lookaheadSymbols;
         }
 
@@ -140,17 +152,16 @@ public class LALR1 {
             unionItemSet.add(state);
             if (lookaheadSymbols.isEmpty()){
                 for (Item item : state.getItems()) {
-                    lookaheadSymbols.add(item.getLookaheadSymbols());
+                    lookaheadSymbols = item.getLookaheadSymbols();
                 }
             } else {
                 int i = 0;
                 for (Item item : state.getItems()) {
                     for (Integer integerSymbols : item.getLookaheadSymbols()) {
-                        if (!lookaheadSymbols.get(i).contains(integerSymbols)){
-                            lookaheadSymbols.get(i).add(integerSymbols);
+                        if (!lookaheadSymbols.contains(integerSymbols)){
+                            lookaheadSymbols.add(integerSymbols);
                         }
                     }
-
                 }
             }
         }
