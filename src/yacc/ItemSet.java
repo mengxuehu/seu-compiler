@@ -132,7 +132,9 @@ class ItemSet implements Comparable<ItemSet> {
     }
 
     boolean equalItemSet(ItemSet itemSet) {
-
+        if (this.items.size() != itemSet.items.size()){
+            return false;
+        }
         Iterator<Item> il = items.iterator(), ir = itemSet.items.iterator();
         while (il.hasNext()) {
             if (!il.next().equals(ir.next())) {
