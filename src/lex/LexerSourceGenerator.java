@@ -35,7 +35,14 @@ public class LexerSourceGenerator {
 
             for (String edge : trans.keySet()) {
                 if (edge.length() > 1 && edge.charAt(0) == '!'){
-                    bw.write("\t\t\t\tif(str != \"" + edge + "\") {\n");
+                    bw.write("\t\t\t\tif(");
+                    for (int i = 1; i < edge.length(); i++) {
+                        String sub = edge.substring(i, i+1);
+                        bw.write("\t\t\t\tstr != \"" + sub + "\"");
+                        if (i != edge.length() - 1)
+                            bw.write("&&");
+                    }
+                    bw.write(") {\n");
                 }else {
                     bw.write("\t\t\t\tif(str == \"" + edge + "\") {\n");
                 }
