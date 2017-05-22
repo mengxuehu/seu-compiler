@@ -19,8 +19,11 @@ public class Lex {
         String[] tmp = new String[0];
         for (Map.Entry<String, String> entry : rules.entrySet()) {
             ruleAction[i] = entry.getValue();
+            System.out.println(entry.getKey());
             tmp = reParser.parse(entry.getKey());
             postfixRes.put(i++, reParser.parse(entry.getKey()));
+            System.out.println(tmp);
+            System.out.println();
         }
 
         Map<Integer, String[]> tmpPostfixRes = new LinkedHashMap<>(1);
