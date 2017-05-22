@@ -192,7 +192,7 @@ class MiniDfa {
             //solve accept
             for (Integer integer : set1.getAccept()) {
                 for (Map.Entry<String, Integer> entry : allDes.entrySet()) {
-                    if (entry.getValue() == integer) {
+                    if (entry.getValue().equals(integer)) {
                         newDfaNode.addTransition(entry.getKey(), integer - numNonAccept);
                     }
                 }
@@ -206,7 +206,7 @@ class MiniDfa {
                 if (set1.findDestination(set2.getState())) {
                     for (Integer member : set2.getMembers()) {
                         for (Map.Entry<String, Integer> entry : allDes.entrySet()) {
-                            if (entry.getValue() == member) {
+                            if (entry.getValue().equals(member)) {
                                 newDfaNode.addTransition(entry.getKey(), j);
                             }
                         }

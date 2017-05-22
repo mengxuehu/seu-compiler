@@ -43,12 +43,42 @@ public class LALR1 {
         this.tableGoto = tableGoto;
 		unionItemSet(itemSetOfLR1);
 //        System.out.println(itemSetOfLALR1.size());
-        return generateTable(itemSetOfLR1);
+        if (generateGotoTable() && generateActionTable())
+            return true;
+        else
+            return false;
 	}
-    
-    private boolean generateTable(Set<ItemSet> itemSetOfLR1) {
-    	Map<Pair<Integer, Integer>, Integer> newTableGoto = new HashMap<>();
+
+    private boolean generateActionTable() {
         Map<Pair<Integer, Integer>, Action> newTableAction = new HashMap<>();
+        for (Pair<Integer, Integer> actionPair : tableAction.keySet()) {
+            Integer actionPairKey = 0;
+            Integer actionPairVal = actionPair.getValue();
+            for (UnionItemSet unionItemSet : itemSetOfLALR1) {
+                for (ItemSet itemSet : unionItemSet.getAllItemSet()) {
+                    if (itemSet.getState() == actionPair.getKey()) {
+                        actionPairKey = unionItemSet.getState();
+                        break;
+                    }
+                }
+                Pair<Integer, Integer> action = new Pair<Integer, Integer>(actionPairKey, actionPairVal);
+                if (newTableAction.keySet().contains(action)) {
+                    //TODO 冲突处理代码
+                    //下面代码用于测试，后面应删除
+                    newTableAction.put(new Pair<Integer, Integer>(-1, -1), tableAction.get(actionPair));
+                } else {
+                    newTableAction.put(action, tableAction.get(actionPair));
+                }
+
+            }
+        }
+        tableAction = newTableAction;
+        return true;
+    }
+
+    private boolean generateGotoTable() {
+    	Map<Pair<Integer, Integer>, Integer> newTableGoto = new HashMap<>();
+
     	for (Pair<Integer, Integer> gotoPair : tableGoto.keySet()) {
     		Integer gotoPairKey = 0;
 			Integer gotoPairVal = gotoPair.getValue();
@@ -77,44 +107,18 @@ public class LALR1 {
 				if (isFind)
 				    break;
 			}
-			if (newTableGoto.containsKey(new Pair<>(gotoPairKey, gotoPairVal)) &&
-                    newTableGoto.get(new Pair<>(gotoPairKey, gotoPairVal)) != tableGotoValue) {
-                System.err.println("error LALR1");
+			Pair<Integer, Integer> a = new Pair<>(gotoPairKey, gotoPairVal);
+			if (newTableGoto.containsKey(a) &&
+                    !newTableGoto.get(a).equals(tableGotoValue)) {
+//                System.out.println(newTableGoto.get(new Pair<>(gotoPairKey, gotoPairVal)));
+//                System.out.println(tableGotoValue);
+//                System.err.println("error LALR1");
+                return false;
             }
             newTableGoto.put(new Pair<>(gotoPairKey, gotoPairVal), tableGotoValue);
 		}
     	tableGoto = newTableGoto;
-    	for (Pair<Integer, Integer> actionPair : tableAction.keySet()) {
-    		Integer actionPairKey = 0;
-			Integer actionPairVal = 0;
-			boolean conflict = false;
-    		for (UnionItemSet unionItemSet : itemSetOfLALR1) {
-				for (ItemSet itemSet : unionItemSet.getAllItemSet()) {
-					if (itemSet.getState() == actionPair.getKey()) {
-						actionPairVal = unionItemSet.getState();
-						break;
-					}
-				}
-				actionPairVal = actionPair.getValue();
-				Pair<Integer, Integer> action = new Pair<Integer, Integer>(actionPairKey, actionPairVal);
-				for (Pair<Integer, Integer> exist : newTableAction.keySet()) {
-					if (exist.equals(action)) {
-						//TODO 冲突处理代码
-
-						conflict = true;
-					}
-				}
-				if (!conflict) {
-					newTableGoto.put(action, tableGoto.get(actionPair));
-				} else {
-					//TODO 冲突解决添加或修改
-				}
-				
-			}
-		}
-		tableAction = newTableAction;
-    	//TODO renturn
-		return false;
+		return true;
 	}
 
     private void unionItemSet(Set<ItemSet> itemSetOfLR1) {
@@ -126,6 +130,14 @@ public class LALR1 {
             ifAdd = false;
             for (UnionItemSet unionItemSet : itemSetOfLALR1) {
                 if (itemSet.equalItemSet(unionItemSet.getFirstItem())) {
+//                    System.out.println("new");
+//                    for (Item item : itemSet.getItems()) {
+//                        System.out.println(item.getProductionIndex());
+//                    }
+//                    System.out.println("old");
+//                    for (Item item : unionItemSet.getFirstItem().getItems()) {
+//                        System.out.println(item.getProductionIndex());
+//                    }
                     unionItemSet.addItemSet(itemSet);
                     ifAdd = true;
                 }
@@ -142,7 +154,7 @@ public class LALR1 {
     class UnionItemSet {
         private int state;
         private ArrayList<ItemSet> unionItemSet = new ArrayList<>();
-        private Set<Integer> lookaheadSymbols = new HashSet<>();
+        private ArrayList<Set<Integer>> lookaheadSymbols = new ArrayList<>();
 
         public ItemSet getFirstItem() {
             return unionItemSet.get(0);
@@ -152,7 +164,7 @@ public class LALR1 {
 			return unionItemSet;
 		}
 
-        public Set<Integer> getLookaheadSymbols() {
+        public ArrayList<Set<Integer>> getLookaheadSymbols() {
             return lookaheadSymbols;
         }
 
@@ -160,16 +172,15 @@ public class LALR1 {
             unionItemSet.add(state);
             if (lookaheadSymbols.isEmpty()){
                 for (Item item : state.getItems()) {
-                    lookaheadSymbols = item.getLookaheadSymbols();
+                    lookaheadSymbols.add(item.getLookaheadSymbols());
                 }
             } else {
                 int i = 0;
                 for (Item item : state.getItems()) {
                     for (Integer integerSymbols : item.getLookaheadSymbols()) {
-                        if (!lookaheadSymbols.contains(integerSymbols)){
-                            lookaheadSymbols.add(integerSymbols);
-                        }
+                        lookaheadSymbols.get(i).add(integerSymbols);
                     }
+                    i++;
                 }
             }
         }
