@@ -16,39 +16,39 @@ class MiniDfa {
         HashSet<Integer> members = new HashSet<>();
         HashSet<Integer> destination = new HashSet<>();
 
-        public void addMember(Integer mem) {
+        void addMember(Integer mem) {
             members.add(mem);
         }
 
-        public void addDestination(Integer des) {
+        void addDestination(Integer des) {
             destination.add(des);
         }
 
-        public void addAllDestination(HashSet<Integer> des) {
+        void addAllDestination(HashSet<Integer> des) {
             this.destination = des;
         }
 
-        public boolean findMembers(Integer mem) {
+        boolean findMembers(Integer mem) {
             return members.contains(mem);
         }
 
-        public HashSet<Integer> getMembers() {
+        HashSet<Integer> getMembers() {
             return members;
         }
 
-        public void setState(int state) {
+        void setState(int state) {
             this.state = state;
         }
 
-        public int getState() {
+        int getState() {
             return state;
         }
 
-        public boolean findDestination(Integer des) {
+        boolean findDestination(Integer des) {
             return destination.contains(des);
         }
 
-        public boolean tellDestination(HashSet<Integer> des) {
+        boolean tellDestination(HashSet<Integer> des) {
             if (des.size() != destination.size()) {
                 return false;
             } else {
@@ -61,7 +61,7 @@ class MiniDfa {
             return true;
         }
 
-        public HashSet<Integer> getAccept() {
+        HashSet<Integer> getAccept() {
             HashSet<Integer> accept = new HashSet<>();
             for (Integer integer : destination) {
                 if (integer >= acceptingStartState)
@@ -76,7 +76,7 @@ class MiniDfa {
         LinkedList<NonTerminalSet> oldSet = new LinkedList<>();
         LinkedList<NonTerminalSet> newSet = new LinkedList<>();
         NonTerminalSet initSet = new NonTerminalSet();
-        int i = 0, j = 0, k = 0;
+        int i;
         Integer state = 0;
         boolean isChanged = true;
         for (FaNode<Integer> dfaNode : dfa) {

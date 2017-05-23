@@ -14,13 +14,6 @@ public class ReParser {
         StringBuilder regularRe = new StringBuilder();
 
         for (int i = 0; i < re.length(); i++) {
-//	        	if (re.charAt(i) == '{') {
-//	        		StringBuilder def = new StringBuilder();
-//	            	while(re.charAt(++i) != '}') {
-//	        			def.append(re.charAt(i));
-//	        		}
-//	        		regularRe.append(preprocessRe(find(def.toString())));
-//				} else 
             if (re.charAt(i) == '[') {
                 // nested []
                 int times = 0;
@@ -50,11 +43,11 @@ public class ReParser {
                             i++;
                         }
 
-                    } else if (re.charAt(i) == '\\') {
+                    } else if (re.charAt(i) == '\\') { //solve transform meaning
                         regularRe.append(re.charAt(i));
                         regularRe.append(re.charAt(++i));
                         regularRe.append('|');
-                    } else {
+                    } else { // + * ? in the [] need to be transformed
                         if (re.charAt(i) == '+' || re.charAt(i) == '*'
                                 || re.charAt(i) == '?') {
                             regularRe.append('\\');
@@ -63,7 +56,7 @@ public class ReParser {
                         regularRe.append(re.charAt(i));
                         regularRe.append('|');
                     }
-
+                    // tell if solve all nested []
                     if (i + 1 < re.length() && times != 0 && re.charAt(i + 1) == ']') {
                         i++;
                         times--;
@@ -71,21 +64,8 @@ public class ReParser {
                 }
                 regularRe.deleteCharAt(regularRe.length() - 1);
                 regularRe.append(')');
-            }
-//					else if (re.charAt(i) == '"') {
-//					if (re.charAt(i+1) == '.') {
-//						regularRe.append('\\');
-//						regularRe.append(re.charAt(++i));
-//						++i;
-//					} else {
-//						regularRe.append(re.charAt(i));
-//					}
-//				} 
-//				  else if (re.charAt(i) == '!') {
-//					regularRe.append('\\');
-//					regularRe.append('!');
-//				} 
-            else if (re.charAt(i) == '?' || re.charAt(i) == '+' || re.charAt(i) == '*') {
+            } else if (re.charAt(i) == '?' || re.charAt(i) == '+' || re.charAt(i) == '*') {
+                //sunion a serial of ? + *, but not transform to *
                 char tempOp = re.charAt(i);
                 while (i + 1 < re.length()) {
                     if (re.charAt(i + 1) == tempOp) {
@@ -103,10 +83,10 @@ public class ReParser {
                     }
                 }
                 regularRe.append(tempOp);
-            } else if (re.charAt(i) == '\\') {
+            } else if (re.charAt(i) == '\\') { //solve transform meaning
                 regularRe.append(re.charAt(i));
                 regularRe.append(re.charAt(++i));
-            } else {
+            } else { //normal solve
                 regularRe.append(re.charAt(i));
             }
         }
@@ -115,14 +95,15 @@ public class ReParser {
     }
 
     private String processSign(String mediumRe) {
-        //delete ?, +
+        //delete ?, +, transform to *
         StringBuilder regularRe = new StringBuilder();
         StringBuilder tempRe = new StringBuilder();
         for (int i = 0; i < mediumRe.length(); i++) {
-            if (mediumRe.charAt(i) == '\\') {
+            if (mediumRe.charAt(i) == '\\') { //solve transform meaning
                 regularRe.append(mediumRe.charAt(i));
                 regularRe.append(mediumRe.charAt(++i));
             } else if (mediumRe.charAt(i) == '?' && mediumRe.charAt(i - 1) == ')') {
+                //need to tell pre-char.if pre-char is ), need to solve the chars in the ()
                 int length = regularRe.length() - 1, times = 0;
                 while (regularRe.charAt(length) != '(') {
                     if (regularRe.charAt(length) == ')')
@@ -154,6 +135,7 @@ public class ReParser {
                 regularRe.append(mediumRe.charAt(i - 1));
                 regularRe.append(')');
             } else if (mediumRe.charAt(i) == '+' && mediumRe.charAt(i - 1) == ')') {
+                //method same as ?
                 int length = regularRe.length() - 1, times = 0;
                 while (regularRe.charAt(length) != '(') {
                     if (regularRe.charAt(length) == ')')
@@ -190,6 +172,7 @@ public class ReParser {
     }
 
     private String addConnect(String mediumRe) {
+        //add connect symbol, because connect symbol is also a operate
         StringBuilder regularRe = new StringBuilder();
         int i = 1;
         char pre = mediumRe.charAt(0);
@@ -281,17 +264,11 @@ public class ReParser {
                 }
 
             } else if (mediumRe.charAt(i) == '\\') {
-//                StringBuilder temp = new StringBuilder();
-//                temp.append(mediumRe.charAt(i));
-//                temp.append(mediumRe.charAt(++i));
                 identifier.push(mediumRe.substring(i, i + 2));
                 i++;
             } else if (mediumRe.charAt(i) == '!') {
                 int j = i;
                 while (mediumRe.charAt(++i) != ')') ;
-//            	StringBuilder temp = new StringBuilder();
-//                temp.append(mediumRe.charAt(i));
-//                temp.append(mediumRe.charAt(++i));
                 identifier.push(mediumRe.substring(j, i));
                 i--;
             } else {
@@ -328,15 +305,9 @@ public class ReParser {
     String[] parse(String re) {
         postfixRe.clear();
         String mediumRe = processBrackets(re);
-        System.out.println(mediumRe);
         mediumRe = processSign(mediumRe);
-        System.out.println(mediumRe);
         mediumRe = addConnect(mediumRe);
-        System.out.println(mediumRe);
         infixToPostfix(mediumRe);
-        for (int i = 0; i < postfixRe.size(); i++) {
-            System.out.println(postfixRe.get(i));
-        }
         String[] returnString = new String[postfixRe.size()];
         for (int i = 0; i < returnString.length; i++) {
             returnString[i] = postfixRe.get(i);
@@ -349,9 +320,9 @@ public class ReParser {
         return postfixRe;
     }
 
-    public static void main(String[] args) {
-        ReParser ReParser = new ReParser();
-        System.out.println("L?'(\\\\.|[^\\\\'\\n])+'");
-        ReParser.parse("L?'(\\\\.|[^\\\\'\\n])+'");
-    }
+//    public static void main(String[] args) {
+//        ReParser ReParser = new ReParser();
+//        System.out.println("L?'(\\\\.|[^\\\\'\\n])+'");
+//        ReParser.parse("L?'(\\\\.|[^\\\\'\\n])+'");
+//    }
 }

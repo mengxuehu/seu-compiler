@@ -14,18 +14,18 @@ public class LexerSourceGenerator {
 
     void generate(ArrayList<FaNode<Integer>> dfa, ArrayList<String> ruleAction, String userRoutines) throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(FILENAME));
+        bw.write(userRoutines + "\n");
         bw.write("#include <sstream>\n");
         bw.write("#include <ifstream>\n");
         bw.write("#include <iostream>");
-        bw.write("using namespace std;\n");
-        bw.write("int yylex() {\n");
+        bw.write("extern int yylex() {\n");
         bw.write("\tint state = " + dfa.get(0).getIndex() + ";\n");
         bw.write("\tint i = 0;\n");
-        bw.write("\tstatic ifstream in(\"main.cpp\")\n");
+        bw.write("\tstatic std::ifstream in(\"main.cpp\")\n");
         //start
         bw.write("\twhile(true) {\n");
         bw.write("\t\tchar next = in.get();\n");
-        bw.write("\t\tstringstream str;\n");
+        bw.write("\t\tstd::stringstream str;\n");
         bw.write("\t\tstr << next;\n");
         bw.write("\t\tstring str = stream.str()\n");
         bw.write("\t\tswitch(state) {\n");
