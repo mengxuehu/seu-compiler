@@ -51,6 +51,7 @@ public class Dfa {
     private void changeIndex(DfaNode node,int index) {
         int index0 = node.getIndex();
         Map<String,Integer> trans;
+        node.setIndex(index);
         for (DfaNode n : nodes) {
             trans = n.getAllTransitions();
             for (String edge : trans.keySet()) {
@@ -112,7 +113,7 @@ public class Dfa {
 
     ArrayList<FaNode<Integer>> nfaToDfa() {
         List<Set<FaNode<Set<Integer>>>> nodeSets = new LinkedList<>();
-        HashSet<String> edges = new HashSet<String>();
+        Set<String> edges = new HashSet<String>();
         Map<String, Set<Integer>> trans;
         int action;
 
@@ -139,13 +140,12 @@ public class Dfa {
             }
 
             for (String edge : edges) {
-                set = move(edge, nodeSets.get(i));
-                if (set.isEmpty())
-                    break;
-                if (!nodeSets.contains(set)) {
-                    nodeSets.add(set);
-                    nodes.get(i).addTransition(edge, (nodeSets.size()-1));
-                } else {
+                if (!edge.equals("")) {
+                    set = move(edge, nodeSets.get(i));
+                    if (set.isEmpty())
+                        break;
+                    if (!nodeSets.contains(set))
+                        nodeSets.add(set);
                     nodes.get(i).addTransition(edge, nodeSets.indexOf(set));
                 }
             }
@@ -158,6 +158,7 @@ public class Dfa {
                 changeIndex(nodes.get(j),i);
                 tempNodes.add(nodes.get(j));
                 nodes.remove(nodes.get(j));
+                j--;
                 i--;
             }
         }

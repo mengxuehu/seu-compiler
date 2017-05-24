@@ -17,23 +17,38 @@ public class Lex {
 
         int i = 0;
         String[] tmp = new String[0];
+        String[] tmp1 = new String[0];
         for (Map.Entry<String, String> entry : rules.entrySet()) {
             ruleAction[i] = entry.getValue();
             System.out.println(entry.getKey());
             tmp = reParser.parse(entry.getKey());
+            if(entry.getKey().equals("int"))
+                tmp1 = tmp;
             postfixRes.put(i++, reParser.parse(entry.getKey()));
             System.out.println(tmp);
             System.out.println();
         }
 
         Map<Integer, String[]> tmpPostfixRes = new LinkedHashMap<>(1);
-        tmpPostfixRes.put(0, tmp);
 
-        Dfa dfa = new Dfa(new Nfa().construct(tmpPostfixRes));
-        dfa.nfaToDfa();
-        System.out.println(dfa.getAccNum());
-        System.out.println(dfa.getAccStart());
-        System.out.println(tmp);
+        tmpPostfixRes.put(0, tmp1);
+
+        ArrayList<FaNode<Set<Integer>>> nfa = new Nfa().construct(tmpPostfixRes);
+        for(int j = 0;j < nfa.size();j++) {
+            Map<String,Set<Integer>> trans = nfa.get(j).getAllTransitions();
+            for (String edge : trans.keySet()) {
+                System.out.println(j + " " + edge + " " + trans.get(edge));
+            }
+        }
+        Dfa dfa = new Dfa(nfa);
+        ArrayList<FaNode<Integer>> al = dfa.nfaToDfa();
+        for(int j = 0;j < al.size();j++) {
+            Map<String,Integer> trans = al.get(j).getAllTransitions();
+                for (String edge : trans.keySet()) {
+                    System.out.println(j + " " + edge + " " + trans.get(edge));
+            }
+        }
+        System.out.println(tmp1);
 
 //        new LexerSourceGenerator().generate(
 //                new Dfa(new Nfa().construct(postfixRes)).nfaToDfa(), ruleAction, lexSourceParser.getUserRoutines());
