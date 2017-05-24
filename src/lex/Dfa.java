@@ -25,17 +25,12 @@ public class Dfa {
         }
     }
 
-    private class NodeSet {
-        List<FaNode<Set<Integer>>> nodes;
-
-        NodeSet(List<FaNode<Set<Integer>>> nodes) {
-            this.nodes = nodes;
-        }
-    }
-
     private ArrayList<FaNode<Set<Integer>>> nfa;
     private LinkedList<DfaNode> nodes;
     private LinkedList<DfaNode> tempNodes;
+
+    private int accStart;
+    private int accNum;
 
     public int getAccStart() {
         return accStart;
@@ -44,9 +39,6 @@ public class Dfa {
     public int getAccNum() {
         return accNum;
     }
-
-    private int accStart;
-    private int accNum;
 
     Dfa(ArrayList<FaNode<Set<Integer>>> nfa) {
         this.nfa = nfa;
@@ -77,10 +69,10 @@ public class Dfa {
         }
     }
 
-    private NodeSet epsilonClosure(NodeSet set) {
+    private Set<FaNode<Set<Integer>>> epsilonClosure(Set<FaNode<Set<Integer>>> set) {
         Deque<FaNode<Set<Integer>>> stack = new LinkedList<>();
-        stack.addAll(set.nodes);
-        List<FaNode<Set<Integer>>> result = set.nodes;
+        stack.addAll(set);
+        Set<FaNode<Set<Integer>>> result = set;
         FaNode<Set<Integer>> t;
         Set<Integer> targets;
         while(!stack.isEmpty()) {
@@ -95,13 +87,13 @@ public class Dfa {
                 }
             }
         }
-        return new NodeSet(result);
+        return result;
     }
 
-    private NodeSet move(String edge, NodeSet set) {
+    private Set<FaNode<Set<Integer>>> move(String edge, Set<FaNode<Set<Integer>>> set) {
         Deque<FaNode<Set<Integer>>> stack = new LinkedList<>();
-        stack.addAll(set.nodes);
-        List<FaNode<Set<Integer>>> result = new LinkedList<>();
+        stack.addAll(set);
+        Set<FaNode<Set<Integer>>> result = new HashSet<>();
         FaNode<Set<Integer>> t;
         Set<Integer> targets;
         while(!stack.isEmpty()) {
@@ -115,18 +107,17 @@ public class Dfa {
                 }
             }
         }
-        return epsilonClosure(new NodeSet(result));
+        return epsilonClosure(result);
     }
 
     ArrayList<FaNode<Integer>> nfaToDfa() {
-        List<NodeSet> nodeSets = new LinkedList<>();
+        List<Set<FaNode<Set<Integer>>>> nodeSets = new LinkedList<>();
         HashSet<String> edges = new HashSet<String>();
         Map<String, Set<Integer>> trans;
         int action;
 
-        LinkedList<FaNode<Set<Integer>>> temp = new LinkedList<>();
-        temp.add(nfa.get(0));
-        NodeSet set = new NodeSet(temp);
+        Set<FaNode<Set<Integer>>> set = new HashSet<>();
+        set.add(nfa.get(0));
         nodeSets.add(epsilonClosure(set));
 
         for(int i=0;i < nodeSets.size();i++) {
@@ -134,7 +125,7 @@ public class Dfa {
             edges.clear();
             action = 9999;
 
-            for (FaNode<Set<Integer>> node : nodeSets.get(i).nodes) {
+            for (FaNode<Set<Integer>> node : nodeSets.get(i)) {
                 trans = node.getAllTransitions();
                 for (String edge : trans.keySet()) {
                     edges.add(edge);
@@ -149,7 +140,7 @@ public class Dfa {
 
             for (String edge : edges) {
                 set = move(edge, nodeSets.get(i));
-                if (set.nodes.isEmpty())
+                if (set.isEmpty())
                     break;
                 if (!nodeSets.contains(set)) {
                     nodeSets.add(set);
@@ -178,7 +169,6 @@ public class Dfa {
                 changeIndex(nodes.get(j),j);
             }
         }
-
 
         ArrayList<FaNode<Integer>> dfa = new ArrayList<>(nodes.size());
         for (int j = 0; j < nodes.size(); j++) {
