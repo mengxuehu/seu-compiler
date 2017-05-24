@@ -35,10 +35,23 @@ public class Dfa {
     private LinkedList<DfaNode> nodes;
     private LinkedList<DfaNode> tempNodes;
 
+    public int getAccStart() {
+        return accStart;
+    }
+
+    public int getAccNum() {
+        return accNum;
+    }
+
+    private int accStart;
+    private int accNum;
+
     Dfa(ArrayList<FaNode<Set<Integer>>> nfa) {
         this.nfa = nfa;
         this.nodes = new LinkedList<>();
         this.tempNodes = new LinkedList<>();
+        this.accNum = 0;
+        this.accStart = 0;
     }
 
     private void changeIndex(DfaNode node,int index) {
@@ -155,7 +168,9 @@ public class Dfa {
                 tempNodes.add(node);
             }
         }
+        accStart = nodes.size();
         nodes.addAll(tempNodes);
+        accNum = nodes.size() - accStart + 1;
         for (int j = 0;j < nodes.size();j++) {
             if(nodes.get(j).getIndex() != j) {
                 changeIndex(nodes.get(j),j);
