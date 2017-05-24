@@ -1,6 +1,8 @@
 package lex;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class Dfa {
     private class DfaNode extends FaNode<Integer> {
@@ -57,7 +59,7 @@ public class Dfa {
     private void changeIndex(DfaNode node,int index) {
         int index0 = node.getIndex();
         Map<String,Integer> trans;
-        for (Dfa.DfaNode n : nodes) {
+        for (DfaNode n : nodes) {
             trans = n.getAllTransitions();
             for (String edge : trans.keySet()) {
                 if(trans.get(edge) == index0) {
@@ -65,7 +67,7 @@ public class Dfa {
                 }
             }
         }
-        for (Dfa.DfaNode n : tempNodes) {
+        for (DfaNode n : tempNodes) {
             trans = n.getAllTransitions();
             for (String edge : trans.keySet()) {
                 if(trans.get(edge) == index0) {
@@ -160,12 +162,12 @@ public class Dfa {
 
         //adjust sequence
         int i = -1;
-        for (Dfa.DfaNode node : nodes) {
-            if(node.isAccepting()) {
-                nodes.remove(node);
-                changeIndex(node,i);
+        for (int j =0 ;j < nodes.size();j++) {
+            if(nodes.get(j).isAccepting()) {
+                changeIndex(nodes.get(j),i);
+                tempNodes.add(nodes.get(j));
+                nodes.remove(nodes.get(j));
                 i--;
-                tempNodes.add(node);
             }
         }
         accStart = nodes.size();
