@@ -29,7 +29,11 @@ public class Lex {
         Map<Integer, String[]> tmpPostfixRes = new LinkedHashMap<>(1);
         tmpPostfixRes.put(0, tmp);
 
-        new Nfa().construct(tmpPostfixRes);
+        Dfa dfa = new Dfa(new Nfa().construct(tmpPostfixRes));
+        dfa.nfaToDfa();
+        System.out.println(dfa.getAccNum());
+        System.out.println(dfa.getAccStart());
+        System.out.println(tmp);
 
 //        new LexerSourceGenerator().generate(
 //                new Dfa(new Nfa().construct(postfixRes)).nfaToDfa(), ruleAction, lexSourceParser.getUserRoutines());
