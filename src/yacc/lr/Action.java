@@ -1,16 +1,16 @@
-package yacc;
+package yacc.lr;
 
 enum ActionType {ACC, SHIFT, REDUCE}
 
 class Action {
     private ActionType type;
 
-    ActionType getType() {
-        return type;
-    }
-
     Action(ActionType type) {
         this.type = type;
+    }
+
+    ActionType getType() {
+        return type;
     }
 
 

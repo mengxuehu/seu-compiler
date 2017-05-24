@@ -1,4 +1,4 @@
-package yacc;
+package yacc.lr;
 
 
 import java.util.Collection;
@@ -72,6 +72,14 @@ class Item implements Comparable<Item> {
     }
 
     @Override
+    public int hashCode() {
+        int result = productionIndex;
+        result = 31 * result + position;
+        result = 31 * result + lookaheadSymbols.hashCode();
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -80,13 +88,5 @@ class Item implements Comparable<Item> {
 
         return productionIndex == item.productionIndex
                 && position == item.position;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = productionIndex;
-        result = 31 * result + position;
-        result = 31 * result + lookaheadSymbols.hashCode();
-        return result;
     }
 }

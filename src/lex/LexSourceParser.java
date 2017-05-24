@@ -25,12 +25,10 @@ class LexSourceParser {
     LexSourceParser() {
     }
 
-    Map<String, String> getRules() {
-        return rules;
-    }
-
-    String getUserRoutines() {
-        return userRoutines == null ? null : userRoutines.toString();
+    public static void main(String[] args) {
+        String sourcePath = Paths.get(System.getProperty("user.dir"), "c99.l").toString();
+        LexSourceParser lsp = new LexSourceParser();
+        lsp.parse(sourcePath);
     }
 
     void parse(String sourcePath) {
@@ -161,11 +159,6 @@ class LexSourceParser {
         }
     }
 
-
-    private boolean isBlank(char c) {
-        return c == '\t' || c == ' ';
-    }
-
     private void parseRule(StringBuilder ruleAction, String ruleDef) {
         if (ruleAction.toString().isEmpty()) {
             handleError("null rule action", lineNumber - 1);
@@ -173,26 +166,8 @@ class LexSourceParser {
         rules.put(ruleDef, ruleAction.toString());
     }
 
-    private String replaceQuotesWithRe(String s) {
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == '\\') {
-                if (i + 1 < s.length() && s.charAt(i + 1) == '"') {
-                    s = s.substring(0, i) + s.substring(i + 1);
-                    continue;
-                }
-            }
-            if (escapeChars.contains(String.valueOf(s.charAt(i)))) {
-                s = s.substring(0, i) + "\\" + s.substring(i++);
-            }
-        }
-        return s;
-    }
-
-
-    private void handleError(String errMsg, int lineNo) {
-        System.err.println("ERROR(" + lineNo + "): " + errMsg);
-        // exit is necessary, otherwise bugs will be introduced
-        System.exit(1);
+    private boolean isBlank(char c) {
+        return c == '\t' || c == ' ';
     }
 
     private String[] splitByTab(String line) {
@@ -204,6 +179,12 @@ class LexSourceParser {
             }
         }
         return null;
+    }
+
+    private void handleError(String errMsg, int lineNo) {
+        System.err.println("ERROR(" + lineNo + "): " + errMsg);
+        // exit is necessary, otherwise bugs will be introduced
+        System.exit(1);
     }
 
     private String toRe(String s) {
@@ -260,10 +241,26 @@ class LexSourceParser {
         return s;
     }
 
+    private String replaceQuotesWithRe(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '\\') {
+                if (i + 1 < s.length() && s.charAt(i + 1) == '"') {
+                    s = s.substring(0, i) + s.substring(i + 1);
+                    continue;
+                }
+            }
+            if (escapeChars.contains(String.valueOf(s.charAt(i)))) {
+                s = s.substring(0, i) + "\\" + s.substring(i++);
+            }
+        }
+        return s;
+    }
 
-    public static void main(String[] args) {
-        String sourcePath = Paths.get(System.getProperty("user.dir"), "c99.l").toString();
-        LexSourceParser lsp = new LexSourceParser();
-        lsp.parse(sourcePath);
+    Map<String, String> getRules() {
+        return rules;
+    }
+
+    String getUserRoutines() {
+        return userRoutines == null ? null : userRoutines.toString();
     }
 }

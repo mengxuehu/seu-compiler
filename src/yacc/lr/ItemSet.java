@@ -1,4 +1,8 @@
-package yacc;
+package yacc.lr;
+
+import yacc.entity.Production;
+import yacc.entity.Productions;
+import yacc.entity.Symbols;
 
 import java.util.*;
 
@@ -17,6 +21,33 @@ class ItemSet implements Comparable<ItemSet> {
         items = new TreeSet<>();
     }
 
+    int getState() {
+        return state;
+    }
+
+    void setState(int state) {
+        this.state = state;
+    }
+
+    Set<Item> getItems() {
+        return items;
+    }
+
+    ItemSet goto_(int symbol, Productions productions, Symbols symbols, Map<Integer, HashSet<Integer>> firsts) {
+        ItemSet itemSet = new ItemSet();
+        for (Item item : this.items) {
+            List<Integer> body = productions.getProductions().get(item.getProductionIndex()).getBody();
+            if (item.getPosition() == body.size() || body.get(item.getPosition()) != symbol) {
+                continue;
+            }
+            Item i = new Item(item.getProductionIndex(), item.getPosition() + 1);
+            i.addAllLookaheadSymbols(item.getLookaheadSymbols());
+            itemSet.addItem(i);
+        }
+        itemSet.closure(productions, symbols, firsts);
+        return (itemSet.items.isEmpty() ? null : itemSet);
+    }
+
     boolean addItem(Item item) {
         for (Item i : items) {
             if (i.equals(item)) {
@@ -24,18 +55,6 @@ class ItemSet implements Comparable<ItemSet> {
             }
         }
         return items.add(item);
-    }
-
-    void setState(int state) {
-        this.state = state;
-    }
-
-    int getState() {
-        return state;
-    }
-
-    Set<Item> getItems() {
-        return items;
     }
 
     void closure(Productions productions, Symbols symbols, Map<Integer, HashSet<Integer>> firsts) {
@@ -85,24 +104,14 @@ class ItemSet implements Comparable<ItemSet> {
         }
     }
 
-    ItemSet goto_(int symbol, Productions productions, Symbols symbols, Map<Integer, HashSet<Integer>> firsts) {
-        ItemSet itemSet = new ItemSet();
-        for (Item item : this.items) {
-            List<Integer> body = productions.getProductions().get(item.getProductionIndex()).getBody();
-            if (item.getPosition() == body.size() || body.get(item.getPosition()) != symbol) {
-                continue;
-            }
-            Item i = new Item(item.getProductionIndex(), item.getPosition() + 1);
-            i.addAllLookaheadSymbols(item.getLookaheadSymbols());
-            itemSet.addItem(i);
-        }
-        itemSet.closure(productions, symbols, firsts);
-        return (itemSet.items.isEmpty() ? null : itemSet);
-    }
-
     @Override
     public int compareTo(ItemSet o) {
         return Integer.compare(state, o.state);
+    }
+
+    @Override
+    public int hashCode() {
+        return items != null ? items.hashCode() : 0;
     }
 
     @Override
@@ -126,13 +135,8 @@ class ItemSet implements Comparable<ItemSet> {
         return true;
     }
 
-    @Override
-    public int hashCode() {
-        return items != null ? items.hashCode() : 0;
-    }
-
     boolean equalItemSet(ItemSet itemSet) {
-        if (this.items.size() != itemSet.items.size()){
+        if (this.items.size() != itemSet.items.size()) {
             return false;
         }
         Iterator<Item> il = items.iterator(), ir = itemSet.items.iterator();

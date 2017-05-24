@@ -1,18 +1,19 @@
-package yacc;
+package yacc.lr;
 
 
 import javafx.util.Pair;
+import yacc.entity.Production;
+import yacc.entity.Productions;
+import yacc.entity.Symbols;
 
 import java.util.*;
 
 class LR1 {
+    private static int ItemSetStateIndexes = 0;
     private Productions productions;
     private Symbols symbols;
     private Map<Integer, HashSet<Integer>> firsts;
     private Set<ItemSet> collection;
-
-    private static int ItemSetStateIndexes = 0;
-
     private Map<Pair<Integer, Integer>, Integer> tableGoto;
     private Map<Pair<Integer, Integer>, Action> tableAction;
 
@@ -147,6 +148,11 @@ class LR1 {
         }
     }
 
+    private <K, V> void multiMapPut(Map<K, HashSet<V>> multiMap, K key, V value) {
+        multiMap.computeIfAbsent(key, k -> new HashSet<>());
+        multiMap.get(key).add(value);
+    }
+
     private boolean exists(Pair<Integer, Integer> key) {
         Action oldAction = tableAction.get(key);
         if (oldAction != null) {
@@ -177,10 +183,5 @@ class LR1 {
 
     Map<Pair<Integer, Integer>, Action> getTableAction() {
         return tableAction;
-    }
-
-    private <K, V> void multiMapPut(Map<K, HashSet<V>> multiMap, K key, V value) {
-        multiMap.computeIfAbsent(key, k -> new HashSet<>());
-        multiMap.get(key).add(value);
     }
 }

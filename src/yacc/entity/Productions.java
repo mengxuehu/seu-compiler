@@ -1,36 +1,36 @@
-package yacc;
+package yacc.entity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class Productions {
+public class Productions {
     private List<Production> productions;
     private List<String> actions;
     private Integer start = null;
 
-    Productions() {
+    public Productions() {
         this.productions = new ArrayList<>();
         this.actions = new ArrayList<>();
     }
 
-    void addProductionAndSetIndex(Production production, String action) {
+    public void addProductionAndSetIndex(Production production, String action) {
         production.setIndex(productions.size());
         productions.add(production);
         actions.add(action);
     }
 
-    void addAugmentedStartAndSetIndex(Production production, String action) {
+    public void addAugmentedStartAndSetIndex(Production production, String action) {
         start = productions.size();
         production.setIndex(productions.size());
         productions.add(production);
         actions.add(action);
     }
 
-    Production getStart() {
+    public Production getStart() {
         return start == null ? null : productions.get(start);
     }
 
-    List<Production> getProductions() {
+    public List<Production> getProductions() {
         return productions;
     }
 
@@ -38,7 +38,7 @@ class Productions {
         return actions;
     }
 
-    Production getProduction(int index) {
+    public Production getProduction(int index) {
         return productions.get(index);
     }
 }

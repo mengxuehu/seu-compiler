@@ -1,49 +1,52 @@
-package lex;
+package lex.fa;
+
+import lex.ReParser;
+import lex.fa.node.FaNode;
+import lex.fa.node.NfaNode;
 
 import java.util.*;
 
 
 class Nfa {
 
-    private class NfaNode extends FaNode<Set<Integer>> {
-        NfaNode(int index) {
-            super(index);
-        }
-
-        NfaNode(int index, String edge, int target) {
-            super(index);
-            this.addTransition(edge, target);
-        }
-
-        @Override
-        void addTransition(String edge, int target) {
-            if (this.transitions.containsKey(edge)) {
-                this.transitions.get(edge).add(target);
-            } else {
-                Set<Integer> tmp = new HashSet<>();
-                tmp.add(target);
-                this.transitions.put(edge, tmp);
-            }
-        }
-
-        @Override
-        void addAllTransitions(Map<String, Set<Integer>> transitions) {
-            for (Map.Entry<String, Set<Integer>> entry : transitions.entrySet()) {
-                if (this.transitions.containsKey(entry.getKey())) {
-                    this.transitions.get(entry.getKey()).addAll(entry.getValue());
-                } else {
-                    this.transitions.put(entry.getKey(), entry.getValue());
-                }
-            }
-        }
-    }
-
-    private LinkedList<NfaNode> nodes;
     private static int indexes = 0;
     private static Map<String, String> escapeChars = null;
+    private LinkedList<NfaNode> nodes;
 
     Nfa() {
         initializeEscapeChars();
+    }
+
+    private void initializeEscapeChars() {
+        if (escapeChars == null) {
+            escapeChars = new HashMap<>();
+            String[] source = {"\\a", "\\b", "\\f", "\\n", "\\r", "\\t", "\\v", "\\\\", "\\'", "\\\"", "\\?"};
+            int[] target = {0x07, 0x08, 0x0C, 0x0A, 0x0D, 0x09, 0x0B, 0x5C, 0x27, 0x22, 0x3F};
+            assert source.length == target.length;
+            for (int i = 0; i < source.length; i++) {
+                escapeChars.put(source[i], String.valueOf((char) target[i]));
+            }
+            escapeChars.put(ReParser.epsilon, "");
+        }
+    }
+
+    private Nfa(String operand) {
+        nodes = new LinkedList<>();
+        int begin = getNextIndex(), end = getNextIndex();
+        nodes.add(new NfaNode(begin, operand, end));
+        nodes.add(new NfaNode(end));
+    }
+
+    private int getNextIndex() {
+        return indexes++;
+    }
+
+    public static void main(String[] args) {
+        Nfa nfa = new Nfa();
+        nfa.initializeEscapeChars();
+        for (String s : escapeChars.keySet()) {
+            System.out.println(s + " " + escapeChars.get(s));
+        }
     }
 
     ArrayList<FaNode<Set<Integer>>> construct(Map<Integer, String[]> postfixRes) {
@@ -69,13 +72,6 @@ class Nfa {
             }
         }
         return nfa;
-    }
-
-    private Nfa(String operand) {
-        nodes = new LinkedList<>();
-        int begin = getNextIndex(), end = getNextIndex();
-        nodes.add(new NfaNode(begin, operand, end));
-        nodes.add(new NfaNode(end));
     }
 
     private Nfa reToNfa(String[] postfixRe, int action) {
@@ -107,10 +103,6 @@ class Nfa {
         assert stack.isEmpty();
         nfa.nodes.getLast().setAccepting(action);
         return nfa;
-    }
-
-    private int getNextIndex() {
-        return indexes++;
     }
 
     private int getIndexUpperBound() {
@@ -146,21 +138,8 @@ class Nfa {
 
     private void concatenation(Nfa nfa) {
         NfaNode node = nfa.nodes.removeFirst();
-        this.nodes.getLast().addAllTransitions(node.transitions);
+        this.nodes.getLast().addAllTransitions(node.getAllTransitions());
         this.nodes.addAll(nfa.nodes);
-    }
-
-    private void initializeEscapeChars() {
-        if (escapeChars == null) {
-            escapeChars = new HashMap<>();
-            String[] source = {"\\a", "\\b", "\\f", "\\n", "\\r", "\\t", "\\v", "\\\\", "\\'", "\\\"", "\\?"};
-            int[] target = {0x07, 0x08, 0x0C, 0x0A, 0x0D, 0x09, 0x0B, 0x5C, 0x27, 0x22, 0x3F};
-            assert source.length == target.length;
-            for (int i = 0; i < source.length; i++) {
-                escapeChars.put(source[i], String.valueOf((char) target[i]));
-            }
-            escapeChars.put(ReParser.epsilon, "");
-        }
     }
 
     private String processOperand(String operand) {
@@ -168,14 +147,6 @@ class Nfa {
             operand = escapeChars.get(operand);
         }
         return operand;
-    }
-
-    public static void main(String[] args) {
-        Nfa nfa = new Nfa();
-        nfa.initializeEscapeChars();
-        for (String s : escapeChars.keySet()) {
-            System.out.println(s + " " + escapeChars.get(s));
-        }
     }
 
 }

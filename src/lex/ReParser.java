@@ -9,6 +9,19 @@ public class ReParser {
     public final static String epsilon = "\\~";
     private ArrayList<String> postfixRe = new ArrayList<>();
 
+    String[] parse(String re) {
+        postfixRe.clear();
+        String mediumRe = processBrackets(re);
+        mediumRe = processSign(mediumRe);
+        mediumRe = addConnect(mediumRe);
+        infixToPostfix(mediumRe);
+        String[] returnString = new String[postfixRe.size()];
+        for (int i = 0; i < returnString.length; i++) {
+            returnString[i] = postfixRe.get(i);
+        }
+        return returnString;
+    }
+
     private String processBrackets(String re) {
         //delete []
         StringBuilder regularRe = new StringBuilder();
@@ -301,20 +314,6 @@ public class ReParser {
             System.out.println("id stack error");
         }
     }
-
-    String[] parse(String re) {
-        postfixRe.clear();
-        String mediumRe = processBrackets(re);
-        mediumRe = processSign(mediumRe);
-        mediumRe = addConnect(mediumRe);
-        infixToPostfix(mediumRe);
-        String[] returnString = new String[postfixRe.size()];
-        for (int i = 0; i < returnString.length; i++) {
-            returnString[i] = postfixRe.get(i);
-        }
-        return returnString;
-    }
-
 
     ArrayList<String> getpostfixRe() {
         return postfixRe;
