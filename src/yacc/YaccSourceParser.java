@@ -1,5 +1,9 @@
 package yacc;
 
+import yacc.entity.Production;
+import yacc.entity.Productions;
+import yacc.entity.Symbols;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -7,7 +11,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class YaccSourceParser {
     private static final int DECLARATIONS = 0, RULES = 1, PROGRAMS = 2;
@@ -20,21 +23,11 @@ public class YaccSourceParser {
 
     private Productions productions;
 
-    String getPrograms() {
-        return programs.toString();
+    public static void main(String[] args) {
+        String sourcePath = Paths.get(System.getProperty("user.dir"), "c99.y").toString();
+        YaccSourceParser lsp = new YaccSourceParser();
+        lsp.parse(sourcePath);
     }
-
-    Symbols getSymbols() {
-        return symbols;
-    }
-
-    Productions getProductions() {
-        return productions;
-    }
-
-//    List<String> getProductionActions() {
-//        return productionActions;
-//    }
 
     void parse(String sourcePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(sourcePath))) {
@@ -216,15 +209,25 @@ public class YaccSourceParser {
         }
     }
 
+//    List<String> getProductionActions() {
+//        return productionActions;
+//    }
+
     private void handleError(String errMsg, int lineNo) {
         System.err.println("ERROR(" + lineNo + "): " + errMsg);
         // exit is necessary, otherwise bugs will be introduced
         System.exit(1);
     }
 
-    public static void main(String[] args) {
-        String sourcePath = Paths.get(System.getProperty("user.dir"), "c99.y").toString();
-        YaccSourceParser lsp = new YaccSourceParser();
-        lsp.parse(sourcePath);
+    String getPrograms() {
+        return programs.toString();
+    }
+
+    Symbols getSymbols() {
+        return symbols;
+    }
+
+    Productions getProductions() {
+        return productions;
     }
 }

@@ -1,20 +1,58 @@
-package yacc;
+package yacc.lr;
 
 import javafx.util.Pair;
+import yacc.entity.Production;
+import yacc.entity.Productions;
+import yacc.entity.Symbols;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
-class ParserSourceGenerator {
+public class ParserGenerator {
     private static final String HEADER_NAME = "yacc.tab.h", SOURCE_NAME = "yacc.tab.cpp";
 
-    void generate(Map<Pair<Integer, Integer>, Integer> tableGoto,
-                  Map<Pair<Integer, Integer>, Action> tableAction,
-                  Productions productions, Symbols symbols, String programs) {
+    void generate(Productions productions, Symbols symbols, String programs) {
+        LR1 lr1 = new LR1();
+        lr1.parse(productions, symbols);
+        Map<Pair<Integer, Integer>, Integer> tableGoto = lr1.getTableGoto();
+        Map<Pair<Integer, Integer>, Action> tableAction = lr1.getTableAction();
+        Set<ItemSet> collection = lr1.getCollection();
+
+        LALR1 lalr1 = new LALR1();
+        lalr1.generateLALR1(collection, tableGoto, tableAction);
+        Map<Pair<Integer, Integer>, Integer> tableGotoLALR1 = lalr1.getTableGoto();
+        Map<Pair<Integer, Integer>, Action> tableActionLALR1 = lalr1.getTableAction();
+
+        doGenerate(tableGotoLALR1, tableActionLALR1, productions, symbols, programs);
+    }
+
+    private void doGenerate(Map<Pair<Integer, Integer>, Integer> tableGoto,
+                            Map<Pair<Integer, Integer>, Action> tableAction,
+                            Productions productions, Symbols symbols, String programs) {
         generateHeader(symbols);
         generateSource(tableGoto, tableAction, productions, programs);
+    }
+
+    private void generateHeader(Symbols symbols) {
+        StringBuilder header = new StringBuilder();
+        for (Map.Entry<String, Integer> sym : symbols.getSymbols().entrySet()) {
+            if (symbols.isTerminal(sym.getValue())
+                    && (sym.getKey().length() != 1 || Character.isLetter(sym.getKey().charAt(0)))) {
+                header.append("#define ").append(sym.getKey()).append(" ")
+                        .append(sym.getValue().toString()).append('\n');
+            }
+        }
+
+//        System.out.println(header.toString());
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(HEADER_NAME))) {
+            bw.write(header.toString());
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void generateSource(Map<Pair<Integer, Integer>, Integer> tableGoto,
@@ -143,24 +181,5 @@ class ParserSourceGenerator {
 
         source.append("int start_production = ").append(productions.getStart().getIndex().toString())
                 .append(";\n\n");
-    }
-
-    private void generateHeader(Symbols symbols) {
-        StringBuilder header = new StringBuilder();
-        for (Map.Entry<String, Integer> sym : symbols.getSymbols().entrySet()) {
-            if (symbols.isTerminal(sym.getValue())
-                    && (sym.getKey().length() != 1 || Character.isLetter(sym.getKey().charAt(0)))) {
-                header.append("#define ").append(sym.getKey()).append(" ")
-                        .append(sym.getValue().toString()).append('\n');
-            }
-        }
-
-//        System.out.println(header.toString());
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(HEADER_NAME))) {
-            bw.write(header.toString());
-            bw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
