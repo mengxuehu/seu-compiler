@@ -170,17 +170,26 @@ public class Dfa {
         }
         accStart = nodes.size();
         nodes.addAll(tempNodes);
-        accNum = nodes.size() - accStart + 1;
+        accNum = nodes.size() - accStart;
         for (int j = 0;j < nodes.size();j++) {
             if(nodes.get(j).getIndex() != j) {
                 changeIndex(nodes.get(j),j);
             }
         }
 
+
         ArrayList<FaNode<Integer>> dfa = new ArrayList<>(nodes.size());
-        for (Dfa.DfaNode node : nodes) {
-            dfa.set(node.getIndex(), node);
+        for (int j = 0; j < nodes.size(); j++) {
+            dfa.add(null);
         }
+        for (DfaNode node : nodes) {
+            if (dfa.get(node.getIndex()) == null) {
+                dfa.set(node.getIndex(), node);
+            } else {
+                System.err.println("error");
+            }
+        }
+
         return dfa;
     }
 
