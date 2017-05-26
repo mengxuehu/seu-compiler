@@ -4,10 +4,11 @@ import java.util.*;
 import java.util.List;
 import lex.fa.node.DfaNode;
 import lex.fa.node.FaNode;
+import lex.fa.node.NfaNode;
 
 public class Dfa {
 
-    private ArrayList<FaNode<Set<Integer>>> nfa;
+    private ArrayList<NfaNode> nfa;
     private ArrayList<DfaNode> nodes;
     private ArrayList<DfaNode> tempNodes;
 
@@ -22,7 +23,7 @@ public class Dfa {
         return accNum;
     }
 
-    Dfa(ArrayList<FaNode<Set<Integer>>> nfa) {
+    Dfa(ArrayList<NfaNode> nfa) {
         this.nfa = nfa;
         this.nodes = new ArrayList<>();
         this.tempNodes = new ArrayList<>();
@@ -85,85 +86,115 @@ public class Dfa {
             if(targets != null) {
                 for (Integer i : targets) {
                     t = nfa.get(i);
-                    if(!result.contains(t))
-                        result.add(t);
+                    result.add(t);
                 }
             }
         }
         return epsilonClosure(result);
     }
 
-    ArrayList<DfaNode> nfaToDfa() {
-        List<Set<FaNode<Set<Integer>>>> nodeSets = new LinkedList<>();
-        Set<String> edges = new HashSet<String>();
+    private DfaNode toDfaNode(Set<FaNode<Set<Integer>>> set) {
+        int action = 9999;
         Map<String, Set<Integer>> trans;
-        int action;
-
-        Set<FaNode<Set<Integer>>> set = new HashSet<>();
-        set.add(nfa.get(0));
-        nodeSets.add(epsilonClosure(set));
-
-        for(int i=0;i < nodeSets.size();i++) {
-            nodes.add(new DfaNode(i));
-            edges.clear();
-            action = 9999;
-
-            for (FaNode<Set<Integer>> node : nodeSets.get(i)) {
-                trans = node.getAllTransitions();
-                for (String edge : trans.keySet()) {
-                    edges.add(edge);
+        DfaNode dfaNode = new DfaNode(0);
+        for (FaNode<Set<Integer>> node : set) {
+            if (node.isAccepting()) {
+                if(node.getAction() < action) {
+                    action = node.getAction();
                 }
-                if (node.isAccepting()) {
-                    if(node.getAction() < action) {
-                        action = node.getAction();
-                        nodes.get(i).setAccepting(action);
+            }
+        }
+        if(action != 9999)
+            dfaNode.setAccepting(action);
+
+        return dfaNode;
+    }
+
+    ArrayList<DfaNode> nfaToDfa() {
+        List<Set<FaNode<Set<Integer>>>> nodeSets = new ArrayList<>();
+        List<Set<FaNode<Set<Integer>>>> nodeSetsNAcc = new ArrayList<>();
+        List<Set<FaNode<Set<Integer>>>> nodeSetsAcc = new ArrayList<>();
+        DfaNode tempNode = new DfaNode(0);
+        Set<String> edges = new HashSet<String>();
+        Set<FaNode<Set<Integer>>> set = new HashSet<>();
+        Map<String, Set<Integer>> trans;
+        int action,indexNAcc=0,indexAcc=-1,currNAcc=0,currAcc=0;
+        boolean isAcc;
+
+        Set<FaNode<Set<Integer>>> setTemp = new HashSet<>();
+        set.add(nfa.get(0));
+        tempNode = toDfaNode(epsilonClosure(set));
+
+        if(tempNode.isAccepting()){
+            tempNode.setIndex(indexAcc);
+            indexAcc--;
+            tempNodes.add(tempNode);
+        } else {
+            tempNode.setIndex(indexNAcc);
+            indexNAcc++;
+            nodes.add(tempNode);
+        }
+
+        while(currNAcc < nodeSetsNAcc.size() || currAcc < nodeSetsAcc.size()) {
+            if(currNAcc < nodeSetsNAcc.size())
+                isAcc = false;
+            else isAcc = true;
+
+            if(!isAcc) {
+                set = nodeSetsNAcc.get(currNAcc);
+                currNAcc++;
+            } else {
+                set = nodeSetsAcc.get(currAcc);
+                currAcc++;
+            }
+
+                if (tempNode.isAccepting()) {
+                    tempNode.setIndex(indexAcc);
+                    indexAcc--;
+                    tempNodes.add(tempNode);
+                }
+
+                for (FaNode<Set<Integer>> node : set) {
+                    trans = node.getAllTransitions();
+                    for (String edge : trans.keySet()) {
+                        edges.add(edge);
+                    }
+                    }
+
+                for (String edge : edges) {
+                    if (!edge.equals("")) {
+                        setTemp = move(edge, set);
+                        tempNode = toDfaNode(setTemp);
+                        if(!tempNode.isAccepting()) {
+                            nodeSetsNAcc.add(setTemp);
+                            nodes.get(currNAcc).addTransition(edge, nodeSets.indexOf(set));
+                        } else {
+                            nodeSetsAcc.add(setTemp);
+                        }
+
                     }
                 }
-            }
-
-            for (String edge : edges) {
-                if (!edge.equals("")) {
-                    set = move(edge, nodeSets.get(i));
-                    if (set.isEmpty())
-                        break;
-                    if (!nodeSets.contains(set))
-                        nodeSets.add(set);
-                    nodes.get(i).addTransition(edge, nodeSets.indexOf(set));
-                }
-            }
         }
 
         //adjust sequence
-        int i = -1;
-        for (int j =0 ;j < nodes.size();j++) {
-            if(nodes.get(j).isAccepting()) {
-                changeIndex(nodes.get(j),i);
-                tempNodes.add(nodes.get(j));
-                nodes.remove(nodes.get(j));
-                j--;
-                i--;
-            }
-        }
-        accStart = nodes.size();
-        nodes.addAll(tempNodes);
-        accNum = nodes.size() - accStart;
-        for (int j = 0;j < nodes.size();j++) {
-            if(nodes.get(j).getIndex() != j) {
-                changeIndex(nodes.get(j),j);
-            }
-        }
-
-        ArrayList<FaNode<Integer>> dfa = new ArrayList<>(nodes.size());
-        for (int j = 0; j < nodes.size(); j++) {
-            dfa.add(null);
-        }
-        for (DfaNode node : nodes) {
-            if (dfa.get(node.getIndex()) == null) {
-                dfa.set(node.getIndex(), node);
-            } else {
-                System.err.println("error");
-            }
-        }
+//        int i = -1;
+//        for (int j =0 ;j < nodes.size();j++) {
+//            if(nodes.get(j).isAccepting()) {
+//                changeIndex(nodes.get(j),i);
+//                tempNodes.add(nodes.get(j));
+//                nodes.remove(nodes.get(j));
+//                j--;
+//                i--;
+//            }
+//        }
+//        accStart = nodes.size();
+//        nodes.addAll(tempNodes);
+//        accNum = nodes.size() - accStart;
+//        for (int j = 0;j < nodes.size();j++) {
+//            if(nodes.get(j).getIndex() != j) {
+//                changeIndex(nodes.get(j),j);
+//            }
+//        }
 
         //test
 //        for(int j = 0;j < dfa.size();j++) {
