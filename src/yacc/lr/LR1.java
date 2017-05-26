@@ -9,7 +9,6 @@ import yacc.entity.Symbols;
 import java.util.*;
 
 class LR1 {
-    private static int ItemSetStateIndexes = 0;
     private Productions productions;
     private Symbols symbols;
     private Map<Integer, HashSet<Integer>> firsts;
@@ -36,9 +35,6 @@ class LR1 {
     private void constructFirsts() {
         for (Integer terminal : symbols.getTerminalIndexes()) {
             multiMapPut(firsts, terminal, terminal);
-//            HashSet<Integer> tmp = new HashSet<>(1);
-//            tmp.add(terminal);
-//            HashSet<Integer> put = firsts.put(terminal, tmp);
         }
 
         // prodsBeginWith, productions whose body begins with a non-terminal
@@ -78,46 +74,44 @@ class LR1 {
     }
 
     private void constructCollection() {
-        collection = new HashSet<>();
-        ItemSet initItemSet = new ItemSet(ItemSetStateIndexes++);
+        Map<ItemSet, Integer> tmpCollectionMap = new HashMap<>();
+        ItemSet initItemSet = new ItemSet(0);
         Item item = new Item(productions.getStart().getIndex(), 0);
         item.addLookaheadSymbol(symbols.getEnd());
         initItemSet.addItem(item);
         initItemSet.closure(productions, symbols, firsts);
-        collection.add(initItemSet);
+        tmpCollectionMap.put(initItemSet, initItemSet.getState());
 
-        ArrayList<ItemSet> tmpCollection = new ArrayList<>(collection);
-        for (int i = 0; i < tmpCollection.size(); i++) {
-            for (Integer j : symbols.getSymbolIndexes()) {
+        ArrayList<ItemSet> tmpCollectionList = new ArrayList<>(tmpCollectionMap.keySet());
+        for (int i = 0; i < tmpCollectionList.size(); i++) {
+            ItemSet currentItemSet = tmpCollectionList.get(i);
+            int currentState = currentItemSet.getState();
+            Set<Integer> nextSymbols = currentItemSet.getNextSymbols(productions, symbols);
+
+            for (Integer j : nextSymbols) {
                 if (symbols.getEnd() != j) {
-                    ItemSet itemSet = tmpCollection.get(i).goto_(j, productions, symbols, firsts);
-                    if (itemSet == null) {
+                    ItemSet nextItemSet = currentItemSet.goto_(j, productions, symbols, firsts);
+                    if (nextItemSet == null) {
                         continue;
                     }
-                    if (!collection.contains(itemSet)) {
-                        itemSet.setState(ItemSetStateIndexes++);
-                        collection.add(itemSet);
-                        tmpCollection.add(itemSet);
-                    } else {
-                        for (ItemSet is : collection) {
-                            if (is.equals(itemSet)) {
-                                itemSet = is;
-                                break;
-                            }
-                        }
+
+                    Integer nextState = tmpCollectionMap.get(nextItemSet);
+                    if (nextState == null) {
+                        nextState = tmpCollectionList.size();
+                        nextItemSet.setState(nextState);
+                        tmpCollectionMap.put(nextItemSet, nextState);
+                        tmpCollectionList.add(nextItemSet);
                     }
                     if (symbols.isTerminal(j)) {
-                        tableAction.put(new Pair<>(i, j), new ShiftAction(itemSet.getState()));
-                    }
-                    int state = tmpCollection.get(i).getState();
-                    if (symbols.isTerminal(j)) {
-                        tableAction.put(new Pair<>(state, j), new ShiftAction(itemSet.getState()));
+                        tableAction.put(new Pair<>(currentState, j), new ShiftAction(nextState));
                     } else {
-                        tableGoto.put(new Pair<>(state, j), itemSet.getState());
+                        tableGoto.put(new Pair<>(currentState, j), nextState);
                     }
                 }
             }
         }
+
+        collection = tmpCollectionMap.keySet();
     }
 
     private void constructAction() {

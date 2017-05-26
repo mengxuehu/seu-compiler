@@ -9,7 +9,7 @@ import java.util.TreeSet;
 class Item implements Comparable<Item> {
     private int productionIndex;
     private int position;
-    private Set<Integer> lookaheadSymbols;
+    private TreeSet<Integer> lookaheadSymbols;
 
     Item(int productionIndex, int position) {
         this.productionIndex = productionIndex;
@@ -37,10 +37,26 @@ class Item implements Comparable<Item> {
         return lookaheadSymbols;
     }
 
-//    boolean isSameTo(Item item) {
-//        return (productionIndex == item.productionIndex
-//                && position == item.position
-//                && lookaheadSymbols.equals(item.lookaheadSymbols));
+    boolean isSameTo(Item item) {
+        return (productionIndex == item.productionIndex
+                && position == item.position
+                && lookaheadSymbols.equals(item.lookaheadSymbols));
+    }
+
+//    public boolean absolute_equal(Item o) {
+//        if (productionIndex != o.productionIndex
+//                || position != o.position
+//                || lookaheadSymbols.size() != o.lookaheadSymbols.size()) {
+//            return false;
+//        }
+//
+//        Iterator<Integer> il = lookaheadSymbols.iterator(), ir = o.lookaheadSymbols.iterator();
+//        while (il.hasNext()) {
+//            if (!il.next().equals(ir.next())) {
+//                return false;
+//            }
+//        }
+//        return true;
 //    }
 
     @Override

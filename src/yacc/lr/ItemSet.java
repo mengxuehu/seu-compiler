@@ -7,12 +7,11 @@ import yacc.entity.Symbols;
 import java.util.*;
 
 class ItemSet implements Comparable<ItemSet> {
-    private Integer state;
-    private Set<Item> items;
+    private Integer state = null;
+    private TreeSet<Item> items;
 
 
-    ItemSet() {
-        this.state = null;
+    private ItemSet() {
         items = new TreeSet<>();
     }
 
@@ -27,6 +26,15 @@ class ItemSet implements Comparable<ItemSet> {
 
     void setState(int state) {
         this.state = state;
+    }
+
+    Set<Integer> getNextSymbols(Productions productions, Symbols symbols) {
+        Set<Integer> next = new HashSet<>();
+        for (Item item : items) {
+            List<Integer> body = productions.getProductions().get(item.getProductionIndex()).getBody();
+            next.add(item.getPosition() == body.size() ? symbols.getEnd() : body.get(item.getPosition()));
+        }
+        return next;
     }
 
     Set<Item> getItems() {
@@ -76,17 +84,6 @@ class ItemSet implements Comparable<ItemSet> {
                     continue;
                 }
                 HashSet<Integer> tmpLookaheadSymbols = new HashSet<>();
-//                if (item.getPosition() == body.size() - 1) {
-//                    item.getLookaheadSymbols();
-//                } else {
-//                    System.out.println(body.get(item.getPosition() + 1));
-//                    for (Map.Entry<String, Integer> entry : symbols.getSymbols().entrySet()) {
-//                        if (entry.getValue().equals(body.get(item.getPosition() + 1))) {
-//                            System.out.println(entry.getKey());
-//                        }
-//                    }
-//                    System.out.println(firsts.get(body.get(item.getPosition() + 1)));
-//                }
                 tmpLookaheadSymbols.addAll((item.getPosition() == body.size() - 1)
                         ? item.getLookaheadSymbols()
                         : firsts.get(body.get(item.getPosition() + 1)));
@@ -106,7 +103,20 @@ class ItemSet implements Comparable<ItemSet> {
 
     @Override
     public int compareTo(ItemSet o) {
-        return Integer.compare(state, o.state);
+        if (items.size() < o.items.size()) {
+            return -1;
+        } else if (items.size() > o.items.size()) {
+            return 1;
+        } else {
+            Iterator<Item> il = items.iterator(), ir = o.items.iterator();
+            while (il.hasNext()) {
+                int i = il.next().compareTo(ir.next());
+                if (i != 0) {
+                    return i;
+                }
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -128,7 +138,7 @@ class ItemSet implements Comparable<ItemSet> {
         }
         Iterator<Item> il = items.iterator(), ir = itemSet.items.iterator();
         while (il.hasNext()) {
-            if (il.next().compareTo(ir.next()) != 0) {
+            if (!il.next().isSameTo(ir.next())) {
                 return false;
             }
         }
