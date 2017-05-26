@@ -15,18 +15,28 @@ public class ParserGenerator {
     private static final String HEADER_NAME = "yacc.tab.h", SOURCE_NAME = "yacc.tab.cpp";
 
     public void generate(Productions productions, Symbols symbols, String programs) {
+        long t1 = System.currentTimeMillis();
+
         LR1 lr1 = new LR1();
         lr1.parse(productions, symbols);
         Map<Pair<Integer, Integer>, Integer> tableGoto = lr1.getTableGoto();
         Map<Pair<Integer, Integer>, Action> tableAction = lr1.getTableAction();
         Set<ItemSet> collection = lr1.getCollection();
 
+        long t2 = System.currentTimeMillis();
+        System.out.println("LR1: " + (t2 - t1));
+
         LALR1 lalr1 = new LALR1();
         lalr1.generateLALR1(collection, tableGoto, tableAction);
         Map<Pair<Integer, Integer>, Integer> tableGotoLALR1 = lalr1.getTableGoto();
         Map<Pair<Integer, Integer>, Action> tableActionLALR1 = lalr1.getTableAction();
 
+        long t3 = System.currentTimeMillis();
+        System.out.println("LALR1: " + (t3 - t2));
+
         doGenerate(tableGotoLALR1, tableActionLALR1, productions, symbols, programs);
+
+        System.out.println("Generating Code: " + (System.currentTimeMillis() - t3));
     }
 
     private void doGenerate(Map<Pair<Integer, Integer>, Integer> tableGoto,

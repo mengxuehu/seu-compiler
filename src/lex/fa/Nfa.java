@@ -48,7 +48,7 @@ class Nfa {
         }
     }
 
-    ArrayList<FaNode<Set<Integer>>> construct(Map<Integer, String[]> postfixRes) {
+    ArrayList<NfaNode> construct(Map<Integer, String[]> postfixRes) {
         nodes = new LinkedList<>();
         indexes = 0;
         nodes.add(new NfaNode(getNextIndex()));
@@ -59,7 +59,7 @@ class Nfa {
             nodes.addAll(nfa.nodes);
         }
 
-        ArrayList<FaNode<Set<Integer>>> nfa = new ArrayList<>(getIndexUpperBound());
+        ArrayList<NfaNode> nfa = new ArrayList<>(getIndexUpperBound());
         for (int i = 0; i < getIndexUpperBound(); i++) {
             nfa.add(null);
         }
