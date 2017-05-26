@@ -16,7 +16,7 @@
 
 primary_expression
 	: IDENTIFIER
-	| CONSTANT	{test}
+	| CONSTANT	{std::cout << "hello" << std::endl;}
 	| STRING_LITERAL
 	| '(' expression ')'
 	;

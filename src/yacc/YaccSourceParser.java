@@ -106,7 +106,7 @@ public class YaccSourceParser {
                             List<Integer> symbolList = new LinkedList<>();
                             symbolList.add(start);
                             productions.addAugmentedStartAndSetIndex(
-                                    new Production(symbols.getStartAug(), symbolList), "");
+                                    new Production(symbols.getStartAug(), symbolList, ""));
                         }
                     }
                 } else if (section == RULES) {
@@ -200,11 +200,10 @@ public class YaccSourceParser {
                             symbols.getSymbolIndex(i) : symbols.addNonTerminal(i));
                 }
             }
-            Production production = new Production(headIdx, symbolList);
             if (ruleBody.length == 2 && ruleBody[1].matches("\\s*\\S.*")) {
-                productions.addProductionAndSetIndex(production, ruleBody[1]);
+                productions.addProductionAndSetIndex(new Production(headIdx, symbolList, ruleBody[1]));
             } else {
-                productions.addProductionAndSetIndex(production, "");
+                productions.addProductionAndSetIndex(new Production(headIdx, symbolList, ""));
             }
         }
     }

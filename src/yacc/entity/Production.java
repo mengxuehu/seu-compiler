@@ -7,10 +7,12 @@ public class Production {
     private Integer head;
     private List<Integer> body;
     private Integer index = null;
+    private String action = null;
 
-    public Production(int head, List<Integer> body) {
+    public Production(int head, List<Integer> body, String action) {
         this.head = head;
         this.body = body;
+        this.action = action;
     }
 
     public Integer getHead() {
@@ -27,5 +29,9 @@ public class Production {
 
     public List<Integer> getBody() {
         return body;
+    }
+
+    public String getAction() {
+        return action;
     }
 }

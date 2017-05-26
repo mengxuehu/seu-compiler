@@ -3,6 +3,7 @@ package yacc;
 
 import yacc.entity.Productions;
 import yacc.entity.Symbols;
+import yacc.lr.ParserGenerator;
 
 import java.nio.file.Paths;
 
@@ -14,7 +15,7 @@ public class Yacc {
         Productions productions = yaccSourceParser.getProductions();
         Symbols symbols = yaccSourceParser.getSymbols();
 
-
+        new ParserGenerator().generate(productions, symbols, programs);
     }
 
     public static void main(String[] args) {

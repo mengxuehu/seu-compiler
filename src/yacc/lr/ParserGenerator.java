@@ -14,7 +14,7 @@ import java.util.Set;
 public class ParserGenerator {
     private static final String HEADER_NAME = "yacc.tab.h", SOURCE_NAME = "yacc.tab.cpp";
 
-    void generate(Productions productions, Symbols symbols, String programs) {
+    public void generate(Productions productions, Symbols symbols, String programs) {
         LR1 lr1 = new LR1();
         lr1.parse(productions, symbols);
         Map<Pair<Integer, Integer>, Integer> tableGoto = lr1.getTableGoto();
@@ -63,15 +63,16 @@ public class ParserGenerator {
                 .append("#include <stack>\n")
                 .append("#include <utility>\n")
                 .append("#include <iostream>\n")
-                .append("#include <string>\n")
                 .append("\n")
-                .append(programs)
-                .append("\n\n")
+                .append("extern int yylex(void);\n")
                 .append("void yyparse(void);\n")
+                .append("void do_action(int production_index);\n")
                 .append("int main() {\n")
                 .append("\tyyparse();\n")
                 .append("\treturn 0;\n")
-                .append("}\n");
+                .append("}\n")
+                .append("\n");
+
         generateData(tableGoto, tableAction, productions, source);
 
         source.append("void yyparse(void) {\n")
@@ -81,14 +82,14 @@ public class ParserGenerator {
                 .append("\t\tint next = yylex();\n")
                 .append("\t\tstd::pair<int, int> key(stack_state.top(), next);\n")
                 .append("\t\tstd::pair<int, int> action;\n")
-                .append("\t\tauto it = table_action.find(key);\n")
-                .append("\t\tif (it == table_action.end()) {\n")
+                .append("\t\tauto action_iter = table_action.find(key);\n")
+                .append("\t\tif (action_iter == table_action.end()) {\n")
                 .append("\t\t\tstd::cerr << \"Error: unknown token\" << std::endl;\n")
                 .append("\t\t} else {\n")
-                .append("\t\t\taction = std::make_pair(it ->second.first, it ->second.second);\n")
+                .append("\t\t\taction = std::make_pair(action_iter -> second.first, action_iter -> second.second);\n")
                 .append("\t\t}\n")
                 .append("\t\tint head, body_size;\n")
-                .append("\t\tstd::map<std::pair<int, int>, int>::iterator iter;\n")
+                .append("\t\tstd::map<std::pair<int, int>, int>::iterator goto_iter;\n")
                 .append("\t\tswitch (action.first) {\n")
                 .append("\t\t\tcase SHIFT:\n")
                 .append("\t\t\t\tstack_state.push(action.second);\n")
@@ -96,6 +97,7 @@ public class ParserGenerator {
                 .append("\t\t\t\tnext = yylex();\n")
                 .append("\t\t\t\tbreak;\n")
                 .append("\t\t\tcase REDUCE:\n")
+                .append("\t\t\t\tdo_action(action.second);\n")
                 .append("\t\t\t\thead = productions[action.second].first;\n")
                 .append("\t\t\t\tbody_size = productions[action.second].second;\n")
                 .append("\t\t\t\tfor (int i = 0; i < body_size; ++i) {\n")
@@ -103,11 +105,11 @@ public class ParserGenerator {
                 .append("\t\t\t\t\tstack_symbol.pop();\n")
                 .append("\t\t\t\t}\n")
                 .append("\t\t\t\tkey = std::make_pair(stack_state.top(), head);\n")
-                .append("\t\t\t\titer = table_goto.find(key);\n")
-                .append("\t\t\t\tif (iter == table_goto.end()) {\n")
+                .append("\t\t\t\tgoto_iter = table_goto.find(key);\n")
+                .append("\t\t\t\tif (goto_iter == table_goto.end()) {\n")
                 .append("\t\t\t\t\tstd::cerr << \"Error: Unknown token\" << std::endl;\n")
                 .append("\t\t\t\t} else {\n")
-                .append("\t\t\t\t\tstack_state.push(iter -> second);\n")
+                .append("\t\t\t\t\tstack_state.push(goto_iter -> second);\n")
                 .append("\t\t\t\t\tstack_symbol.push(head);\n")
                 .append("\t\t\t\t}\n")
                 .append("\t\t\t\tbreak;\n")
@@ -116,6 +118,24 @@ public class ParserGenerator {
                 .append("\t\t\tdefault:\n")
                 .append("\t\t\t\tstd::cerr << \"Error: Unknown action type\" << std::endl;\n")
                 .append("\t\t}\n")
+                .append("\t}\n")
+                .append("}\n")
+                .append("\n")
+                .append("void do_action(int production_index) {\n")
+                .append("\tswitch (production_index) {\n");
+
+        for (Production production : productions.getProductions()) {
+            if (production.getAction().length() == 0) {
+                continue;
+            }
+            source.append("\t\tcase ").append(production.getIndex()).append(": {\n")
+                    .append(production.getAction()).append("\n")
+                    .append("\t\t\tbreak;\n")
+                    .append("\t\t}\n");
+        }
+
+        source.append("\t\tdefault:\n")
+                .append("\t\t\tbreak;\n")
                 .append("\t}\n")
                 .append("}\n");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(SOURCE_NAME))) {

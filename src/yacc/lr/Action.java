@@ -30,7 +30,7 @@ class ShiftAction extends Action {
         this.shiftTarget = shiftTarget;
     }
 
-    public int getShiftTarget() {
+    int getShiftTarget() {
         return shiftTarget;
     }
 }
@@ -38,12 +38,12 @@ class ShiftAction extends Action {
 class ReduceAction extends Action {
     private int productionReducingBy;
 
-    public ReduceAction(int productionReducingBy) {
+    ReduceAction(int productionReducingBy) {
         super(ActionType.REDUCE);
         this.productionReducingBy = productionReducingBy;
     }
 
-    public int getProductionReducingBy() {
+    int getProductionReducingBy() {
         return productionReducingBy;
     }
 }
