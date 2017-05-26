@@ -21,9 +21,9 @@ class Nfa {
         if (escapeChars == null) {
             escapeChars = new HashMap<>();
             //.-|@?!
-            String[] source = {"\\a", "\\b", "\\f", "\\n", "\\r", "\\t", "\\v", "\\\\", "\\'", "\\\"", "\\?",
+            String[] source = {"\\a", "\\b", "\\f", "\\n", "\\r", "\\t", "\\v", "\\\\", "\\'", "\\\"",
                     "\\(", "\\)", "\\[", "\\]", "\\*", "\\+", "\\.", "\\-", "\\|", "\\@", "\\?", "\\!"};
-            int[] target = {0x07, 0x08, 0x0C, 0x0A, 0x0D, 0x09, 0x0B, 0x5C, 0x27, 0x22, 0x3F,
+            int[] target = {0x07, 0x08, 0x0C, 0x0A, 0x0D, 0x09, 0x0B, 0x5C, 0x27, 0x22,
                     '(', ')', '[', ']', '*', '+', '.', '-', '|', '@', '?', '!'};
             for (int i = 0; i < source.length; i++) {
                 escapeChars.put(source[i], String.valueOf((char) target[i]));
