@@ -3,6 +3,7 @@ package lex.fa;
 
 import lex.fa.node.DfaNode;
 import lex.fa.node.FaNode;
+import lex.fa.node.NfaNode;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -17,7 +18,7 @@ public class LexerGenerator {
     public void generate(Map<Integer, String[]> postfixRes, String[] ruleAction, String userRoutines) {
         long t1 = System.currentTimeMillis();
 
-        ArrayList<FaNode<Set<Integer>>> nfa = new Nfa().construct(postfixRes);
+        ArrayList<NfaNode> nfa = new Nfa().construct(postfixRes);
 
         long t2 = System.currentTimeMillis();
         System.out.println("NFA: " + (t2 - t1));
