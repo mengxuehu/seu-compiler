@@ -2,7 +2,9 @@ package lex;
 
 import lex.fa.LexerGenerator;
 
+import java.lang.reflect.Array;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

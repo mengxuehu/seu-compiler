@@ -1,12 +1,17 @@
 package lex;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
+import java.util.*;
 
 public class ReParser {
 
     public final static String epsilon = "\\~";
+    public final static String[] universalSet = {"\\b", "\\t", "\\n", "\\f", "\\r", "\\v", " ", "!",
+            "#", "$", "%", "&", "'", "\\(", "\\)", "\\*", "\\+", ",", "\\-", "\\.", "/", "0", "\\\"",
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", ";", "<", "=", ">", "\\?", "\\@", "A", "B",
+            "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+            "U", "V", "W", "X", "Y", "Z", "\\[", "\\\\", "\\]", "\\^", "_", "\'", "a", "b", "c", "d", "e",
+            "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w",
+            "x", "y", "z", "{", "\\|", "}", "~", "`"};
     private ArrayList<String> postfixRe = new ArrayList<>();
 
     String[] parse(String re) {
@@ -19,11 +24,12 @@ public class ReParser {
         for (int i = 0; i < returnString.length; i++) {
             returnString[i] = postfixRe.get(i);
         }
+
         return returnString;
     }
 
     private String processBrackets(String re) {
-        //delete []
+        //delete [] and ! and .
         StringBuilder regularRe = new StringBuilder();
 
         for (int i = 0; i < re.length(); i++) {
@@ -33,14 +39,31 @@ public class ReParser {
                 char pre = 0;
                 regularRe.append('(');
                 while (i + 1 < re.length() && re.charAt(++i) != ']') {
-                    if (re.charAt(i) == '[')
+                    if (re.charAt(i) == '[') {
+                        regularRe.append('(');
                         times++;
-                    else if (re.charAt(i) == '^') {
-                        regularRe.append('!');
+                    } else if (re.charAt(i) == '^') {
+//                        regularRe.append('!');
+                        regularRe.append('(');
+                        StringBuilder tempbuild = new StringBuilder();
+                        Set<String> nonstring = new HashSet<>();
                         while (i + 1 < re.length() && re.charAt(++i) != ']') {
-                            regularRe.append(re.charAt(i));
+                            if (re.charAt(i) == '\\' && i + 1 < re.length()) {
+                                tempbuild.append(re.charAt(i));
+                                tempbuild.append(re.charAt(++i));
+                            }
+                            nonstring.add(tempbuild.toString());
+                            tempbuild.delete(0, tempbuild.length());
+//                            regularRe.append(re.charAt(i));
                         }
-                        regularRe.append('|');
+                        for (int m = 0; m < universalSet.length; m++) {
+                            if (!nonstring.contains(universalSet[m])) {
+                                regularRe.append(universalSet[m]);
+                                regularRe.append('|');
+                            }
+                        }
+                        regularRe.deleteCharAt(regularRe.length() - 1);
+                        regularRe.append(')');
                         i--;
                     } else if (re.charAt(i) == '-') {
                         char post = re.charAt(i + 1);
@@ -71,11 +94,13 @@ public class ReParser {
                     }
                     // tell if solve all nested []
                     if (i + 1 < re.length() && times != 0 && re.charAt(i + 1) == ']') {
+                        regularRe.append(')');
                         i++;
                         times--;
                     }
                 }
-                regularRe.deleteCharAt(regularRe.length() - 1);
+                if (regularRe.charAt(regularRe.length() - 1) == '|')
+                    regularRe.deleteCharAt(regularRe.length() - 1);
                 regularRe.append(')');
             } else if (re.charAt(i) == '?' || re.charAt(i) == '+' || re.charAt(i) == '*') {
                 //sunion a serial of ? + *, but not transform to *
@@ -99,6 +124,16 @@ public class ReParser {
             } else if (re.charAt(i) == '\\') { //solve transform meaning
                 regularRe.append(re.charAt(i));
                 regularRe.append(re.charAt(++i));
+            } else if (re.charAt(i) == '.') {
+                regularRe.append('(');
+                for (int m = 0; m < universalSet.length; m++) {
+                    if (m == 2)
+                        continue;
+                    regularRe.append(universalSet[m]);
+                    regularRe.append('|');
+                }
+                regularRe.deleteCharAt(regularRe.length() - 1);
+                regularRe.append(')');
             } else { //normal solve
                 regularRe.append(re.charAt(i));
             }
@@ -118,18 +153,20 @@ public class ReParser {
             } else if (mediumRe.charAt(i) == '?' && mediumRe.charAt(i - 1) == ')') {
                 //need to tell pre-char.if pre-char is ), need to solve the chars in the ()
                 int length = regularRe.length() - 1, times = 0;
-                while (regularRe.charAt(length) != '(') {
+                while (regularRe.charAt(length) != '(' || times != 0) {
                     if (regularRe.charAt(length) == ')')
                         times++;
                     tempRe.append(regularRe.charAt(length));
                     regularRe.deleteCharAt(length);
                     length--;
-                    if (regularRe.charAt(length) == '(' && times > 1) {
+                    while (regularRe.charAt(length) == '(' && times > 1) {
                         tempRe.append(regularRe.charAt(length));
                         regularRe.deleteCharAt(length);
                         length--;
                         times--;
                     }
+                    if (times == 1 && regularRe.charAt(length) == '(')
+                        break;
                 }
                 regularRe.deleteCharAt(length);
                 tempRe.append('(');
@@ -156,12 +193,14 @@ public class ReParser {
                     tempRe.append(regularRe.charAt(length));
                     regularRe.deleteCharAt(length);
                     length--;
-                    if (regularRe.charAt(length) == '(' && times > 1) {
+                    while (regularRe.charAt(length) == '(' && times > 1) {
                         tempRe.append(regularRe.charAt(length));
                         regularRe.deleteCharAt(length);
                         length--;
                         times--;
                     }
+                    if (times == 1 && regularRe.charAt(length) == '(')
+                        break;
                 }
                 regularRe.deleteCharAt(length);
                 tempRe.append('(');
@@ -199,13 +238,15 @@ public class ReParser {
                     regularRe.append('@');
                 regularRe.append(mediumRe.charAt(i));
                 regularRe.append(mediumRe.charAt(++i));
-            } else if (mediumRe.charAt(i) == '!') {
-                while (i + 1 < mediumRe.length() && mediumRe.charAt(i) != ')') {
-                    regularRe.append(mediumRe.charAt(i));
-                    i++;
-                }
-                i--;
-            } else if (pre == '(' || mediumRe.charAt(i) == '*' || mediumRe.charAt(i) == '|'
+            }
+//            } else if (mediumRe.charAt(i) == '!') {
+//                while (i + 1 < mediumRe.length() && mediumRe.charAt(i) != ')') {
+//                    regularRe.append(mediumRe.charAt(i));
+//                    i++;
+//                }
+//                i--;
+//            }
+            else if (pre == '(' || mediumRe.charAt(i) == '*' || mediumRe.charAt(i) == '|'
                     || pre == '|' || mediumRe.charAt(i) == ')') {
                 regularRe.append(mediumRe.charAt(i));
             } else {
@@ -279,12 +320,14 @@ public class ReParser {
             } else if (mediumRe.charAt(i) == '\\') {
                 identifier.push(mediumRe.substring(i, i + 2));
                 i++;
-            } else if (mediumRe.charAt(i) == '!') {
-                int j = i;
-                while (mediumRe.charAt(++i) != ')') ;
-                identifier.push(mediumRe.substring(j, i));
-                i--;
-            } else {
+            }
+//            else if (mediumRe.charAt(i) == '!') {
+//                int j = i;
+//                while (mediumRe.charAt(++i) != ')') ;
+//                identifier.push(mediumRe.substring(j, i));
+//                i--;
+//            }
+            else {
                 identifier.push(String.valueOf(mediumRe.charAt(i)));
             }
         }
@@ -319,9 +362,9 @@ public class ReParser {
         return postfixRe;
     }
 
-//    public static void main(String[] args) {
-//        ReParser ReParser = new ReParser();
-//        System.out.println("L?'(\\\\.|[^\\\\'\\n])+'");
-//        ReParser.parse("L?'(\\\\.|[^\\\\'\\n])+'");
-//    }
+    public static void main(String[] args) {
+        ReParser ReParser = new ReParser();
+        System.out.println("L?'(\\\\.|[^\\\\'\\n])+'");
+        ReParser.parse("L?'(\\\\.|[^\\\\'\\n])+'");
+    }
 }
