@@ -28,7 +28,7 @@ public class LexerGenerator {
             bw.write(userRoutines + "\n");
             bw.write("#include <sstream>\n");
             bw.write("#include <ifstream>\n");
-            bw.write("#include <iostream>");
+            bw.write("#include <iostream>\n");
             bw.write("extern int yylex() {\n");
             bw.write("\tint state = " + dfa.get(0).getIndex() + ";\n");
             bw.write("\tint i = 0;\n");
@@ -40,7 +40,7 @@ public class LexerGenerator {
             bw.write("\t\tstr << next;\n");
             bw.write("\t\tstring str = stream.str()\n");
             bw.write("\t\tswitch(state) {\n");
-            for (FaNode<Integer> dfaNode : dfa) {
+            for (DfaNode dfaNode : dfa) {
                 bw.write("\t\t\tcase " + dfaNode.getIndex() + ":\n");
                 Map<String, Integer> trans = dfaNode.getAllTransitions();
 
@@ -61,7 +61,7 @@ public class LexerGenerator {
                     bw.write("\t\t\t\t\tbreak;\n");
                     bw.write("\t\t\t\t}\n");
                 }
-                bw.write("in.seekg(-1, ios::cur)");
+                bw.write("\t\t\t\tin.seekg(-1, ios::cur);\n");
                 if (dfaNode.isAccepting()) {
                     bw.write("\t\t\t\treturn " + ruleAction[dfaNode.getAction()] + ";\n");
                 } else {

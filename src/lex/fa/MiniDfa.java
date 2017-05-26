@@ -155,8 +155,9 @@ class MiniDfa {
                         }
                         if (!isAdd) {
                             newNonTerminalSet.setState(i);
-                            newNonTerminalSet.addMember(state);
+                            newNonTerminalSet.addMember(memStates);
                             newNonTerminalSet.addAllDestination(deSet);
+                            newSet.add(newNonTerminalSet);
                             i++;
                         }
 
@@ -167,7 +168,7 @@ class MiniDfa {
                 isChanged = false;
             } else {
                 oldSet = newSet;
-                newSet.clear();
+                newSet = new LinkedList<>();
             }
         }
         return newSet;
