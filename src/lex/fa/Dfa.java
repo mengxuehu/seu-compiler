@@ -94,8 +94,7 @@ public class Dfa {
     }
 
     private DfaNode toDfaNode(Set<FaNode<Set<Integer>>> set) {
-        int action = 9999;
-        Map<String, Set<Integer>> trans;
+        int action = Integer.MAX_VALUE;
         DfaNode dfaNode = new DfaNode(0);
         for (FaNode<Set<Integer>> node : set) {
             if (node.isAccepting()) {
@@ -104,105 +103,96 @@ public class Dfa {
                 }
             }
         }
-        if(action != 9999)
+        if(action != Integer.MAX_VALUE)
             dfaNode.setAccepting(action);
 
         return dfaNode;
     }
 
     ArrayList<DfaNode> nfaToDfa() {
-        List<Set<FaNode<Set<Integer>>>> nodeSets = new ArrayList<>();
+        List<Set<FaNode<Set<Integer>>>> currNodeSets = new ArrayList<>();
         List<Set<FaNode<Set<Integer>>>> nodeSetsNAcc = new ArrayList<>();
         List<Set<FaNode<Set<Integer>>>> nodeSetsAcc = new ArrayList<>();
+        DfaNode currNode = new DfaNode(0);
         DfaNode tempNode = new DfaNode(0);
+        Set<FaNode<Set<Integer>>> currSet = new HashSet<>();
+        Set<FaNode<Set<Integer>>> tempSet = new HashSet<>();
         Set<String> edges = new HashSet<String>();
-        Set<FaNode<Set<Integer>>> set = new HashSet<>();
         Map<String, Set<Integer>> trans;
-        int action,indexNAcc=0,indexAcc=-1,currNAcc=0,currAcc=0;
-        boolean isAcc;
+        int currNAcc=0,currAcc=0,index;
 
-        Set<FaNode<Set<Integer>>> setTemp = new HashSet<>();
-        set.add(nfa.get(0));
-        tempNode = toDfaNode(epsilonClosure(set));
 
+        currSet.add(nfa.get(0));
+        tempNode = toDfaNode(epsilonClosure(currSet));
         if(tempNode.isAccepting()){
-            tempNode.setIndex(indexAcc);
-            indexAcc--;
             tempNodes.add(tempNode);
+            tempNode.setIndex(-1-tempNodes.indexOf(tempNode));
         } else {
-            tempNode.setIndex(indexNAcc);
-            indexNAcc++;
             nodes.add(tempNode);
+            tempNode.setIndex(nodes.indexOf(tempNode));
         }
 
         while(currNAcc < nodeSetsNAcc.size() || currAcc < nodeSetsAcc.size()) {
-            if(currNAcc < nodeSetsNAcc.size())
-                isAcc = false;
-            else isAcc = true;
-
-            if(!isAcc) {
-                set = nodeSetsNAcc.get(currNAcc);
+            if(currNAcc < nodeSetsNAcc.size()) {
+                currNode = nodes.get(currNAcc);
+                currNodeSets = nodeSetsNAcc;
+                index = currNAcc;
                 currNAcc++;
-            } else {
-                set = nodeSetsAcc.get(currAcc);
+            }
+            else  {
+                currNode = tempNodes.get(currAcc);
+                currNodeSets = nodeSetsAcc;
+                index = currAcc;
                 currAcc++;
             }
 
-                if (tempNode.isAccepting()) {
-                    tempNode.setIndex(indexAcc);
-                    indexAcc--;
-                    tempNodes.add(tempNode);
-                }
+                currSet = currNodeSets.get(index);
 
-                for (FaNode<Set<Integer>> node : set) {
+                for (FaNode<Set<Integer>> node : currSet) {
                     trans = node.getAllTransitions();
                     for (String edge : trans.keySet()) {
                         edges.add(edge);
                     }
-                    }
+                }
 
                 for (String edge : edges) {
                     if (!edge.equals("")) {
-                        setTemp = move(edge, set);
-                        tempNode = toDfaNode(setTemp);
+                        tempSet = move(edge, currSet);
+                        tempNode = toDfaNode(tempSet);
                         if(!tempNode.isAccepting()) {
-                            nodeSetsNAcc.add(setTemp);
-                            nodes.get(currNAcc).addTransition(edge, nodeSets.indexOf(set));
+                            if(!nodeSetsNAcc.contains(tempSet)) {
+                                nodeSetsNAcc.add(tempSet);
+                                nodes.add(tempNode);
+                                tempNode.setIndex(nodes.indexOf(tempNode));
+                            }
+                            currNode.addTransition(edge, nodeSetsNAcc.indexOf(tempSet));
                         } else {
-                            nodeSetsAcc.add(setTemp);
+                            if(!nodeSetsAcc.contains(tempSet)) {
+                                nodeSetsAcc.add(tempSet);
+                                tempNodes.add(tempNode);
+                                tempNode.setIndex(-1-tempNodes.indexOf(tempNode));
+                            }
+                            currNode.addTransition(edge, -1-nodeSetsAcc.indexOf(tempSet));
                         }
-
                     }
                 }
         }
 
         //adjust sequence
-//        int i = -1;
-//        for (int j =0 ;j < nodes.size();j++) {
-//            if(nodes.get(j).isAccepting()) {
-//                changeIndex(nodes.get(j),i);
-//                tempNodes.add(nodes.get(j));
-//                nodes.remove(nodes.get(j));
-//                j--;
-//                i--;
-//            }
-//        }
-//        accStart = nodes.size();
-//        nodes.addAll(tempNodes);
-//        accNum = nodes.size() - accStart;
-//        for (int j = 0;j < nodes.size();j++) {
-//            if(nodes.get(j).getIndex() != j) {
-//                changeIndex(nodes.get(j),j);
-//            }
-//        }
+        accStart = nodes.size();
+        nodes.addAll(tempNodes);
+        accNum = nodes.size() - accStart;
+        for (int j = accStart;j < nodes.size();j++) {
+                changeIndex(nodes.get(j),j);
+        }
 
         //test
-//        for(int j = 0;j < dfa.size();j++) {
-//            Map<String,Integer> ts = dfa.get(j).getAllTransitions();
-//            for (String edge : ts.keySet()) {
-//                System.out.println(j + " " + edge + " " + ts.get(edge));
-//            }
-//        }
+        for(int j = 0;j < nodes.size();j++) {
+            Map<String,Integer> ts = nodes.get(j).getAllTransitions();
+            for (String edge : ts.keySet()) {
+                System.out.println(j + " " + edge + " " + ts.get(edge));
+            }
+        }
 
         return nodes;
     }
