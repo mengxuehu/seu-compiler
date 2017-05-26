@@ -79,19 +79,15 @@ class Nfa {
         for (String s : postfixRe) {
             switch (s.charAt(0)) {
                 case '*':
-                    Nfa nfa = stack.pop();
-                    nfa.closure();
-                    stack.push(nfa);
+                    stack.push(stack.pop().closure());
                     break;
                 case '|':
-                    nfa = stack.pop();
-                    nfa.union(stack.pop());
-                    stack.push(nfa);
+                    Nfa nfa = stack.pop();
+                    stack.push(stack.pop().union(nfa));
                     break;
                 case '@':
                     nfa = stack.pop();
-                    nfa.concatenation(stack.pop());
-                    stack.push(nfa);
+                    stack.push(stack.pop().concatenation(nfa));
                     break;
                 default:
                     stack.push(new Nfa(processOperand(s)));
@@ -100,7 +96,6 @@ class Nfa {
         }
 
         Nfa nfa = stack.pop();
-        assert stack.isEmpty();
         nfa.nodes.getLast().setAccepting(action);
         return nfa;
     }
@@ -109,7 +104,7 @@ class Nfa {
         return indexes;
     }
 
-    private void closure() {
+    private Nfa closure() {
         int oldBegin = nodes.getFirst().getIndex();
         int newEnd = getNextIndex();
 
@@ -121,9 +116,10 @@ class Nfa {
 
         nodes.getFirst().addTransition("", oldBegin);
         nodes.getFirst().addTransition("", nodes.getLast().getIndex());
+        return this;
     }
 
-    private void union(Nfa nfa) {
+    private Nfa union(Nfa nfa) {
         NfaNode newFirst = new NfaNode(getNextIndex(), "", this.nodes.getFirst().getIndex());
         newFirst.addTransition("", nfa.nodes.getFirst().getIndex());
 
@@ -134,12 +130,14 @@ class Nfa {
         this.nodes.addAll(nfa.nodes);
         this.nodes.addFirst(newFirst);
         this.nodes.addLast(newLast);
+        return this;
     }
 
-    private void concatenation(Nfa nfa) {
+    private Nfa concatenation(Nfa nfa) {
         NfaNode node = nfa.nodes.removeFirst();
         this.nodes.getLast().addAllTransitions(node.getAllTransitions());
         this.nodes.addAll(nfa.nodes);
+        return this;
     }
 
     private String processOperand(String operand) {
