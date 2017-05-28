@@ -44,7 +44,7 @@ public class LexerGenerator {
     private void doGenerate(ArrayList<DfaNode> dfa, String[] ruleAction, String userRoutines) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILENAME))) {
             bw.write(userRoutines + "\n");
-            bw.write("#include <sstream>\n");
+//            bw.write("#include <sstream>\n");
             bw.write("#include <ifstream>\n");
             bw.write("#include <iostream>\n");
             bw.write("extern int yylex() {\n");
@@ -54,34 +54,35 @@ public class LexerGenerator {
             //start
             bw.write("\twhile(true) {\n");
             bw.write("\t\tchar next = in.get();\n");
-            bw.write("\t\tstd::stringstream str;\n");
-            bw.write("\t\tstr << next;\n");
-            bw.write("\t\tstring str = stream.str()\n");
+//            bw.write("\t\tstd::stringstream str;\n");
+//            bw.write("\t\tstr << next;\n");
+//            bw.write("\t\tstring str = stream.str()\n");
             bw.write("\t\tswitch(state) {\n");
             for (DfaNode dfaNode : dfa) {
                 bw.write("\t\t\tcase " + dfaNode.getIndex() + ":\n");
                 Map<String, Integer> trans = dfaNode.getAllTransitions();
 
                 for (String edge : trans.keySet()) {
-                    if (edge.length() > 1 && edge.charAt(0) == '!') {
-                        bw.write("\t\t\t\tif(");
-                        for (int i = 1; i < edge.length(); i++) {
-                            String sub = edge.substring(i, i + 1);
-                            bw.write("\t\t\t\tstr != \"" + sub + "\"");
-                            if (i != edge.length() - 1)
-                                bw.write("&&");
-                        }
-                        bw.write(") {\n");
-                    } else {
-                        bw.write("\t\t\t\tif(str == \"" + edge + "\") {\n");
-                    }
+//                    if (edge.length() > 1 && edge.charAt(0) == '!') {
+//                        bw.write("\t\t\t\tif(");
+//                        for (int i = 1; i < edge.length(); i++) {
+//                            String sub = edge.substring(i, i + 1);
+//                            bw.write("\t\t\t\tstr != \"" + sub + "\"");
+//                            if (i != edge.length() - 1)
+//                                bw.write("&&");
+//                        }
+//                        bw.write(") {\n");
+//                    } else {
+                    bw.write("\t\t\t\tif(str == \'" + edge + "\') {\n");
+//                    }
                     bw.write("\t\t\t\t\tstate = " + trans.get(edge) + ";\n");
                     bw.write("\t\t\t\t\tbreak;\n");
                     bw.write("\t\t\t\t}\n");
                 }
                 bw.write("\t\t\t\tin.seekg(-1, ios::cur);\n");
                 if (dfaNode.isAccepting()) {
-                    bw.write("\t\t\t\treturn " + ruleAction[dfaNode.getAction()] + ";\n");
+                    bw.write("\t\t\t\t" + ruleAction[dfaNode.getAction()] + ";\n");
+//                    bw.write("\t\t\t\treturn " + ruleAction[dfaNode.getAction()] + ";\n");
                 } else {
                     bw.write("\t\t\t\treturn -1;\n");
                 }
