@@ -127,9 +127,11 @@ public class Dfa {
         if(tempNode.isAccepting()){
             tempNodes.add(tempNode);
             tempNode.setIndex(-1-tempNodes.indexOf(tempNode));
+            nodeSetsAcc.add(currSet);
         } else {
             nodes.add(tempNode);
             tempNode.setIndex(nodes.indexOf(tempNode));
+            nodeSetsNAcc.add(currSet);
         }
 
         while(currNAcc < nodeSetsNAcc.size() || currAcc < nodeSetsAcc.size()) {
@@ -187,12 +189,12 @@ public class Dfa {
         }
 
         //test
-        for(int j = 0;j < nodes.size();j++) {
-            Map<String,Integer> ts = nodes.get(j).getAllTransitions();
-            for (String edge : ts.keySet()) {
-                System.out.println(j + " " + edge + " " + ts.get(edge));
-            }
-        }
+//        for(int j = 0;j < nodes.size();j++) {
+//            Map<String,Integer> ts = nodes.get(j).getAllTransitions();
+//            for (String edge : ts.keySet()) {
+//                System.out.println(j + " " + edge + " " + ts.get(edge));
+//            }
+//        }
 
         return nodes;
     }
