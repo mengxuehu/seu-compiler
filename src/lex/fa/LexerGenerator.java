@@ -73,7 +73,15 @@ public class LexerGenerator {
 //                        }
 //                        bw.write(") {\n");
 //                    } else {
-                    bw.write("\t\t\t\tif(str == \'" + edge + "\') {\n");
+//                    bw.write("\t\t\t\tif(str == \'" + edge + "\') {\n");
+
+                    if (edge.equals("'")){
+                        bw.write("\t\t\t\tif(next == '\\'') {\n");
+                    } else {
+                        bw.write("\t\t\t\tif(next == '");
+                        bw.write(edge + "') {\n");
+                    }
+
 //                    }
                     bw.write("\t\t\t\t\tstate = " + trans.get(edge) + ";\n");
                     bw.write("\t\t\t\t\tbreak;\n");
@@ -82,6 +90,8 @@ public class LexerGenerator {
                 bw.write("\t\t\t\tin.seekg(-1, ios::cur);\n");
                 if (dfaNode.isAccepting()) {
                     bw.write("\t\t\t\t" + ruleAction[dfaNode.getAction()] + ";\n");
+                    bw.write("\t\t\t\tstate = 0;\n");
+                    bw.write("\t\t\t\tbreak;");
 //                    bw.write("\t\t\t\treturn " + ruleAction[dfaNode.getAction()] + ";\n");
                 } else {
                     bw.write("\t\t\t\treturn -1;\n");

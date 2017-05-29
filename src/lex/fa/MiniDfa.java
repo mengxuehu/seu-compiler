@@ -30,6 +30,27 @@ class MiniDfa {
         int i = 0, j, state;
         int numNonAccept = newSet.size();
         ArrayList<DfaNode> miniDfa = new ArrayList<>();
+        //adjust starting state
+        Integer newStart;
+        for (NonTerminalSet nonTerminalSet : newSet) {
+            if (nonTerminalSet.findMembers(0) && nonTerminalSet.getState() != 0) {
+                newStart = nonTerminalSet.getState();
+                for (NonTerminalSet set : newSet) {
+                    if (set.findMembers(0))
+                        set.setState(newStart);
+                    if (set.findDestination(newStart)){
+                        set.addDestination(0);
+                        set.deleteDestination(newStart);
+                    }
+                    if (set.findDestination(0)){
+                        set.addDestination(newStart);
+                        set.deleteDestination(0);
+                    }
+                }
+                nonTerminalSet.setState(0);
+                break;
+            }
+        }
         //join non-accept state
         for (NonTerminalSet set1 : newSet) {
             j = 0;
@@ -185,6 +206,14 @@ class MiniDfa {
 
         void addDestination(Integer des) {
             destination.add(des);
+        }
+
+        boolean deleteDestination(Integer des) {
+            if (destination.contains(des)){
+                destination.remove(des);
+                return true;
+            }
+            return false;
         }
 
         void addAllDestination(HashSet<Integer> des) {
