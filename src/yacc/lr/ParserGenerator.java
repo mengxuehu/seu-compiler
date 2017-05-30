@@ -1,9 +1,7 @@
 package yacc.lr;
 
 import javafx.util.Pair;
-import yacc.entity.Production;
-import yacc.entity.Productions;
-import yacc.entity.Symbols;
+import yacc.entity.*;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -14,11 +12,12 @@ import java.util.Set;
 public class ParserGenerator {
     private static final String HEADER_NAME = "yacc.tab.h", SOURCE_NAME = "yacc.tab.cpp";
 
-    public void generate(Productions productions, Symbols symbols, String programs) {
+    public void generate(Productions productions, Symbols symbols, String programs,
+                         Map<Integer, Precedence> precedence, Map<Integer, Associativity> associativity) {
         long t1 = System.currentTimeMillis();
 
         LR1 lr1 = new LR1();
-        lr1.parse(productions, symbols);
+        lr1.parse(productions, symbols, precedence, associativity);
         Map<Pair<Integer, Integer>, Integer> tableGoto = lr1.getTableGoto();
         Map<Pair<Integer, Integer>, Action> tableAction = lr1.getTableAction();
         Set<ItemSet> collection = lr1.getCollection();

@@ -1,25 +1,24 @@
 package yacc;
 
-import yacc.entity.Production;
-import yacc.entity.Productions;
-import yacc.entity.Symbols;
+import yacc.entity.*;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class YaccSourceParser {
     private static final int DECLARATIONS = 0, RULES = 1, PROGRAMS = 2;
 
     private StringBuilder programs;
     private Symbols symbols;
-
-//    private List<Production> productions;
-//    private List<String> productionActions;
+    private Map<Integer, Precedence> precedence;
+    private Map<Integer, Associativity> associativity;
 
     private Productions productions;
 
@@ -29,16 +28,26 @@ public class YaccSourceParser {
         lsp.parse(sourcePath);
     }
 
+    Map<Integer, Precedence> getPrecedence() {
+        return precedence;
+    }
+
+    Map<Integer, Associativity> getAssociativity() {
+        return associativity;
+    }
+
     void parse(String sourcePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(sourcePath))) {
             int lineNumber = 0;
             int section = DECLARATIONS;
+            int currentPrecedence = 0;
 
             programs = new StringBuilder();
             symbols = new Symbols();
             productions = new Productions();
-//            productions = new LinkedList<>();
-//            productionActions = new ArrayList<>();
+
+            precedence = new HashMap<>();
+            associativity = new HashMap<>();
 
             boolean inComment = false, inRule = false;
             StringBuilder tempRule = new StringBuilder();
@@ -108,6 +117,21 @@ public class YaccSourceParser {
                             productions.addAugmentedStartAndSetIndex(
                                     new Production(symbols.getStartAug(), symbolList, ""));
                         }
+                    } else if (line.startsWith("%left") || line.startsWith("%right")) {
+                        boolean left = (line.charAt(1) == 'l');
+                        String [] operators = line.substring(left ? 5 : 6).trim().split("[\t ]");
+                        for (String operator : operators) {
+                            Character ch = (operator.charAt(0) == '\'' ? operator.charAt(1) : null);
+
+                            int index = (ch != null ? symbols.addChar(ch) : symbols.addTerminal(operator));
+                            if (index == -1) {
+                                index = symbols.getSymbolIndex(ch != null ? String.valueOf(ch) : operator);
+                            }
+                            precedence.put(index, new Precedence(currentPrecedence));
+                            associativity.put(index,
+                                    new Associativity(left ? AssociativityType.LEFT : AssociativityType.RIGHT));
+                        }
+                        currentPrecedence++;
                     }
                 } else if (section == RULES) {
                     inRule = true;

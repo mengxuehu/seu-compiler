@@ -2,9 +2,7 @@ package yacc.lr;
 
 
 import javafx.util.Pair;
-import yacc.entity.Production;
-import yacc.entity.Productions;
-import yacc.entity.Symbols;
+import yacc.entity.*;
 
 import java.util.*;
 
@@ -15,13 +13,18 @@ class LR1 {
     private Set<ItemSet> collection;
     private Map<Pair<Integer, Integer>, Integer> tableGoto;
     private Map<Pair<Integer, Integer>, Action> tableAction;
+    private Map<Integer, Precedence> precedence;
+    private Map<Integer, Associativity> associativity;
 
     LR1() {
     }
 
-    void parse(Productions productions, Symbols symbols) {
+    void parse(Productions productions, Symbols symbols,
+               Map<Integer, Precedence> precedence, Map<Integer, Associativity> associativity) {
         this.productions = productions;
         this.symbols = symbols;
+        this.precedence = precedence;
+        this.associativity = associativity;
 
         firsts = new HashMap<>();
         tableGoto = new HashMap<>();
@@ -124,17 +127,12 @@ class LR1 {
                     if (production.getHead() == symbols.getStartAug()
                             && item.getLookaheadSymbols().contains(symbols.getEnd())) {
                         Pair<Integer, Integer> key = new Pair<>(itemSet.getState(), symbols.getEnd());
-                        Action acceptAction = new AcceptAction();
-                        if (exists(key)) {
-                            tableAction.put(key, acceptAction);
-                        }
+                        addNewAction(key, new AcceptAction());
                     } else {
                         Action reduceAction = new ReduceAction(item.getProductionIndex());
                         for (Integer lookahead : item.getLookaheadSymbols()) {
                             Pair<Integer, Integer> key = new Pair<>(itemSet.getState(), lookahead);
-                            if (exists(key)) {
-                                tableAction.put(key, reduceAction);
-                            }
+                            addNewAction(key, reduceAction);
                         }
                     }
                 }
@@ -147,17 +145,17 @@ class LR1 {
         multiMap.get(key).add(value);
     }
 
-    private boolean exists(Pair<Integer, Integer> key) {
+    private void addNewAction(Pair<Integer, Integer> key, Action action) {
         Action oldAction = tableAction.get(key);
         if (oldAction != null) {
+            // TODO: 处理冲突
             if (oldAction.getType() == ActionType.SHIFT) {
                 System.err.println("WARNING: shift/reduce conflict, shift will be taken");
             } else {
                 System.err.println("WARNING: reduce/reduce conflict, the former reduce will be taken");
             }
-            return false;
         } else {
-            return true;
+            tableAction.put(key, action);
         }
     }
 

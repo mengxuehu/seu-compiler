@@ -10,6 +10,8 @@
 %token STRUCT UNION ENUM ELLIPSIS
 
 %token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
+%left '+' '-'
+%left '*' '/'
 
 %start translation_unit
 %%

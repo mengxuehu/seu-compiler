@@ -1,11 +1,14 @@
 package yacc;
 
 
+import yacc.entity.Associativity;
+import yacc.entity.Precedence;
 import yacc.entity.Productions;
 import yacc.entity.Symbols;
 import yacc.lr.ParserGenerator;
 
 import java.nio.file.Paths;
+import java.util.Map;
 
 public class Yacc {
     Yacc(String source) {
@@ -14,8 +17,10 @@ public class Yacc {
         String programs = yaccSourceParser.getPrograms();
         Productions productions = yaccSourceParser.getProductions();
         Symbols symbols = yaccSourceParser.getSymbols();
+        Map<Integer, Precedence> precedence = yaccSourceParser.getPrecedence();
+        Map<Integer, Associativity> associativity = yaccSourceParser.getAssociativity();
 
-        new ParserGenerator().generate(productions, symbols, programs);
+        new ParserGenerator().generate(productions, symbols, programs, precedence, associativity);
     }
 
     public static void main(String[] args) {
