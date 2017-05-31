@@ -45,12 +45,12 @@ public class LexerGenerator {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILENAME))) {
             bw.write(userRoutines + "\n");
 //            bw.write("#include <sstream>\n");
-            bw.write("#include <ifstream>\n");
+            bw.write("#include <fstream>\n");
             bw.write("#include <iostream>\n");
             bw.write("extern int yylex() {\n");
             bw.write("\tint state = " + dfa.get(0).getIndex() + ";\n");
             bw.write("\tint i = 0;\n");
-            bw.write("\tstatic std::ifstream in(\"main.cpp\")\n");
+            bw.write("\tstatic std::ifstream in(\"main.cpp\");\n");
             //start
             bw.write("\twhile(true) {\n");
             bw.write("\t\tchar next = in.get();\n");
@@ -87,11 +87,11 @@ public class LexerGenerator {
                     bw.write("\t\t\t\t\tbreak;\n");
                     bw.write("\t\t\t\t}\n");
                 }
-                bw.write("\t\t\t\tin.seekg(-1, ios::cur);\n");
+                bw.write("\t\t\t\tin.seekg(-1, std::ios::cur);\n");
                 if (dfaNode.isAccepting()) {
                     bw.write("\t\t\t\t" + ruleAction[dfaNode.getAction()] + ";\n");
                     bw.write("\t\t\t\tstate = 0;\n");
-                    bw.write("\t\t\t\tbreak;");
+                    bw.write("\t\t\t\tbreak;\n");
 //                    bw.write("\t\t\t\treturn " + ruleAction[dfaNode.getAction()] + ";\n");
                 } else {
                     bw.write("\t\t\t\treturn -1;\n");
