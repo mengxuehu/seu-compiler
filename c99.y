@@ -17,7 +17,7 @@
 %%
 
 primary_expression
-	: IDENTIFIER	{std::cout << "hello world 0"} << std::endl;
+	: IDENTIFIER	{std::cout << "hello world 0" << std::endl;}
 	| CONSTANT	{std::cout << "hello world 1" << std::endl;}
 	| STRING_LITERAL
 	| '(' expression ')'
