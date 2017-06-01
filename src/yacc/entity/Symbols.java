@@ -6,6 +6,7 @@ import java.util.*;
 public class Symbols {
     private HashSet<Integer> terminalIndexes, nonTerminalIndexes;
     private HashMap<String, Integer> symbols;
+    private HashMap<Integer, String> invertedSymbols;
     private int indexes;
     private int startAug;
     private int end;
@@ -15,6 +16,7 @@ public class Symbols {
         terminalIndexes = new HashSet<>();
         nonTerminalIndexes = new HashSet<>();
         symbols = new HashMap<>();
+        invertedSymbols = new HashMap<>();
         indexes = 1000;
 
         startAug = indexes++;
@@ -29,6 +31,7 @@ public class Symbols {
         if (!symbols.containsKey(symbol)) {
             symbolIndexes_.add(idx);
             symbols.put(symbol, idx);
+            invertedSymbols.put(idx, symbol);
             return idx;
         }
         return -1;
@@ -68,11 +71,15 @@ public class Symbols {
         return symbols.get(symbol);
     }
 
+    public String getInvertedSymbol(int index) {
+        return invertedSymbols.get(index);
+    }
+
     public Set<Integer> getTerminalIndexes() {
         return terminalIndexes;
     }
 
-    Set<Integer> getNonTerminalIndexes() {
+    public Set<Integer> getNonTerminalIndexes() {
         return nonTerminalIndexes;
     }
 
@@ -82,5 +89,9 @@ public class Symbols {
 
     public Map<String, Integer> getSymbols() {
         return symbols;
+    }
+
+    public Map<Integer, String> getInvertedSymbols() {
+        return invertedSymbols;
     }
 }

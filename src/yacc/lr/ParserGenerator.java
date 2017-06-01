@@ -10,42 +10,48 @@ import java.util.Map;
 import java.util.Set;
 
 public class ParserGenerator {
-    private static final String HEADER_NAME = "yacc.tab.h", SOURCE_NAME = "yacc.tab.cpp";
+    private static final String HEADER_NAME = "y.tab.h", SOURCE_NAME = "y.tab.cpp";
+    private Productions productions;
+    private Symbols symbols;
+    private String programs;
+    private Map<Pair<Integer, Integer>, Integer> tableGoto;
+    private Map<Pair<Integer, Integer>, Action> tableAction;
 
     public void generate(Productions productions, Symbols symbols, String programs,
                          Map<Integer, Precedence> precedence, Map<Integer, Associativity> associativity) {
-        long t1 = System.currentTimeMillis();
+        this.productions = productions;
+        this.symbols = symbols;
+        this.programs = programs;
 
+        long t1 = System.currentTimeMillis();
         LR1 lr1 = new LR1();
         lr1.parse(productions, symbols, precedence, associativity);
-        Map<Pair<Integer, Integer>, Integer> tableGoto = lr1.getTableGoto();
-        Map<Pair<Integer, Integer>, Action> tableAction = lr1.getTableAction();
+        Map<Pair<Integer, Integer>, Integer> tableGotoLR1 = lr1.getTableGoto();
+        Map<Pair<Integer, Integer>, Action> tableActionLR1 = lr1.getTableAction();
         Set<ItemSet> collection = lr1.getCollection();
 
         long t2 = System.currentTimeMillis();
         System.out.println("LR1: " + (t2 - t1));
 
         LALR1 lalr1 = new LALR1();
-        lalr1.generateLALR1(collection, tableGoto, tableAction);
-        Map<Pair<Integer, Integer>, Integer> tableGotoLALR1 = lalr1.getTableGoto();
-        Map<Pair<Integer, Integer>, Action> tableActionLALR1 = lalr1.getTableAction();
+        lalr1.generateLALR1(collection, tableGotoLR1, tableActionLR1);
+        tableGoto = lalr1.getTableGoto();
+        tableAction = lalr1.getTableAction();
 
         long t3 = System.currentTimeMillis();
         System.out.println("LALR1: " + (t3 - t2));
 
-        doGenerate(tableGotoLALR1, tableActionLALR1, productions, symbols, programs);
+        doGenerate();
 
         System.out.println("Generating Code: " + (System.currentTimeMillis() - t3));
     }
 
-    private void doGenerate(Map<Pair<Integer, Integer>, Integer> tableGoto,
-                            Map<Pair<Integer, Integer>, Action> tableAction,
-                            Productions productions, Symbols symbols, String programs) {
-        generateHeader(symbols);
-        generateSource(tableGoto, tableAction, productions, programs);
+    private void doGenerate() {
+        generateHeader();
+        generateSource();
     }
 
-    private void generateHeader(Symbols symbols) {
+    private void generateHeader() {
         StringBuilder header = new StringBuilder();
         header.append("#include <string>\n\n");
 
@@ -67,10 +73,10 @@ public class ParserGenerator {
         }
     }
 
-    private void generateSource(Map<Pair<Integer, Integer>, Integer> tableGoto,
-                                Map<Pair<Integer, Integer>, Action> tableAction,
-                                Productions productions, String programs) {
+    private void generateSource() {
         StringBuilder source = new StringBuilder();
+        source.append(programs).append("\n\n");
+
         source.append("#include <map>\n")
                 .append("#include <stack>\n")
                 .append("#include <utility>\n")
@@ -79,13 +85,9 @@ public class ParserGenerator {
                 .append("extern int yylex(void);\n")
                 .append("void yyparse(void);\n")
                 .append("void do_action(int production_index);\n")
-                .append("int main() {\n")
-                .append("\tyyparse();\n")
-                .append("\treturn 0;\n")
-                .append("}\n")
                 .append("\n");
 
-        generateData(tableGoto, tableAction, productions, source);
+        generateData(source);
 
         source.append("void yyparse(void) {\n")
                 .append("\tstd::stack<int> stack_state, stack_symbol;\n")
@@ -137,13 +139,18 @@ public class ParserGenerator {
                 .append("\tswitch (production_index) {\n");
 
         for (Production production : productions.getProductions()) {
+            source.append("\t\tcase ").append(production.getIndex()).append(": {\n");
             if (production.getAction().length() == 0) {
-                continue;
+                source.append("std::cout << \"");
+                source.append(symbols.getInvertedSymbol(production.getHead())).append(" -> ");
+                for (Integer i : production.getBody()) {
+                    source.append(symbols.getInvertedSymbol(i)).append(" ");
+                }
+                source.append("\" << std::endl;\n");
+            } else {
+                source.append(production.getAction()).append("\n");
             }
-            source.append("\t\tcase ").append(production.getIndex()).append(": {\n")
-                    .append(production.getAction()).append("\n")
-                    .append("\t\t\tbreak;\n")
-                    .append("\t\t}\n");
+            source.append("\t\t\tbreak;\n").append("\t\t}\n");
         }
 
         source.append("\t\tdefault:\n")
@@ -160,10 +167,7 @@ public class ParserGenerator {
 //        System.out.println(source.toString());
     }
 
-    private void generateData(Map<Pair<Integer, Integer>, Integer> tableGoto,
-                              Map<Pair<Integer, Integer>, Action> tableAction,
-                              Productions productions,
-                              StringBuilder source) {
+    private void generateData(StringBuilder source) {
         // goto
         source.append("std::map<std::pair<int, int>, int> table_goto = {\n");
         for (Map.Entry<Pair<Integer, Integer>, Integer> entry : tableGoto.entrySet()) {

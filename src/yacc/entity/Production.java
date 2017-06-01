@@ -34,4 +34,14 @@ public class Production {
     public String getAction() {
         return action;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(head).append(" -> ");
+        for (Integer i : body) {
+            sb.append(i).append(" ");
+        }
+        return sb.append("\n").toString();
+    }
 }
