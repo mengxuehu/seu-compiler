@@ -47,6 +47,8 @@ public class ParserGenerator {
 
     private void generateHeader(Symbols symbols) {
         StringBuilder header = new StringBuilder();
+        header.append("#include <string>\n\n");
+
         for (Map.Entry<String, Integer> sym : symbols.getSymbols().entrySet()) {
             if (symbols.isTerminal(sym.getValue())
                     && (sym.getKey().length() != 1 || Character.isLetter(sym.getKey().charAt(0)))) {
@@ -54,6 +56,7 @@ public class ParserGenerator {
                         .append(sym.getValue().toString()).append('\n');
             }
         }
+        header.append("extern std::string yytext;\n");
 
 //        System.out.println(header.toString());
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(HEADER_NAME))) {
