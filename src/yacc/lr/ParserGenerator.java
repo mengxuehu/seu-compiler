@@ -79,6 +79,7 @@ public class ParserGenerator {
 
         source.append("#include <map>\n")
                 .append("#include <stack>\n")
+                .append("#include <string>\n")
                 .append("#include <utility>\n")
                 .append("#include <iostream>\n")
                 .append("\n")
@@ -94,6 +95,7 @@ public class ParserGenerator {
                 .append("\tstack_state.push(start_production);\n")
                 .append("\twhile (true) {\n")
                 .append("\t\tint next = yylex();\n")
+                .append("\t\tstd::cout << yytext << \": \" << symbols.find(next)->second << std::endl;\n")
                 .append("\t\tstd::pair<int, int> key(stack_state.top(), next);\n")
                 .append("\t\tstd::pair<int, int> action;\n")
                 .append("\t\tauto action_iter = table_action.find(key);\n")
@@ -217,5 +219,12 @@ public class ParserGenerator {
 
         source.append("int start_production = ").append(productions.getStart().getIndex().toString())
                 .append(";\n\n");
+
+        // symbols
+        source.append("std::map<int, std::string> symbols = {\n");
+        for (Map.Entry<Integer, String> entry : symbols.getInvertedSymbols().entrySet()) {
+            source.append("\t{").append(entry.getKey()).append(", \"").append(entry.getValue()).append("\"},\n");
+        }
+        source.append("};\n\n");
     }
 }
