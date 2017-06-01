@@ -44,16 +44,16 @@ public class LexerGenerator {
     private void doGenerate(ArrayList<DfaNode> dfa, String[] ruleAction, String userRoutines) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILENAME))) {
             bw.write(userRoutines + "\n");
-//            bw.write("#include <sstream>\n");
             bw.write("#include <fstream>\n");
             bw.write("#include <iostream>\n");
+            bw.write("extern string yytext;");
             bw.write("extern int yylex() {\n");
-            bw.write("\tint state = " + dfa.get(0).getIndex() + ";\n");
+            bw.write("\tint state = 0;\n");
             bw.write("\tint i = 0;\n");
-            bw.write("\tstatic std::ifstream in(\"main.cpp\");\n");
+            bw.write("yytext.erase()");
             //start
             bw.write("\twhile(true) {\n");
-            bw.write("\t\tchar next = in.get();\n");
+            bw.write("\t\tchar next = yyin.get();\n");
 //            bw.write("\t\tstd::stringstream str;\n");
 //            bw.write("\t\tstr << next;\n");
 //            bw.write("\t\tstring str = stream.str()\n");

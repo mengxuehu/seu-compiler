@@ -13,7 +13,6 @@ IS			((u|U)|(u|U)?(l|L|ll|LL)|(l|L|ll|LL)(u|U))
 void count(void);
 int check_type(void);
 void comment(void);
-extern char input(void);
 extern void yyerror(const char *);
 %}
 
@@ -139,7 +138,7 @@ void comment(void)
 {
 	char c, prev = 0;
   
-	while ((c = input()) != 0)      /* (EOF maps to 0) */
+	while ((c = yyin.get()) != 0)      /* (EOF maps to 0) */
 	{
 		if (c == '/' && prev == '*')
 			return;
