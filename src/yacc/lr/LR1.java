@@ -148,53 +148,42 @@ class LR1 {
     private void addNewAction(Pair<Integer, Integer> key, Action action) {
         Action oldAction = tableAction.get(key);
         if (oldAction != null) {
-            // TODO: 处理冲突
-            if(oldAction.getType() == ActionType.REDUCE && action.getType() == ActionType.SHIFT ||
-                    oldAction.getType() == ActionType.SHIFT && action.getType() == ActionType.REDUCE) {
-                ReduceAction reduceAction = new ReduceAction(0);
-                ShiftAction shiftAction = new ShiftAction(0);
-                if(oldAction.getType() == ActionType.REDUCE) {
-                    reduceAction = (ReduceAction) oldAction;
-                    shiftAction = (ShiftAction) action;
-                }
-                else {
-                    reduceAction = (ReduceAction) action;
-                    shiftAction = (ShiftAction) oldAction;
-                }
-                if(precedence.get(key.getValue()) != null && getProductionPrecedence(reduceAction.getProductionReducingBy()) != null) {
+            if (oldAction.getType() == ActionType.SHIFT && action.getType() == ActionType.REDUCE) {
+                ReduceAction reduceAction = (ReduceAction) action;
+
+                if (precedence.get(key.getValue()) != null && getProductionPrecedence(reduceAction.getProductionReducingBy()) != null) {
                     int compare = getProductionPrecedence(reduceAction.getProductionReducingBy()).compareTo(precedence.get(key.getValue()));
                     switch (compare) {
                         case -1:
-                            tableAction.replace(key, shiftAction);
+                            // shift
                             break;
                         case 0:
-                            if(associativity.get(key.getValue()) != null) {
-                            if (associativity.get(key.getValue()).isLeftAssociativity())
-                                tableAction.replace(key, reduceAction);
-                            else
-                                tableAction.replace(key, shiftAction);
+                            if (associativity.get(key.getValue()) != null) {
+                                if (associativity.get(key.getValue()).isLeftAssociativity()) {
+                                    tableAction.replace(key, reduceAction);
+                                }
+                                //else shift
                             } else {
-                                tableAction.replace(key, shiftAction);
+                                // shift
                                 System.err.println("WARNING: shift/reduce conflict, shift will be taken");
                             }
+                            break;
                         case 1:
                             tableAction.replace(key, reduceAction);
                             break;
                         default:
                             break;
                     }
-                }
-                else {
-                    tableAction.replace(key, shiftAction);
+                } else {
+                    //tableAction.replace(key, shiftAction);
                     System.err.println("WARNING: shift/reduce conflict, shift will be taken");
                 }
-            }
-            else {
+            } else {
                 ReduceAction oldReduceAction = (ReduceAction) oldAction;
                 ReduceAction reduceAction = (ReduceAction) action;
-                if(oldReduceAction.getProductionReducingBy() < reduceAction.getProductionReducingBy())
-                    tableAction.replace(key, oldReduceAction);
-                else tableAction.replace(key, reduceAction);
+                if (oldReduceAction.getProductionReducingBy() >= reduceAction.getProductionReducingBy()) {
+                    tableAction.replace(key, reduceAction);
+                }
                 System.err.println("WARNING: reduce/reduce conflict, the former reduce will be taken");
             }
         } else {
@@ -205,9 +194,9 @@ class LR1 {
     private Precedence getProductionPrecedence(int index) {
         Production production = productions.getProduction(index);
         List<Integer> body = production.getBody();
-        for(int i = body.size();i > 0;i--) {
-            if(symbols.getTerminalIndexes().contains(body.get(i-1)))
-                return precedence.get(body.get(i-1));
+        for (int i = body.size(); i > 0; i--) {
+            if (symbols.getTerminalIndexes().contains(body.get(i - 1)))
+                return precedence.get(body.get(i - 1));
         }
         return null;
     }
