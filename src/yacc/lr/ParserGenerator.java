@@ -62,7 +62,7 @@ public class ParserGenerator {
                         .append(sym.getValue().toString()).append('\n');
             }
         }
-        header.append("extern std::string yytext;\n");
+        header.append("\nextern std::string yytext;\n");
 
 //        System.out.println(header.toString());
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(HEADER_NAME))) {
