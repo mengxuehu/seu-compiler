@@ -14,6 +14,7 @@ void count(void);
 int check_type(void);
 void comment(void);
 extern void yyerror(const char *);
+extern ifstream yyin;
 %}
 
 %%
@@ -161,8 +162,6 @@ void count(void)
 			column += 8 - (column % 8);
 		else
 			column++;
-
-	ECHO;
 }
 
 

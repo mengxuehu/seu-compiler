@@ -462,6 +462,8 @@ declaration_list
 
 %%
 #include <stdio.h>
+#include <fstream>
+#include <iostream>
 
 extern char yytext[];
 extern int column;
@@ -470,4 +472,11 @@ void yyerror(char const *s)
 {
 	fflush(stdout);
 	printf("\n%*s\n%*s\n", column, "^", column, s);
+}
+
+int main() {
+	ifstream yyin("buffer.c", std::ios::in);
+	yyparse();
+	yyin.close();
+	return 0;
 }

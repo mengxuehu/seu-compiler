@@ -50,7 +50,7 @@ public class LexerGenerator {
             bw.write("extern int yylex() {\n");
             bw.write("\tint state = 0;\n");
             bw.write("\tint i = 0;\n");
-            bw.write("yytext.erase()");
+            bw.write("yytext.erase();");
             //start
             bw.write("\twhile(true) {\n");
             bw.write("\t\tchar next = yyin.get();\n");
