@@ -94,6 +94,7 @@ public class LexerGenerator {
                 if (dfaNode.isAccepting()) {
                     bw.write("\t\t\t\t" + ruleAction[dfaNode.getAction()] + ";\n");
                     bw.write("\t\t\t\tstate = 0;\n");
+                    bw.write("\t\t\t\tyytext.erase();\n");
                     bw.write("\t\t\t\tbreak;\n");
 //                    bw.write("\t\t\t\treturn " + ruleAction[dfaNode.getAction()] + ";\n");
                 } else {
