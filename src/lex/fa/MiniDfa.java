@@ -62,7 +62,7 @@ class MiniDfa {
             for (Integer integer : set1.getAccept()) {
                 for (Map.Entry<String, Integer> entry : allDes.entrySet()) {
                     if (entry.getValue().equals(integer)) {
-                        newDfaNode.addTransition(entry.getKey(), integer - acceptingStartState + numNonAccept - 1);
+                        newDfaNode.addTransition(entry.getKey(), integer - acceptingStartState + numNonAccept);
                     }
                 }
             }
@@ -92,9 +92,16 @@ class MiniDfa {
             DfaNode newDfaNode = new DfaNode(i);
             newDfaNode.setAccepting(dfa.get(j).getAction());
             for (Map.Entry<String, Integer> entry : allDes.entrySet()) {
-                for (NonTerminalSet set : newSet) {
-                    if (set.findMembers(j - acceptingStartState + numNonAccept - 1)) {
-                        newDfaNode.addTransition(entry.getKey(), i);
+
+                if (entry.getValue() >= acceptingStartState) {
+                    //accept
+                    newDfaNode.addTransition(entry.getKey(), entry.getValue() - acceptingStartState + numNonAccept);
+                } else {
+                    //nonaccept
+                    for (NonTerminalSet set : newSet) {
+                        if (set.findMembers(entry.getValue())) {
+                            newDfaNode.addTransition(entry.getKey(), set.getState());
+                        }
                     }
                 }
             }

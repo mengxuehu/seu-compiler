@@ -35,7 +35,7 @@ public class LexerGenerator {
         long t4 = System.currentTimeMillis();
         System.out.println("Min DFA: " + (t4 - t3));
 
-        doGenerate(dfaNodes, ruleAction, userRoutines);
+        doGenerate(miniDfa.getDfa(), ruleAction, userRoutines);
 
         long t5 = System.currentTimeMillis();
         System.out.println("Generating Code: " + (t5 - t4));
