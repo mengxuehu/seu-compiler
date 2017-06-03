@@ -17,8 +17,11 @@ public class ReParser {
     String[] parse(String re) {
         postfixRe.clear();
         String mediumRe = processBrackets(re);
+//        System.out.println(mediumRe);
         mediumRe = processSign(mediumRe);
+//        System.out.println(mediumRe);
         mediumRe = addConnect(mediumRe);
+//        System.out.println(mediumRe);
         infixToPostfix(mediumRe);
         String[] returnString = new String[postfixRe.size()];
         for (int i = 0; i < returnString.length; i++) {
@@ -29,7 +32,7 @@ public class ReParser {
     }
 
     private String processBrackets(String re) {
-        //delete [] and ! and .
+        //delete [] and ^ and .
         StringBuilder regularRe = new StringBuilder();
 
         for (int i = 0; i < re.length(); i++) {
@@ -51,6 +54,14 @@ public class ReParser {
                             if (re.charAt(i) == '\\' && i + 1 < re.length()) {
                                 tempbuild.append(re.charAt(i));
                                 tempbuild.append(re.charAt(++i));
+                            } else {
+                                if (re.charAt(i) == '"' || re.charAt(i) == '(' ||
+                                        re.charAt(i) == ')' || re.charAt(i) == '*' ||
+                                        re.charAt(i) == '+' || re.charAt(i) == '"' ||
+                                        re.charAt(i) == ']' || re.charAt(i) == '[' ||
+                                        re.charAt(i) == '|')
+                                    tempbuild.append('\\');
+                                tempbuild.append(re.charAt(i));
                             }
                             nonstring.add(tempbuild.toString());
                             tempbuild.delete(0, tempbuild.length());
@@ -208,6 +219,7 @@ public class ReParser {
                 regularRe.append('(');
                 regularRe.append(tempRe.toString());
                 regularRe.append(tempRe.toString());
+                regularRe.append('*');
                 regularRe.append(')');
                 tempRe.delete(0, tempRe.length());
             } else if (mediumRe.charAt(i) == '+') {
@@ -260,7 +272,7 @@ public class ReParser {
 
     private void infixToPostfix(String mediumRe) {
         Deque<String> op = new LinkedList<String>();
-        Deque<String> identifier = new LinkedList<String>();
+//        Deque<String> identifier = new LinkedList<String>();
 
         for (int i = 0; i < mediumRe.length(); i++) {
             if (mediumRe.charAt(i) == '(') {
@@ -272,44 +284,47 @@ public class ReParser {
                 if (!op.isEmpty() && op.peek().equals("(")) {
                     op.push(opTemp);
                 } else if (!op.isEmpty() && (op.peek().compareTo(opTemp) <= 0)) {
-                    if (op.peek().equals("*") && identifier.size() >= 1) {
-                        String id1 = identifier.pollFirst();
-                        if (id1 != null)
-                            postfixRe.add(id1);
-                    } else if (identifier.size() >= 2) {
-                        String id1 = identifier.pollFirst();
-                        String id2 = identifier.pollFirst();
-                        if (id2 != null)
-                            postfixRe.add(id2);
-                        if (id1 != null)
-                            postfixRe.add(id1);
-                    } else {
-                        System.out.println("stack error");
-                    }
                     postfixRe.add(op.pollFirst());
-                    identifier.push(null);
                     op.push(opTemp);
+//                    if (op.peek().equals("*") && identifier.size() >= 1) {
+//                        String id1 = identifier.pollFirst();
+//                        if (id1 != null)
+//                            postfixRe.add(id1);
+//                    } else if (identifier.size() >= 2) {
+//                        String id1 = identifier.pollFirst();
+//                        String id2 = identifier.pollFirst();
+//                        if (id2 != null)
+//                            postfixRe.add(id2);
+//                        if (id1 != null)
+//                            postfixRe.add(id1);
+//                    } else {
+//                        System.out.println("stack error");
+//                    }
+//                    postfixRe.add(op.pollFirst());
+//                    identifier.push(null);
+//                    op.push(opTemp);
                 } else {
-                    op.push(String.valueOf(mediumRe.charAt(i)));
+                    op.push(opTemp);
                 }
             } else if (mediumRe.charAt(i) == ')') {
                 while (!op.isEmpty() && !op.peek().equals("(")) {
-                    if (op.peek().equals("*") && identifier.size() >= 1) {
-                        String id1 = identifier.pollFirst();
-                        if (id1 != null)
-                            postfixRe.add(id1);
-                    } else if (identifier.size() >= 2) {
-                        String id1 = identifier.pollFirst();
-                        String id2 = identifier.pollFirst();
-                        if (id2 != null)
-                            postfixRe.add(id2);
-                        if (id1 != null)
-                            postfixRe.add(id1);
-                    } else {
-                        System.out.println("stack error");
-                    }
                     postfixRe.add(op.pollFirst());
-                    identifier.push(null);
+//                    if (op.peek().equals("*") && identifier.size() >= 1) {
+//                        String id1 = identifier.pollFirst();
+//                        if (id1 != null)
+//                            postfixRe.add(id1);
+//                    } else if (identifier.size() >= 2) {
+//                        String id1 = identifier.pollFirst();
+//                        String id2 = identifier.pollFirst();
+//                        if (id2 != null)
+//                            postfixRe.add(id2);
+//                        if (id1 != null)
+//                            postfixRe.add(id1);
+//                    } else {
+//                        System.out.println("stack error");
+//                    }
+//                    postfixRe.add(op.pollFirst());
+//                    identifier.push(null);
                 }
                 if (op.isEmpty()) {
                     System.out.println("op stack empty");
@@ -318,7 +333,8 @@ public class ReParser {
                 }
 
             } else if (mediumRe.charAt(i) == '\\') {
-                identifier.push(mediumRe.substring(i, i + 2));
+//                identifier.push(mediumRe.substring(i, i + 2));
+                postfixRe.add(mediumRe.substring(i, i + 2));
                 i++;
             }
 //            else if (mediumRe.charAt(i) == '!') {
@@ -328,34 +344,38 @@ public class ReParser {
 //                i--;
 //            }
             else {
-                identifier.push(String.valueOf(mediumRe.charAt(i)));
+                postfixRe.add(String.valueOf(mediumRe.charAt(i)));
+//                identifier.push(String.valueOf(mediumRe.charAt(i)));
             }
         }
         while (!op.isEmpty()) {
-            if (op.peek().equals("*") && identifier.size() >= 1) {
-                String id1 = identifier.pollFirst();
-                if (id1 != null)
-                    postfixRe.add(id1);
-            } else if (identifier.size() >= 2) {
-                String id1 = identifier.pollFirst();
-                String id2 = identifier.pollFirst();
-                if (id2 != null)
-                    postfixRe.add(id2);
-                if (id1 != null)
-                    postfixRe.add(id1);
-            } else {
-                System.out.println("op stack error");
-            }
             postfixRe.add(op.pollFirst());
-            identifier.push(null);
         }
-        if (mediumRe.length() == 1) {
-            postfixRe.add(mediumRe);
-        } else if (mediumRe.length() == 2 && mediumRe.charAt(0) == '\\') {
-            postfixRe.add(mediumRe);
-        } else if (!(identifier.size() == 1 && identifier.peek() == null)) {
-            System.out.println("id stack error");
-        }
+//        while (!op.isEmpty()) {
+//            if (op.peek().equals("*") && identifier.size() >= 1) {
+//                String id1 = identifier.pollFirst();
+//                if (id1 != null)
+//                    postfixRe.add(id1);
+//            } else if (identifier.size() >= 2) {
+//                String id1 = identifier.pollFirst();
+//                String id2 = identifier.pollFirst();
+//                if (id2 != null)
+//                    postfixRe.add(id2);
+//                if (id1 != null)
+//                    postfixRe.add(id1);
+//            } else {
+//                System.out.println("op stack error");
+//            }
+//            postfixRe.add(op.pollFirst());
+//            identifier.push(null);
+//        }
+//        if (mediumRe.length() == 1) {
+//            postfixRe.add(mediumRe);
+//        } else if (mediumRe.length() == 2 && mediumRe.charAt(0) == '\\') {
+//            postfixRe.add(mediumRe);
+//        } else if (!(identifier.size() == 1 && identifier.peek() == null)) {
+//            System.out.println("id stack error");
+//        }
     }
 
     ArrayList<String> getpostfixRe() {
