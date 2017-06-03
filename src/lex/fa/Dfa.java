@@ -43,14 +43,6 @@ public class Dfa {
                 }
             }
         }
-        for (DfaNode n : tempNodes) {
-            trans = n.getAllTransitions();
-            for (String edge : trans.keySet()) {
-                if(trans.get(edge) == index0) {
-                    n.getAllTransitions().replace(edge,index);
-                }
-            }
-        }
     }
 
     private Set<FaNode<Set<Integer>>> epsilonClosure(Set<FaNode<Set<Integer>>> set) {
@@ -65,11 +57,12 @@ public class Dfa {
             if(targets != null) {
                 for (Integer i : targets) {
                     t = nfa.get(i);
-                    if(!result.contains(t))
                         result.add(t);
-                    stack.push(t);
+                    if(!stack.contains(t))
+                        stack.push(t);
                 }
             }
+
         }
         return result;
     }
@@ -123,7 +116,8 @@ public class Dfa {
 
 
         currSet.add(nfa.get(0));
-        tempNode = toDfaNode(epsilonClosure(currSet));
+        currSet = epsilonClosure(currSet);
+        tempNode = toDfaNode(currSet);
         if(tempNode.isAccepting()){
             tempNodes.add(tempNode);
             tempNode.setIndex(-1-tempNodes.indexOf(tempNode));
@@ -148,7 +142,8 @@ public class Dfa {
                 currAcc++;
             }
 
-                currSet = currNodeSets.get(index);
+            edges.clear();
+            currSet = currNodeSets.get(index);
 
                 for (FaNode<Set<Integer>> node : currSet) {
                     trans = node.getAllTransitions();
@@ -189,14 +184,23 @@ public class Dfa {
         }
 
         //test
-//        for(int j = 0;j < nodes.size();j++) {
-//            Map<String,Integer> ts = nodes.get(j).getAllTransitions();
-//            for (String edge : ts.keySet()) {
-//                System.out.println(j + " " + edge + " " + ts.get(edge));
-//            }
-//        }
+        System.out.println(accNum);
+        System.out.println(accStart);
+        for(int j = 0;j < nodes.size();j++) {
+            Map<String,Integer> ts = nodes.get(j).getAllTransitions();
+            for (String edge : ts.keySet()) {
+                //if(edge.equals(" "))
+                //System.out.println(j + " " + edge + " " + ts.get(edge));
+            }
+        }
 
         return nodes;
+    }
+
+    private void printSet(Set<FaNode<Set<Integer>>> set) {
+        for(FaNode<Set<Integer>> s : set) {
+            System.out.println(s.getIndex());
+        }
     }
 
 }
