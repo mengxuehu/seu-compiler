@@ -144,7 +144,6 @@ void comment(void)
 		prev = c;
 	}
 	std::cerr << "unterminated comment";
-	exit(0);
 }
 
 

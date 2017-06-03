@@ -465,8 +465,10 @@ declaration_list
 #include <fstream>
 #include <iostream>
 
-extern char yytext[];
 extern int column;
+extern std::string yytext;
+extern std::ifstream yyin;
+extern void yyparse();
 
 void yyerror(char const *s)
 {
@@ -475,7 +477,7 @@ void yyerror(char const *s)
 }
 
 int main() {
-	ifstream yyin("buffer.c", std::ios::in);
+	yyin.open("buffer.c", std::ios::in);
 	yyparse();
 	yyin.close();
 	return 0;

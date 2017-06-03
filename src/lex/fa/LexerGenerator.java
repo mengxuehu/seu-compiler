@@ -2,7 +2,6 @@ package lex.fa;
 
 
 import lex.fa.node.DfaNode;
-import lex.fa.node.FaNode;
 import lex.fa.node.NfaNode;
 
 import java.io.BufferedWriter;
@@ -10,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Set;
 
 public class LexerGenerator {
     private static final String FILENAME = "seulex.cpp";
@@ -46,16 +44,19 @@ public class LexerGenerator {
 
             bw.write("#include <fstream>\n");
             bw.write("#include <iostream>\n");
-            bw.write("extern std::string yytext;\n");
-            bw.write("extern std::ifstream yyin;\n");
+            bw.write("std::string yytext;\n");
+            bw.write("std::ifstream yyin;\n");
             bw.write(userRoutines + "\n");
             bw.write("extern int yylex() {\n");
             bw.write("\tint state = 0;\n");
             bw.write("\tint i = 0;\n");
             bw.write("\tyytext.erase();\n");
+            bw.write("\tchar next;\n");
             //start
             bw.write("\twhile(true) {\n");
-            bw.write("\t\tchar next = yyin.get();\n");
+            bw.write("\t\tif ((next = yyin.get()) == EOF && yytext.empty()) {\n" +
+                    "\t\t\treturn -2;\n" +
+                    "\t\t}\n");
 //            bw.write("\t\tstd::stringstream str;\n");
 //            bw.write("\t\tstr << next;\n");
 //            bw.write("\t\tstring str = stream.str()\n");
@@ -77,7 +78,7 @@ public class LexerGenerator {
 //                    } else {
 //                    bw.write("\t\t\t\tif(str == \'" + edge + "\') {\n");
 
-                    if (edge.equals("'")){
+                    if (edge.equals("'")) {
                         bw.write("\t\t\t\tif(next == '\\'') {\n");
                     } else {
                         bw.write("\t\t\t\tif(next == '");

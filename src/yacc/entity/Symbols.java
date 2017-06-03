@@ -8,8 +8,9 @@ public class Symbols {
     private HashMap<String, Integer> symbols;
     private HashMap<Integer, String> invertedSymbols;
     private int indexes;
-    private int startAug;
-    private int end;
+    final static private int START_AUG = -3;
+    final static private int END = -2;
+    final static private int ERROR = -1;
 
 
     public Symbols() {
@@ -17,10 +18,7 @@ public class Symbols {
         nonTerminalIndexes = new HashSet<>();
         symbols = new HashMap<>();
         invertedSymbols = new HashMap<>();
-        indexes = 1000;
-
-        startAug = indexes++;
-        end = indexes++;
+        indexes = 257;
     }
 
     public int addTerminal(String terminal) {
@@ -50,7 +48,7 @@ public class Symbols {
         return terminalIndexes.contains(symbolIndex);
     }
 
-    // TODO? startAug
+    // TODO? START_AUG
     boolean isNonTerminal(int symbolIndex) {
         return nonTerminalIndexes.contains(symbolIndex);
     }
@@ -60,11 +58,15 @@ public class Symbols {
     }
 
     public int getStartAug() {
-        return startAug;
+        return START_AUG;
     }
 
     public int getEnd() {
-        return end;
+        return END;
+    }
+
+    public int getError() {
+        return ERROR;
     }
 
     public int getSymbolIndex(String symbol) {

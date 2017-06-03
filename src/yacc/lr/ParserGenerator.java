@@ -33,10 +33,12 @@ public class ParserGenerator {
         long t2 = System.currentTimeMillis();
         System.out.println("LR1: " + (t2 - t1));
 
-        LALR1 lalr1 = new LALR1();
-        lalr1.generateLALR1(collection, tableGotoLR1, tableActionLR1);
-        tableGoto = lalr1.getTableGoto();
-        tableAction = lalr1.getTableAction();
+//        LALR1 lalr1 = new LALR1();
+//        lalr1.generateLALR1(collection, tableGotoLR1, tableActionLR1);
+//        tableGoto = lalr1.getTableGoto();
+//        tableAction = lalr1.getTableAction();
+        tableGoto = tableGotoLR1;
+        tableAction = tableActionLR1;
 
         long t3 = System.currentTimeMillis();
         System.out.println("LALR1: " + (t3 - t2));
@@ -62,7 +64,6 @@ public class ParserGenerator {
                         .append(sym.getValue().toString()).append('\n');
             }
         }
-        header.append("\nextern std::string yytext;\n");
 
 //        System.out.println(header.toString());
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(HEADER_NAME))) {
@@ -93,11 +94,11 @@ public class ParserGenerator {
         source.append("void yyparse(void) {\n")
                 .append("\tstd::stack<int> stack_state, stack_symbol;\n")
                 .append("\tstack_state.push(start_production);\n")
+                .append("\tint next = yylex();\n")
+                .append("\tstd::cout << yytext << \": \" << symbols.find(next)->second << std::endl;\n")
                 .append("\twhile (true) {\n")
-                .append("\t\tint next = yylex();\n")
-                .append("\t\tstd::cout << yytext << \": \" << symbols.find(next)->second << std::endl;\n")
                 .append("\t\tstd::pair<int, int> key(stack_state.top(), next);\n")
-                .append("\t\tstd::pair<int, int> action;\n")
+                .append("\t\tstd::pair<int, int> action(-1, -1);\n")
                 .append("\t\tauto action_iter = table_action.find(key);\n")
                 .append("\t\tif (action_iter == table_action.end()) {\n")
                 .append("\t\t\tstd::cerr << \"Error: unknown token\" << std::endl;\n")
@@ -108,11 +109,14 @@ public class ParserGenerator {
                 .append("\t\tstd::map<std::pair<int, int>, int>::iterator goto_iter;\n")
                 .append("\t\tswitch (action.first) {\n")
                 .append("\t\t\tcase SHIFT:\n")
+                .append("\t\t\t\tstd::cout << \"\\tSHIFT\" << std::endl;\n")
                 .append("\t\t\t\tstack_state.push(action.second);\n")
                 .append("\t\t\t\tstack_symbol.push(next);\n")
                 .append("\t\t\t\tnext = yylex();\n")
+                .append("\t\t\t\tstd::cout << yytext << \": \" << symbols.find(next)->second << std::endl;\n")
                 .append("\t\t\t\tbreak;\n")
                 .append("\t\t\tcase REDUCE:\n")
+                .append("\t\t\t\tstd::cout << \"\\tREDUCE\" << std::endl;\n")
                 .append("\t\t\t\tdo_action(action.second);\n")
                 .append("\t\t\t\thead = productions[action.second].first;\n")
                 .append("\t\t\t\tbody_size = productions[action.second].second;\n")
@@ -130,9 +134,11 @@ public class ParserGenerator {
                 .append("\t\t\t\t}\n")
                 .append("\t\t\t\tbreak;\n")
                 .append("\t\t\tcase ACCEPT:\n")
+                .append("\t\t\t\tstd::cout << \"\\tACCEPT\" << std::endl;\n")
                 .append("\t\t\t\treturn;\n")
                 .append("\t\t\tdefault:\n")
                 .append("\t\t\t\tstd::cerr << \"Error: Unknown action type\" << std::endl;\n")
+                .append("\t\t\t\treturn;\n")
                 .append("\t\t}\n")
                 .append("\t}\n")
                 .append("}\n")
@@ -143,7 +149,7 @@ public class ParserGenerator {
         for (Production production : productions.getProductions()) {
             source.append("\t\tcase ").append(production.getIndex()).append(": {\n");
             if (production.getAction().length() == 0) {
-                source.append("std::cout << \"");
+                source.append("std::cout << \"\\t\\t");
                 source.append(symbols.getInvertedSymbol(production.getHead())).append(" -> ");
                 for (Integer i : production.getBody()) {
                     source.append(symbols.getInvertedSymbol(i)).append(" ");
