@@ -46,8 +46,8 @@ public class LexerGenerator {
 
             bw.write("#include <fstream>\n");
             bw.write("#include <iostream>\n");
-            bw.write("extern std::string yytext;\n");
-            bw.write("extern std::ifstream yyin;\n");
+            bw.write("std::string yytext;\n");
+            bw.write("std::ifstream yyin;\n");
             bw.write(userRoutines + "\n");
             bw.write("extern int yylex() {\n");
             bw.write("\tint state = 0;\n");
