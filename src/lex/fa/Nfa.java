@@ -1,7 +1,7 @@
 package lex.fa;
 
+import javafx.util.Pair;
 import lex.ReParser;
-import lex.fa.node.FaNode;
 import lex.fa.node.NfaNode;
 
 import java.util.*;
@@ -48,6 +48,23 @@ class Nfa {
         }
     }
 
+    private void checkSpace(Nfa nfa, int index) {
+        for (NfaNode nfaNode : nfa.nodes) {
+            if (nfaNode.getIndex() == index) {
+                for (Map.Entry<String, Set<Integer>> entry : nfaNode.getAllTransitions().entrySet()) {
+                    if (entry.getKey().equals(" ")) {
+                        System.out.println("haha");
+                    } else if (entry.getKey().equals("")){
+                        for (Integer next : entry.getValue()) {
+                            checkSpace(nfa, next);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+
     ArrayList<NfaNode> construct(Map<Integer, String[]> postfixRes) {
         nodes = new LinkedList<>();
         indexes = 0;
@@ -55,6 +72,7 @@ class Nfa {
 
         for (Map.Entry<Integer, String[]> entry : postfixRes.entrySet()) {
             Nfa nfa = reToNfa(entry.getValue(), entry.getKey());
+            checkSpace(nfa, nfa.nodes.getFirst().getIndex());
             nodes.getFirst().addTransition("", nfa.nodes.getFirst().getIndex());
             nodes.addAll(nfa.nodes);
         }
@@ -119,16 +137,21 @@ class Nfa {
     }
 
     private Nfa union(Nfa nfa) {
-        NfaNode newFirst = new NfaNode(getNextIndex(), "", this.nodes.getFirst().getIndex());
-        newFirst.addTransition("", nfa.nodes.getFirst().getIndex());
-
-        NfaNode newLast = new NfaNode(getNextIndex());
-        this.nodes.getLast().addTransition("", newLast.getIndex());
-        nfa.nodes.getLast().addTransition("", newLast.getIndex());
-
+        for (NfaNode nfaNode : nfa.nodes) {
+            for (Set<Integer> next : nfaNode.getAllTransitions().values()) {
+                if (next.remove(nfa.nodes.getFirst().getIndex())) {
+                    next.add(this.nodes.getFirst().getIndex());
+                }
+                if (next.remove(nfa.nodes.getLast().getIndex())) {
+                    next.add(this.nodes.getLast().getIndex());
+                }
+            }
+        }
+        this.nodes.getFirst().addAllTransitions(nfa.nodes.removeFirst().getAllTransitions());
+        this.nodes.getLast().addAllTransitions(nfa.nodes.removeLast().getAllTransitions());
+        NfaNode tmpLast = this.nodes.removeLast();
         this.nodes.addAll(nfa.nodes);
-        this.nodes.addFirst(newFirst);
-        this.nodes.addLast(newLast);
+        this.nodes.add(tmpLast);
         return this;
     }
 
