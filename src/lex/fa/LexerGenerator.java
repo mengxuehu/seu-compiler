@@ -35,7 +35,7 @@ public class LexerGenerator {
         long t4 = System.currentTimeMillis();
         System.out.println("Min DFA: " + (t4 - t3));
 
-        doGenerate(miniDfa.getDfa(), ruleAction, userRoutines);
+        doGenerate(dfaNodes, ruleAction, userRoutines);
 
         long t5 = System.currentTimeMillis();
         System.out.println("Generating Code: " + (t5 - t4));
@@ -90,8 +90,7 @@ public class LexerGenerator {
                     bw.write("\t\t\t\t\tbreak;\n");
                     bw.write("\t\t\t\t}\n");
                 }
-                bw.write("\t\t\t\tif (next != ' ' && next != '\\n')\n");
-                bw.write("\t\t\t\t\tyyin.seekg(-1, std::ios::cur);\n");
+                bw.write("\t\t\t\tyyin.seekg(-1, std::ios::cur);\n");
                 if (dfaNode.isAccepting()) {
                     bw.write("\t\t\t\t" + ruleAction[dfaNode.getAction()] + ";\n");
                     bw.write("\t\t\t\tstate = 0;\n");
