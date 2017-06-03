@@ -21,7 +21,6 @@ public class Lex {
         for (Map.Entry<String, String> entry : rules.entrySet()) {
             ruleAction[i] = entry.getValue();
             postfixRes.put(i++, reParser.parse(entry.getKey()));
-            System.out.println(Arrays.toString(postfixRes.get(i-1)));
         }
 
         new LexerGenerator().generate(postfixRes, ruleAction, lexSourceParser.getUserRoutines());

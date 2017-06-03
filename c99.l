@@ -13,8 +13,6 @@ IS			((u|U)|(u|U)?(l|L|ll|LL)|(l|L|ll|LL)(u|U))
 void count(void);
 int check_type(void);
 void comment(void);
-extern void yyerror(const char *);
-extern ifstream yyin;
 %}
 
 %%
@@ -145,7 +143,8 @@ void comment(void)
 			return;
 		prev = c;
 	}
-	yyerror("unterminated comment");
+	std::cerr << "unterminated comment";
+	exit(0);
 }
 
 
