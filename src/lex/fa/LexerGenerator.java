@@ -90,7 +90,8 @@ public class LexerGenerator {
                     bw.write("\t\t\t\t\tbreak;\n");
                     bw.write("\t\t\t\t}\n");
                 }
-                bw.write("\t\t\t\tyyin.seekg(-1, std::ios::cur);\n");
+                bw.write("\t\t\t\tif (next != ' ' && next != '\\n')\n");
+                bw.write("\t\t\t\t\tyyin.seekg(-1, std::ios::cur);\n");
                 if (dfaNode.isAccepting()) {
                     bw.write("\t\t\t\t" + ruleAction[dfaNode.getAction()] + ";\n");
                     bw.write("\t\t\t\tstate = 0;\n");
