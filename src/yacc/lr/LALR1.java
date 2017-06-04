@@ -123,7 +123,7 @@ public class LALR1 {
     private boolean generateActionTable() {
         Map<Pair<Integer, Integer>, Action> newTableAction = new HashMap<>();
         for (Pair<Integer, Integer> actionPair : tableAction.keySet()) {
-            Integer actionPairKey = 0;
+            Integer actionPairKey = -1;
             Integer actionPairVal = actionPair.getValue();
             for (UnionItemSet unionItemSet : itemSetOfLALR1) {
                 for (ItemSet itemSet : unionItemSet.getAllItemSet()) {
@@ -132,17 +132,17 @@ public class LALR1 {
                         break;
                     }
                 }
-                Pair<Integer, Integer> action = new Pair<Integer, Integer>(actionPairKey, actionPairVal);
-                if (newTableAction.keySet().contains(action)) {
-                    //TODO 冲突处理代码
-                    //下面代码用于测试，后面应删除
-                    return false;
-//                    newTableAction.put(new Pair<Integer, Integer>(-1, -1), tableAction.get(actionPair));
-                } else {
-                    newTableAction.put(action, tableAction.get(actionPair));
-                }
-
+                if (actionPairKey != -1)
+                    break;
             }
+            Pair<Integer, Integer> action = new Pair<Integer, Integer>(actionPairKey, actionPairVal);
+            if (newTableAction.keySet().contains(action)) {
+                if (newTableAction.values().contains(actionPairVal))
+                    return false;
+            } else {
+                newTableAction.put(action, tableAction.get(actionPair));
+            }
+
         }
         tableAction = newTableAction;
         return true;
