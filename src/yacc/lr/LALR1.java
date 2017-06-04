@@ -136,7 +136,8 @@ public class LALR1 {
                 if (newTableAction.keySet().contains(action)) {
                     //TODO 冲突处理代码
                     //下面代码用于测试，后面应删除
-                    newTableAction.put(new Pair<Integer, Integer>(-1, -1), tableAction.get(actionPair));
+                    return false;
+//                    newTableAction.put(new Pair<Integer, Integer>(-1, -1), tableAction.get(actionPair));
                 } else {
                     newTableAction.put(action, tableAction.get(actionPair));
                 }

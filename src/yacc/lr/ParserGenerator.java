@@ -33,12 +33,14 @@ public class ParserGenerator {
         long t2 = System.currentTimeMillis();
         System.out.println("LR1: " + (t2 - t1));
 
-//        LALR1 lalr1 = new LALR1();
-//        lalr1.generateLALR1(collection, tableGotoLR1, tableActionLR1);
-//        tableGoto = lalr1.getTableGoto();
-//        tableAction = lalr1.getTableAction();
-        tableGoto = tableGotoLR1;
-        tableAction = tableActionLR1;
+        LALR1 lalr1 = new LALR1();
+        if (lalr1.generateLALR1(collection, tableGotoLR1, tableActionLR1)) {
+            tableGoto = lalr1.getTableGoto();
+            tableAction = lalr1.getTableAction();
+        } else {
+            tableGoto = tableGotoLR1;
+            tableAction = tableActionLR1;
+        }
 
         long t3 = System.currentTimeMillis();
         System.out.println("LALR1: " + (t3 - t2));
