@@ -6,6 +6,7 @@ import yacc.entity.Precedence;
 import yacc.entity.Productions;
 import yacc.entity.Symbols;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,8 +18,8 @@ public class ParserGenerator {
         long t1 = System.currentTimeMillis();
         LR1 lr1 = new LR1();
         lr1.parse(productions, symbols, precedence, associativity);
-        Map<Pair<Integer, Integer>, Integer> tableGoto = lr1.getTableGoto();
-        Map<Pair<Integer, Integer>, Action> tableAction = lr1.getTableAction();
+        Map<Pair<Integer, Integer>, Integer> tableGotoLR1 = lr1.getTableGoto();
+        Map<Pair<Integer, Integer>, Action> tableActionLR1 = lr1.getTableAction();
         Set<ItemSet> collection = lr1.getCollection();
 
         long t2 = System.currentTimeMillis();
@@ -26,7 +27,12 @@ public class ParserGenerator {
 
         LALR1 lalr1 = new LALR1();
 
-        if (lalr1.generateLALR1(collection, tableGoto, tableAction)) {
+        Map<Pair<Integer, Integer>, Integer> tableGoto = new HashMap<>();
+        Map<Pair<Integer, Integer>, Action> tableAction = new HashMap<>();
+        tableGoto.putAll(tableGotoLR1);
+        tableAction.putAll(tableActionLR1);
+
+        if (lalr1.generateLALR1(collection, tableGotoLR1, tableActionLR1)) {
             tableGoto = lalr1.getTableGoto();
             tableAction = lalr1.getTableAction();
         }
