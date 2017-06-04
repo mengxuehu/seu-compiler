@@ -136,9 +136,21 @@ public class LALR1 {
                     break;
             }
             Pair<Integer, Integer> action = new Pair<Integer, Integer>(actionPairKey, actionPairVal);
+            Action old = tableAction.get(actionPair);
+            Action now = newTableAction.get(action);
             if (newTableAction.keySet().contains(action)) {
-                if (newTableAction.values().contains(actionPairVal))
+                if (old.getType() == now.getType()) {
+                    if (old.getType() == ActionType.SHIFT){
+                        if (((ShiftAction) old).getShiftTarget() != ((ShiftAction) old).getShiftTarget())
+                            return false;
+                    } else if (old.getType() == ActionType.REDUCE) {
+                        if (((ReduceAction) old).getProductionReducingBy() != ((ReduceAction) old).getProductionReducingBy())
+                            return false;
+                    }
+                } else {
                     return false;
+                }
+
             } else {
                 newTableAction.put(action, tableAction.get(actionPair));
             }
