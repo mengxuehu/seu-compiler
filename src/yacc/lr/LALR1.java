@@ -49,30 +49,35 @@ public class LALR1 {
 
         //合并项集
         boolean ifAdd = true;
-        int state = 0;
+        int state = 1;
+
+        int tempState = -1;
         for (ItemSet itemSet : itemSetOfLR1) {
             ifAdd = false;
             for (UnionItemSet unionItemSet : itemSetOfLALR1) {
                 if (itemSet.equalItemSet(unionItemSet.getFirstItem())) {
-//                    System.out.println("new");
-//                    for (Item item : itemSet.getItems()) {
-//                        System.out.println(item.getProductionIndex());
-//                    }
-//                    System.out.println("old");
-//                    for (Item item : unionItemSet.getFirstItem().getItems()) {
-//                        System.out.println(item.getProductionIndex());
-//                    }
+                    if (itemSet.getState() == 0) {
+                        tempState = unionItemSet.getState();
+                        unionItemSet.setState(0);
+                    }
                     unionItemSet.addItemSet(itemSet);
                     ifAdd = true;
+                    break;
                 }
             }
             if (!ifAdd) {
                 UnionItemSet unionSet = new UnionItemSet();
                 unionSet.addItemSet(itemSet);
-                unionSet.setState(state++);
+                if (tempState != -1) {
+                    unionSet.setState(tempState);
+                    tempState = -1;
+                } else {
+                    unionSet.setState(state++);
+                }
                 itemSetOfLALR1.add(unionSet);
             }
         }
+
     }
 
     private boolean generateGotoTable() {
