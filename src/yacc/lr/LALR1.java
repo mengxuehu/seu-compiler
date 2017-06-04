@@ -71,6 +71,8 @@ public class LALR1 {
                 if (tempState != -1) {
                     unionSet.setState(tempState);
                     tempState = -1;
+                } else if (itemSet.getState() == 0){
+                    unionSet.setState(0);
                 } else {
                     unionSet.setState(state++);
                 }
