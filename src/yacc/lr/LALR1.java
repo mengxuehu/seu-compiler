@@ -159,13 +159,19 @@ public class LALR1 {
                 }
 
             } else {
+                boolean change;
                 if (old.getType() == ActionType.SHIFT){
+                    change = false;
                     for (UnionItemSet unionItemSet : itemSetOfLALR1) {
                         for (ItemSet itemSet : unionItemSet.getAllItemSet()) {
                             if (itemSet.getState() == ((ShiftAction)old).getShiftTarget()) {
                                 ((ShiftAction) old).setShiftTarget(unionItemSet.getState());
+                                change = true;
+                                break;
                             }
                         }
+                        if (change)
+                            break;;
                     }
                 }
                 newTableAction.put(action, old);
