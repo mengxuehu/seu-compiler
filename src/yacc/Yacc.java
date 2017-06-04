@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 public class Yacc {
-    Yacc(String source) {
+    public Yacc(String source) {
         YaccSourceParser yaccSourceParser = new YaccSourceParser();
         yaccSourceParser.parse(source);
         String programs = yaccSourceParser.getPrograms();

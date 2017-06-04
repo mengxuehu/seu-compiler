@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Lex {
-    Lex(String source) {
+    public Lex(String source) {
         LexSourceParser lexSourceParser = new LexSourceParser();
         ReParser reParser = new ReParser();
         lexSourceParser.parse(source);
