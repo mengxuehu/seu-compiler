@@ -29,6 +29,10 @@ class ShiftAction extends Action {
         super(ActionType.SHIFT);
         this.shiftTarget = shiftTarget;
     }
+    boolean setShiftTarget(int shiftTarget) {
+        this.shiftTarget = shiftTarget;
+        return true;
+    }
 
     int getShiftTarget() {
         return shiftTarget;

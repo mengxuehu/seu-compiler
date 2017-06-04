@@ -144,8 +144,8 @@ public class LALR1 {
             }
             Pair<Integer, Integer> action = new Pair<Integer, Integer>(actionPairKey, actionPairVal);
             Action old = tableAction.get(actionPair);
-            Action now = newTableAction.get(action);
             if (newTableAction.keySet().contains(action)) {
+                Action now = newTableAction.get(action);
                 if (old.getType() == now.getType()) {
                     if (old.getType() == ActionType.SHIFT){
                         if (((ShiftAction) old).getShiftTarget() != ((ShiftAction) old).getShiftTarget())
@@ -159,7 +159,16 @@ public class LALR1 {
                 }
 
             } else {
-                newTableAction.put(action, tableAction.get(actionPair));
+                if (old.getType() == ActionType.SHIFT){
+                    for (UnionItemSet unionItemSet : itemSetOfLALR1) {
+                        for (ItemSet itemSet : unionItemSet.getAllItemSet()) {
+                            if (itemSet.getState() == ((ShiftAction)old).getShiftTarget()) {
+                                ((ShiftAction) old).setShiftTarget(unionItemSet.getState());
+                            }
+                        }
+                    }
+                }
+                newTableAction.put(action, old);
             }
 
         }
